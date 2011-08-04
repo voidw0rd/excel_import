@@ -231,15 +231,28 @@ def fetchOrderProduct(request):
 def updateProducts(request):
         
     if request.method == "POST":
-        
-        for item in request.POST:
-            tmp = item
-            
-        tmp = str(tmp)
+
+        tmp = request.read()
         tmp = json.loads(tmp)
-        x = Products.objects.filter(pk=tmp["id"])
-        tmp.pop("id")
-        x.update(**tmp)
+        
+        if isinstance(tmp, list):
+            for item in tmp:
+                try:
+                    queryObj = Products.objects.filter(pk=item["id"])
+                    item.pop("id")
+                    queryObj.update(**item)
+                except:
+                    pass
+                    
+        elif isinstance(tmp, dict):
+            try:
+                queryObj = Products.objects.filter(pk=tmp["id"])
+                item.pop("id")
+                queryObj.update(**tmp)
+            except:
+                pass
+            
+        
     
     jsonObj = simplejson.dumps({"success": True, "data" : []})
     return HttpResponse(jsonObj, mimetype="application/json")
