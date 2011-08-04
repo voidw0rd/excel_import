@@ -1,2 +1,5 @@
 *.pyc
+extjs-4.0.2a/
 settings.py
+app.js
+.idea
