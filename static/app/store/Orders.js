@@ -1,6 +1,6 @@
 Ext.define('AM.store.Orders', {
     extend: 'Ext.data.Store',
-    model: 'AM.model.Orders',
+    model: 'AM.model.Order',
     autoLoad: true,
     
     proxy: {

@@ -63,8 +63,8 @@ def fetch(request):
 def importDataBase(request):
     
     
-    f = open("/tmp/tests.csv", 'r')
-    writer = open("/tmp/test.csv", 'w')
+    f = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'r')
+    writer = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'w')
     tmp = f.readlines()
 
     for line in tmp:
@@ -75,7 +75,7 @@ def importDataBase(request):
     writer.close()
     
     
-    _file = open("/tmp/test.csv", "rb")
+    _file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
     
     for row in reader:

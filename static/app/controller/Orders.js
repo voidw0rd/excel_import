@@ -3,9 +3,9 @@ Ext.define('AM.controller.Orders', {
 
     stores: ['Orders'],
 
-    models: ['Orders'],
+    models: ['Order'],
 
-    views: ['orders.Edit', 'orders.List'],
+    views: ['order.Edit', 'order.List'],
 
     refs: [
         {
@@ -16,10 +16,10 @@ Ext.define('AM.controller.Orders', {
 
     init: function() {
         this.control({
-            'tabpanel > orderslist dataview': {
+            'tabpanel > orderlist dataview': {
                 itemdblclick: this.editOrder
             },
-            'ordersedit button[action=save]': {
+            'orderedit button[action=save]': {
                 click: this.updateOrder
             }
         });
