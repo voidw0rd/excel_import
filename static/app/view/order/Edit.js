@@ -1,4 +1,14 @@
+<<<<<<< HEAD:static/app/view/order/Edit.js
 Ext.define('AM.view.order.Edit', {
+=======
+Ext.define('OrderProducts', {
+    extend: 'Ext.data.Model',
+    fields: ['cod', 'name', 'quantity'],
+});
+
+
+Ext.define('AM.view.orders.Edit', {
+>>>>>>> 90d102f148c548e5827caeaa637d4621796671d7:static/app/view/orders/Edit.js
     extend: 'Ext.window.Window',
     alias : 'widget.orderedit',
 
@@ -36,12 +46,52 @@ Ext.define('AM.view.order.Edit', {
                         width: 370,
                         name: "timestamp",
                         fieldLabel: "Created on",
+<<<<<<< HEAD:static/app/view/order/Edit.js
                         readOnly: true
                     }
+=======
+                        readOnly: true,
+                    },
+                    new Ext.grid.GridPanel({
+                        border:false,
+                        //region:'west',
+                        collapsible: false,
+                        height: 300,
+                        split:true,
+                        store: new Ext.data.Store({
+                            model: "OrderProducts",
+                            data: [
+                                {cod: "P1", name: "name1", quantity: 1},
+                                {cod: "P2", name: "name2", quantity: 2},
+                                {cod: "P3", name: "name3", quantity: 3},
+                                {cod: "P4", name: "name4", quantity: 4},
+                                {cod: "P5", name: "name5", quantity: 5},
+                            ],
+                            proxy: {
+                                type: "ajax",
+                                url: "data/orderProducts",
+                                reader: {
+                                    type: "json",
+                                    root: "data"
+                                }
+                            }
+                        }),
+                        columns: [
+                            {header: "Cod", flex: 1, dataIndex: 'cod'},
+                            {header: "Name", flex: 1, dataIndex: 'name'},
+                            {header: "Quantity", flex: 1, dataIndex: 'quantity'},
+                        ],
+                        tbar: [{
+                                text:"Add new",
+                                handler: function() {
+                                    console.log("add new entry");
+                                }
+                              }]
+                    }),
+>>>>>>> 90d102f148c548e5827caeaa637d4621796671d7:static/app/view/orders/Edit.js
                 ]
             }
         ];
-
         this.buttons = [
             {
                 text: 'Save',
@@ -57,3 +107,5 @@ Ext.define('AM.view.order.Edit', {
         this.callParent(arguments);
     }
 });
+
+
