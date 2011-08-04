@@ -279,22 +279,24 @@ def updateProducts(request):
         tmp = request.read()
         tmp = json.loads(tmp)
         
+        print json.dumps(tmp, indent=3)
+        
         if isinstance(tmp, list):
             for item in tmp:
                 try:
                     queryObj = Products.objects.filter(pk=item["id"])
                     item.pop("id")
                     queryObj.update(**item)
-                except:
-                    pass
+                except Exception, e:
+                    print e
                     
         elif isinstance(tmp, dict):
             try:
                 queryObj = Products.objects.filter(pk=tmp["id"])
-                item.pop("id")
+                tmp.pop("id")
                 queryObj.update(**tmp)
-            except:
-                pass
+            except Exception, r:
+                print e
 
     jsonObj = simplejson.dumps({"success": True, "data" : []})
     return HttpResponse(jsonObj, mimetype="application/json")
