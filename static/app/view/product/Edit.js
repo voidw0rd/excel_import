@@ -7,132 +7,116 @@ Ext.define('AM.view.product.Edit', {
     title : 'Edit Product',
     layout: 'fit',
     autoShow: true,
-    height: 680,
-    width: 400,
+    height: 640,
+    width: 640,
 
     initComponent: function() {
         this.items = [
             {
                 xtype: 'form',
-                padding: '5 5 0 5',
+				bodyStyle: 'padding:5px 5px 0',
                 border: false,
                 style: 'background-color: #fff;',
-
-                items: [
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'cod',
-                        fieldLabel: 'Code'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'denumirePlic',
-                        fieldLabel: 'Denumire plic'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'denumireOferta',
-                        fieldLabel: 'Denumire oferta'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'denumireLatina',
-                        fieldLabel: 'Denumire latina'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'soi',
-                        fieldLabel: 'Soi'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'photoCode',
-                        fieldLabel: 'Photo Code'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'namesLanguages',
-                        fieldLabel: 'Names-languages'
-                    },
-                    {
-                        xtype: 'textarea',
-                        width: 370,
-                        height: 40,
-                        name : 'roDesc',
-                        fieldLabel: 'RO',
-                    },
-                    {
-                        xtype: 'textarea',
-                        width: 370,
-                        height: 40,
-                        name : 'enDesc',
-                        fieldLabel: 'EN'
-                    },
-                    {
-                        xtype: 'textarea',
-                        width: 370,
-                        height: 40,
-                        name : 'huDesc',
-                        fieldLabel: 'HU'
-                    },
-                    {
-                        xtype: 'textarea',
-                        width: 370,
-                        height: 40,
-                        name : 'sbDesc',
-                        fieldLabel: 'SB'
-                    },
-                    {
-                        xtype: 'textarea',
-                        width: 370,
-                        height: 40,
-                        name : 'ruDesc',
-                        fieldLabel: 'RU'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'stage1',
-                        fieldLabel: 'Stage 1'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'stage2',
-                        fieldLabel: 'Stage 2'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'stage3',
-                        fieldLabel: 'Stage 3'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'stage4',
-                        fieldLabel: 'Stage 4'
-                    },
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'stage5',
-                        fieldLabel: 'Stage 5'
-                    },
-                    {
-                        xtype: 'textfield',
-                        name : 'category',
-                        width: 370,
-                        fieldLabel: 'Category'
-                    }
-                ]
+				layout: 'column',
+                items: [{
+							columnWidth:.5,
+							defaults: {anchor: '100%'},
+							 border: false,
+							items :[{
+										xtype: 'fieldset',
+										bodyStyle: 'padding:5px 5px 0',
+										title: '<span style="font-size:16px;font-style:bold">Denumire<\span>',
+										style: 'border-width: 0px',
+										defaultType: 'textfield',
+										items:[{
+											name : 'cod',
+											fieldLabel: 'Code'
+										},{
+											name : 'denumirePlic',
+											fieldLabel: 'Denumire plic'
+										},{
+											name : 'denumireOferta',
+											fieldLabel: 'Denumire oferta'
+										},{
+											name : 'denumireLatina',
+											fieldLabel: 'Denumire latina'
+										},{
+											name : 'soi',
+											fieldLabel: 'Soi'
+										},{
+											name : 'photoCode',
+											fieldLabel: 'Photo Code'
+										},{
+											name : 'category',
+											fieldLabel: 'Category'
+										}]
+									},{
+										xtype: 'fieldset',
+										bodyStyle: 'padding:5px 5px 0',
+										title: '<span style="font-size:16px;font-style:bold">Perioade<\span>',
+										style: 'border-width: 0px',
+										defaultType: 'textfield',
+										items:[{
+													xtype: 'textfield',
+													name : 'stage1',
+													fieldLabel: 'Stage 1'
+												},
+												{
+													xtype: 'textfield',
+													name : 'stage2',
+													fieldLabel: 'Stage 2'
+												},
+												{
+													xtype: 'textfield',
+													name : 'stage3',
+													fieldLabel: 'Stage 3'
+												},
+												{
+													xtype: 'textfield',
+													name : 'stage4',
+													fieldLabel: 'Stage 4'
+												},
+												{
+													xtype: 'textfield',
+													name : 'stage5',
+													fieldLabel: 'Stage 5'
+												}]
+									}]
+						},{
+							xtype: 'fieldset',
+							columnWidth:.5,
+							bodyStyle: 'padding:5px 5px 0',
+							title: '<span style="font-size:16px;font-style:bold">Descriere<\span>',
+							style: 'border-width: 0px',
+							border:false,
+							defaultType: 'textareafield',
+							defaults:{
+										anchor: '100%',
+										grow:true,
+										labelWidth: 25
+									},
+							items :[{
+										name : 'roDesc',
+										fieldLabel: 'RO'
+									},{
+										name : 'enDesc',
+										fieldLabel: 'EN'
+									},{
+										name : 'huDesc',
+										fieldLabel: 'HU'
+									},{
+										name : 'sbDesc',
+										fieldLabel: 'SB'
+									},{
+										name : 'ruDesc',
+										fieldLabel: 'RU'
+									}]
+						},{
+							columnWidth:1,
+							xtype: 'textfield',
+							name : 'namesLanguages',
+							fieldLabel: 'Names-languages'
+						}]
             }
         ];
 
