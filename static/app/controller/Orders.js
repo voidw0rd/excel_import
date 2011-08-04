@@ -17,21 +17,21 @@ Ext.define('AM.controller.Orders', {
     init: function() {
         this.control({
             'tabpanel > orderslist dataview': {
-                itemdblclick: this.editProduct
+                itemdblclick: this.editOrder
             },
             'ordersedit button[action=save]': {
-                click: this.updateProduct
+                click: this.updateOrder
             }
         });
     },
 
-    editProduct: function(grid, record) {
+    editOrder: function(grid, record) {
         var edit = Ext.create('AM.view.orders.Edit').show();
 
         edit.down('form').loadRecord(record);
     },
 
-    updateProduct: function(button) {
+    updateOrder: function(button) {
         var win    = button.up('window'),
             form   = win.down('form'),
             record = form.getRecord(),
@@ -39,6 +39,6 @@ Ext.define('AM.controller.Orders', {
 
         record.set(values);
         win.close();
-        this.getProductsStore().sync();
+        this.getOrdersStore().sync();
     }
 });

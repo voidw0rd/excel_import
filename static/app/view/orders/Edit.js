@@ -7,7 +7,7 @@ Ext.define('AM.view.orders.Edit', {
     title : 'Edit Orders',
     layout: 'fit',
     autoShow: true,
-    height: 680,
+    height: 380,
     width: 400,
 
     initComponent: function() {
@@ -22,8 +22,21 @@ Ext.define('AM.view.orders.Edit', {
                     {
                         xtype: 'textfield',
                         width: 370,
-                        name : 'cod',
-                        fieldLabel: 'Code'
+                        name : 'name',
+                        fieldLabel: 'Name'
+                    },
+                    {
+                        xtype: "textarea",
+                        width: 370,
+                        name: "note",
+                        fieldLabel: "Note"
+                    },
+                    {
+                        xtype: "textfield",
+                        width: 370,
+                        name: "timestamp",
+                        fieldLabel: "Created on",
+                        readOnly: true,
                     },
                 ]
             }

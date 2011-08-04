@@ -14,7 +14,9 @@ import datetime
 
 
 def index(request):    
-        
+    
+    #x = Orders.objects.create(name="test-order", note="test - note ...")
+    #x.save()
     
     return render_to_response(
                               'index.html', 
@@ -154,12 +156,15 @@ def fetchExcel(request):
 
     return HttpResponse(jsonObj, mimetype="application/json")
     
-    
+#-----------------------------------------------------------------------
+#   Orders related view functions 
+
 @csrf_exempt
 def fetchOrders(request):
     
     
-    if request.method == "GET":
+    if request.is_ajax():
+    #if request.method == "GET":
     
         try:
             obj = Orders.objects.all()
@@ -168,7 +173,6 @@ def fetchOrders(request):
             
             for x in obj:
                 data = {}
-                
                 data["id"] = x.id
                 data["name"] = x.name
                 data["note"] = x.note
@@ -177,6 +181,7 @@ def fetchOrders(request):
                 data["timestamp"] = time
                 tmpList.append(data)
             tmpData["data"] = tmpList
+            tmpData["success"] = True
             jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
             return HttpResponse(jsonObj, mimetype="application/json")
         
@@ -186,6 +191,45 @@ def fetchOrders(request):
     
     else:
         return Http404
+
+
+
+@csrf_exempt  
+def updateOrders(request):
+        
+    try:
+        postData = request.read()
+        postData = json.loads(postData)
+        print postData
+        if isinstance(postData, list):
+            for item in postData:
+                queryObj = Orders.objects.filter(pk=item["id"])
+                item.pop("id")
+                item.pop("timestamp")
+                queryObj.update(**item)
+                
+        elif isinstance(postData, dict) and postData.has_key("id"):
+            queryObj = Orders.objects.filter(pk=postData['id'])
+            postData.pop("id")
+            postData.pop("timestamp")
+            queryObj.update(**postData)
+        
+        jsonObj = simplejson.dumps({"success": True})
+        return HttpResponse(jsonObj, mimetype="application/json")
+    
+    except Exception, e:
+        print e
+        jsonObj = simplejson.dumps({"success": False})
+        return HttpResponse(jsonObj, mimetype="application/json")
+
+
+def createOrder(request):
+    
+    postData = request.read()
+    print postData
+    
+    jsonObj = simplejson.dumps({"success": True})
+    return HttpResponse(jsonObj, mimetype="application/json")
 
 
 @csrf_exempt    
@@ -251,9 +295,7 @@ def updateProducts(request):
                 queryObj.update(**tmp)
             except:
                 pass
-            
-        
-    
+
     jsonObj = simplejson.dumps({"success": True, "data" : []})
     return HttpResponse(jsonObj, mimetype="application/json")
     

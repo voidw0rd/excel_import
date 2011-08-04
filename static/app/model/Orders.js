@@ -1,4 +1,4 @@
 Ext.define('AM.model.Orders', {
     extend: 'Ext.data.Model',
-    fields: ['id', 'cod']
+    fields: ['id', 'name', 'note','timestamp']
 });
