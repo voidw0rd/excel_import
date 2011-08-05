@@ -23,11 +23,6 @@ Ext.define('AM.controller.Orders', {
             'orderedit button[action=save]': {
                 click: this.updateOrder
             },
-            'formular': {
-                show: function(){
-                    console.log("enable");
-                }
-            }
         });
     },
 
@@ -47,6 +42,8 @@ Ext.define('AM.controller.Orders', {
         record.set(values);
         win.close();
         this.getOrdersStore().sync();
+        this.getOrderProductsStore().sync();
+        
     }
 });
 

@@ -14,7 +14,7 @@ Ext.define("formular", {
             type: 'ajax',
             api: {
                 read: 'data/orderProducts',
-                update: 'data/updateOrder'
+                update: 'data/updateorderProducts'
             },
             reader: {
                 type: 'json',
@@ -26,10 +26,12 @@ Ext.define("formular", {
         
     }),//'AM.store.OrderProducts',
     columns: [
+            Ext.create('Ext.grid.RowNumberer'),
             {header: "Cod", flex: 1, dataIndex: 'cod'},
             {header: "Name", flex: 1, dataIndex: 'name'},
             {header: "Quantity", flex: 1, dataIndex: 'quantity'},
     ],
+
     tbar: [{
             text:"Add new",
             handler: function() {
@@ -52,7 +54,9 @@ Ext.define('AM.view.order.Edit', {
     autoShow: true,
     height: 380,
     width: 700,
+    
 
+    
     initComponent: function() {
         this.items = [
             {
