@@ -1,58 +1,111 @@
 Ext.define("formular", {
 
-    extend: "Ext.grid.GridPanel",
-    border:false,
-    collapsible: false,
-    height: 100,
-    split: true,
-    store:  new Ext.data.Store({
-    
-        model: 'AM.model.OrderProduct',
-        autoLoad: true,
-        
-        proxy: {
-            type: 'ajax',
-            api: {
-                read: 'data/orderProducts',
-                update: 'data/updateorderProducts'
-            },
-            reader: {
-                type: 'json',
-                root: 'data',
-                successProperty: 'success'
-            }
-        }
-        
-        
-    }),//'AM.store.OrderProducts',
-    columns: [
-            Ext.create('Ext.grid.RowNumberer'),
-            {header: "Cod", flex: 1, dataIndex: 'cod'},
-            {header: "Name", flex: 1, dataIndex: 'name'},
-            {header: "Quantity", flex: 1, dataIndex: 'quantity'},
-    ],
+    extend: "Ext.grid.Panel",
 
-    tbar: [{
-            text:"Add new",
-            handler: function() {
-            console.log("add new entry");
+    initComponent: function(){
+
+        this.editing = Ext.create('Ext.grid.plugin.RowEditing');
+
+        Ext.apply(this, {
+            border:true,
+            collapsible: false,
+            height:300,
+            split: true,
+            viewConfig: {
+                    stripeRows: false,
+                    autoScroll: true
+            },
+            store:  new Ext.data.Store({
+
+                model: 'AM.model.OrderProduct',
+                autoLoad: true,
+
+                proxy: {
+                    type: 'ajax',
+                    api: {
+                        read: 'data/orderProducts',
+                        update: 'data/updateorderProducts'
+                    },
+                    reader: {
+                        type: 'json',
+                        root: 'data',
+                        successProperty: 'success'
+                    }
+                }
+
+
+            }),
+
+            columns: [
+                Ext.create('Ext.grid.RowNumberer'),
+                {header: "Cod", flex: 1, dataIndex: 'cod', editor: {xtype:'textfield'}},
+                {header: "Name", flex: 1, dataIndex: 'name', editor: {xtype:'textfield'}},
+                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}},
+            ],
+            selType: 'rowmodel',
+            plugins: [this.editing],
+
+            tbar: [{
+                    text:"Add new",
+                    scope: this,
+                    handler: this.onAddClick
+            },{
+                    text:"Delete",
+                    scope: this,
+                    handler: this.onDeleteClick
+            }]
+
+        });
+        this.callParent();
+        this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
+
+
+    },
+
+
+    onSelectChange: function(selModel, selections){
+        //this.down('#delete').setDisabled(selections.length === 0);
+    },
+
+    onSync: function(){
+        this.store.sync();
+    },
+
+    onDeleteClick: function(){
+        var selection = this.getView().getSelectionModel().getSelection()[0];
+        if (selection) {
+            this.store.remove(selection);
+        }
+    },
+
+    onAddClick: function(){
+        var rec = new AM.model.OrderProduct({
+            cod: '',
+            name: '',
+            quantity: ''
+        }), edit = this.editing;
+
+        edit.cancelEdit();
+        this.store.insert(0, rec);
+        edit.startEdit(0,1);
     }
-    }]
+
+
 });
 
 
 
 Ext.define('AM.view.order.Edit', {
-    
+
     extend: 'Ext.window.Window',
     alias : 'widget.orderedit',
 
     requires: ['Ext.form.Panel'],
 
     title : 'Edit Orders',
-    layout: 'fit',
+    //layout: 'fit',
     autoShow: true,
-    height: 380,
+    height: 580,
     width: 700,
     
 

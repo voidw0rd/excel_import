@@ -1,5 +1,6 @@
 *.pyc
+*.csv
 extjs-4.0.2a/
 settings.py
-./static/app.js
+/static/app.js
 .idea
