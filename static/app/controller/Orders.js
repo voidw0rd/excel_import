@@ -23,12 +23,21 @@ Ext.define('AM.controller.Orders', {
             'orderedit button[action=save]': {
                 click: this.updateOrder
             },
+            'orderlist button[action=new]': {
+                click: this.newOrder
+            }
+
         });
+    },
+
+    newOrder: function (button){
+
+        console.log(button);
+
     },
 
     editOrder: function(grid, record) {
         var x = Ext.data.StoreManager.lookup('OrderProducts');
-        //console.log(x.getCount());
         var edit = Ext.create('AM.view.order.Edit').show();
         edit.down('form').loadRecord(record);
     },
