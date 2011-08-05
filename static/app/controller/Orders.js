@@ -1,9 +1,9 @@
 Ext.define('AM.controller.Orders', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Orders'],
+    stores: ['Orders', "OrderProducts"],
 
-    models: ['Order'],
+    models: ['Order', 'OrderProduct'],
 
     views: ['order.Edit', 'order.List'],
 
@@ -15,19 +15,26 @@ Ext.define('AM.controller.Orders', {
     ],
 
     init: function() {
+        
         this.control({
             'tabpanel > orderlist dataview': {
                 itemdblclick: this.editOrder
             },
             'orderedit button[action=save]': {
                 click: this.updateOrder
+            },
+            'formular': {
+                show: function(){
+                    console.log("enable");
+                }
             }
         });
     },
 
     editOrder: function(grid, record) {
+        var x = Ext.data.StoreManager.lookup('OrderProducts');
+        //console.log(x.getCount());
         var edit = Ext.create('AM.view.order.Edit').show();
-
         edit.down('form').loadRecord(record);
     },
 
@@ -42,3 +49,4 @@ Ext.define('AM.controller.Orders', {
         this.getOrdersStore().sync();
     }
 });
+

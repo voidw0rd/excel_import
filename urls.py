@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     (r"^data/products", fetchExcel),
     (r"^data/orders", fetchOrders),
     (r"^data/updateOrder", updateOrders),
-    (r"^fetchOrderProduct", fetchOrderProduct),
+    (r"^data/orderProducts", fetchOrderProducts),
     (r"^data/updateProducts", updateProducts),
 )
 

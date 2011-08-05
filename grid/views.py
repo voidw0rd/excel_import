@@ -63,19 +63,20 @@ def fetch(request):
 def importDataBase(request):
     
     
-    f = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'r')
-    writer = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'w')
-    tmp = f.readlines()
+    #f = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'r')
+    #writer = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'w')
+    #tmp = f.readlines()
 
-    for line in tmp:
-        x = line.replace("||", "|-|")
-        writer.write(x)
+    #for line in tmp:
+    #    x = line.replace("||", "|-|")
+    #    writer.write(x)
         
-    f.close()
-    writer.close()
+    #f.close()
+    #writer.close()
     
     
-    _file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
+    #_file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
+    _file = open("/tmp/test.csv", "rb")
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
     
     for row in reader:
@@ -233,9 +234,28 @@ def createOrder(request):
 
 
 @csrf_exempt    
-def fetchOrderProduct(request):
+def fetchOrderProducts(request):
     
-    if request.method == "GET":
+    #if request.is_ajax():
+    if request:
+        tmpList = []
+        tmpData = {}
+        data = {}
+        
+        data["id"] = 1
+        data["quantity"] = 10
+        data["cod"] = "cod"
+        data["name"] = "name"
+        
+        tmpList.append(data)
+        tmpData["data"] = tmpList
+        tmpData["success"] = True
+        
+        jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+        return HttpResponse(jsonObj, mimetype="application/json")
+        
+        
+        
         
         try:
             obj = OrderProduct.objects.all()
@@ -262,10 +282,12 @@ def fetchOrderProduct(request):
             return HttpResponse(jsonObj, mimetype="application/json")
             
         except Exception, err:
+            print err
             jsonObj = simplejson.dumps({"success": False, "reason": err})
             return HttpResponse(jsonObj, mimetype="application/json")
     
     else:
+        print "404"
         return Http404
     
     
@@ -301,3 +323,4 @@ def updateProducts(request):
     jsonObj = simplejson.dumps({"success": True, "data" : []})
     return HttpResponse(jsonObj, mimetype="application/json")
     
+

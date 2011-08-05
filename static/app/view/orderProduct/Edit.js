@@ -1,43 +1,3 @@
-Ext.define("formular", {
-
-    extend: "Ext.grid.GridPanel",
-    border:false,
-    collapsible: false,
-    height: 100,
-    split: true,
-    store:  new Ext.data.Store({
-    
-        model: 'AM.model.OrderProduct',
-        autoLoad: true,
-        
-        proxy: {
-            type: 'ajax',
-            api: {
-                read: 'data/orderProducts',
-                update: 'data/updateOrder'
-            },
-            reader: {
-                type: 'json',
-                root: 'data',
-                successProperty: 'success'
-            }
-        }
-        
-        
-    }),//'AM.store.OrderProducts',
-    columns: [
-            {header: "Cod", flex: 1, dataIndex: 'cod'},
-            {header: "Name", flex: 1, dataIndex: 'name'},
-            {header: "Quantity", flex: 1, dataIndex: 'quantity'},
-    ],
-    tbar: [{
-            text:"Add new",
-            handler: function() {
-            console.log("add new entry");
-    }
-    }]
-});
-
 
 
 Ext.define('AM.view.order.Edit', {
@@ -51,7 +11,7 @@ Ext.define('AM.view.order.Edit', {
     layout: 'fit',
     autoShow: true,
     height: 380,
-    width: 700,
+    width: 500,
 
     initComponent: function() {
         this.items = [
@@ -81,7 +41,8 @@ Ext.define('AM.view.order.Edit', {
                         fieldLabel: "Created on",
                         readOnly: true
                     },
-                    Ext.create("formular")
+                    
+
                 ]
             }
         ];
