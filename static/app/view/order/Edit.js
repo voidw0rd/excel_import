@@ -1,14 +1,12 @@
-<<<<<<< HEAD:static/app/view/order/Edit.js
-Ext.define('AM.view.order.Edit', {
-=======
+
 Ext.define('OrderProducts', {
     extend: 'Ext.data.Model',
     fields: ['cod', 'name', 'quantity'],
 });
 
 
-Ext.define('AM.view.orders.Edit', {
->>>>>>> 90d102f148c548e5827caeaa637d4621796671d7:static/app/view/orders/Edit.js
+Ext.define('AM.view.order.Edit', {
+    
     extend: 'Ext.window.Window',
     alias : 'widget.orderedit',
 
@@ -46,11 +44,8 @@ Ext.define('AM.view.orders.Edit', {
                         width: 370,
                         name: "timestamp",
                         fieldLabel: "Created on",
-<<<<<<< HEAD:static/app/view/order/Edit.js
                         readOnly: true
-                    }
-=======
-                        readOnly: true,
+                    //}
                     },
                     new Ext.grid.GridPanel({
                         border:false,
@@ -88,7 +83,7 @@ Ext.define('AM.view.orders.Edit', {
                                 }
                               }]
                     }),
->>>>>>> 90d102f148c548e5827caeaa637d4621796671d7:static/app/view/orders/Edit.js
+
                 ]
             }
         ];

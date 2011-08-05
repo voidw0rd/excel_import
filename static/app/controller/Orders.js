@@ -26,7 +26,7 @@ Ext.define('AM.controller.Orders', {
     },
 
     editOrder: function(grid, record) {
-        var edit = Ext.create('AM.view.orders.Edit').show();
+        var edit = Ext.create('AM.view.order.Edit').show();
 
         edit.down('form').loadRecord(record);
     },
