@@ -50,8 +50,8 @@ Ext.define('AM.controller.Orders', {
 
         record.set(values);
         win.close();
-        this.getOrdersStore().sync();
         this.getOrderProductsStore().sync();
+        this.getOrdersStore().sync();
         
     }
 });

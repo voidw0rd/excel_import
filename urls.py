@@ -10,11 +10,19 @@ urlpatterns = patterns('',
     (r'^$', index),
     (r'^fetch-data/', fetch),
     (r"^import/", importDataBase),
+    # products
     (r"^data/products", fetchExcel),
+    (r"^data/updateProducts", updateProducts),
+    
+    # orders 
     (r"^data/orders", fetchOrders),
     (r"^data/updateOrder", updateOrders),
+    
+    # order products 
     (r"^data/orderProducts", fetchOrderProducts),
-    (r"^data/updateProducts", updateProducts),
+    (r"^data/updateOrderProducts", updateOrderProducts),
+    (r"^data/createOrderProduct", createOrderProduct),
+    (r"^data/deleteOrderProduct", deleteOrderProduct),
 )
 
 

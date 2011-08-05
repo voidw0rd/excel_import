@@ -11,7 +11,7 @@ Ext.define('AM.view.order.Edit', {
     layout: 'fit',
     autoShow: true,
     height: 380,
-    width: 500,
+    width: 400,
 
     initComponent: function() {
         this.items = [

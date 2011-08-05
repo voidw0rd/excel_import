@@ -24,13 +24,15 @@ Ext.define("formular", {
                     type: 'ajax',
                     api: {
                         read: 'data/orderProducts',
-                        update: 'data/updateorderProducts'
+                        update: 'data/updateOrderProducts',
+                        create: 'data/createOrderProduct',
+                        destroy: "data/deleteOrderProduct",
                     },
                     reader: {
                         type: 'json',
                         root: 'data',
                         successProperty: 'success'
-                    }
+                    },
                 }
 
 
@@ -68,13 +70,16 @@ Ext.define("formular", {
     },
 
     onSync: function(){
+        console.log("formular store sync");
         this.store.sync();
     },
 
     onDeleteClick: function(){
         var selection = this.getView().getSelectionModel().getSelection()[0];
         if (selection) {
+            console.log("formular record delete");
             this.store.remove(selection);
+            this.store.sync();
         }
     },
 
@@ -88,6 +93,9 @@ Ext.define("formular", {
         edit.cancelEdit();
         this.store.insert(0, rec);
         edit.startEdit(0,1);
+        edit.on('edit', function(editor, e) {
+            editor.store.sync();
+        });
     }
 
 

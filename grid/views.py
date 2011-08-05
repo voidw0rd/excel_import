@@ -291,7 +291,87 @@ def fetchOrderProducts(request):
         return Http404
     
     
+
+@csrf_exempt   
+def updateOrderProducts(request):
+
+    postData = request.read()
+    print postData
+
+    jsonObj = simplejson.dumps({"success": False, "reason": err})
+    return HttpResponse(jsonObj, mimetype="application/json")
+
+
+
+@csrf_exempt   
+def createOrderProduct(request):
     
+    if request.is_ajax():
+    
+        try:
+            
+            postData = request.read()
+            postData = json.loads(postData)
+            print json.dumps(postData, indent=3)
+     
+            # todo: make the right extjs  model for the OrderProduct ...
+            
+     
+            
+            jsonObj = simplejson.dumps({"success": True})
+            return HttpResponse(jsonObj, mimetype="application/json")
+                
+                
+                
+        except Exception, err:
+            print err
+
+
+
+    else:
+        jsonObj = simplejson.dumps({"success": False, "reason": err})
+        return HttpResponse(jsonObj, mimetype="application/json")
+
+
+
+@csrf_exempt    
+def deleteOrderProduct(request):
+    
+    if request.is_ajax():
+        try:
+            postData = request.read()
+            postData = json.loads(postData)
+            # todo: make the right extjs  model for the OrderProduct ...
+            print json.dumps(postData, indent=3)
+            
+            
+            if isinstance(postData, dict) and postData.has_key('id'):
+                queryObj = OrderProduct.objects.filter(pk=postData['id'])
+                if len(queryObj) == 0:
+                    jsonObj = simplejson.dumps({"success": False})
+                    return HttpResponse(jsonObj, mimetype="application/json")
+                
+                queryObj.delete()
+                
+            elif isinstance(postData, list):
+                for item in postData:
+                    if item.has_key("id"):
+                        queryObj = OrderProduct.objects.filter(pk=item['id'])
+                        if len(queryObj) == 0:
+                            jsonObj = simplejson.dumps({"success": False})
+                            return HttpResponse(jsonObj, mimetype="application/json")
+                        
+                        queryObj.delete()
+            
+            jsonObj = simplejson.dumps({"success": True, "data": []})
+            return HttpResponse(jsonObj, mimetype="application/json")
+        
+        except Exception, err:
+            print err
+        
+    else:
+        jsonObj = simplejson.dumps({"success": False})
+        return HttpResponse(jsonObj, mimetype="application/json")
     
 @csrf_exempt    
 def updateProducts(request):
