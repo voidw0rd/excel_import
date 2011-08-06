@@ -25,6 +25,9 @@ Ext.define('AM.controller.Orders', {
             },
             'orderlist button[action=new]': {
                 click: this.newOrder
+            },
+            'orderlist button[action=delete]': {
+                click: this.deleteOrder
             }
 
         });
@@ -37,7 +40,23 @@ Ext.define('AM.controller.Orders', {
 
     newOrder: function (button){
 
-        console.log(button);
+        var record = new AM.model.Order({
+            id     : "",
+            name   : "",
+            note   : "",
+            status : Math.floor(Math.random()*200) + '',
+            timestamp : "",
+        });
+
+        this.getOrdersStore().add(record);
+        this.getOrdersStore().load({callback: function(records, operation, success) {
+            Ext.each(records, function(item){
+                if(item.data.status === record.data.status) {
+                    var edit = Ext.create('AM.view.order.Edit').show();
+                    edit.down("form").loadRecord(item);
+                }
+            });
+        }});
     },
 
     editOrder: function(grid, record) {
@@ -56,6 +75,14 @@ Ext.define('AM.controller.Orders', {
         win.close();
         this.getOrderProductsStore().sync();
         this.getOrdersStore().sync();
+        
+    },
+    
+    deleteOrder: function(button) {
+        var win    = button.up('tabpanel'),
+            grid   = win.down("gridpanel").next("gridpanel"),
+            record = grid.getView().getSelectionModel().getSelection()[0];
+        this.getOrdersStore().remove(record);
         
     },
 

@@ -101,13 +101,18 @@ Ext.define("formular", {
 
     onAddClick: function(){
 
+        var win  = this.up("window"),
+            form = win.down("form"),
+            record = form.getRecord();
+        console.log(record);
+             
         var rec = new AM.model.OrderProduct({
-            order_id: this.up('form').getRecord().data.id, // order_id se poate seta si cand se seteaza restu din Selectu din combo
+            order_id: record.data.id,
             cod: '',
             name: '',
             quantity: ''
         }), edit = this.editing;
-
+        
         edit.cancelEdit();
         this.store.insert(0, rec);
         edit.startEdit(0,1);
@@ -133,7 +138,7 @@ Ext.define('AM.view.order.Edit', {
     autoShow: true,
     height: 490,
     width: 700,
-    
+    id: "ordersList",
 
     
     initComponent: function() {
