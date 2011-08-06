@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
+from django.db.models.query import QuerySet
 from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
@@ -10,6 +11,41 @@ import json
 import csv
 import datetime
 from django.forms.models import model_to_dict
+
+
+
+def getJsonFromModel(querySet, excludes):
+    if not isinstance(querySet, QuerySet) and not isinstance(excludes, list):
+        return Http404
+    
+    try:
+        requestList = []
+        requestDict = {}
+        
+        for obj in querySet:
+            tmp = obj
+            obj = model_to_dict(obj)
+            data = {}
+            for key in obj.keys():
+                data[key] = obj[key]
+                if hasattr(tmp, 'timestamp'): #this is for orders timestamp
+                    data['timestamp'] = (str(tmp.timestamp)).split(".")[0]
+                if hasattr(tmp, 'status'): # solve the status foreignKey
+                    data['status'] = tmp.status.status
+            requestList.append(data)
+        
+        requestDict['data'] = requestList
+        requestDict['success'] = True
+        print json.dumps(requestDict, indent = 3)
+        
+        if len(excludes) > 0:
+            for exclude in excludes:
+                requestDict.pop(exclude)
+        
+        return requestDict
+    except Exception, err:
+        print err
+        return Http404
 
 
 
@@ -66,47 +102,13 @@ def importDataBase(request):
                              )
     
     
-    
 @csrf_exempt
-def fetchExcel(request):
-    
-    obj = Products.objects.all()
-    
-    tmpData = {}
-    tmpList = []
-            
-    for item in obj:
-        data = {}
-        
-        data["id"] = item.id
-        data["cod"] = item.cod
-        data['denumirePlic'] = item.denumirePlic
-        data['denumireOferta'] = item.denumireOferta
-        data["denumireLatina"] = item.denumireLatina
-        data["soi"] = item.soi
-        data["photoCode"] = item.photoCode
-        data["namesLanguages"] = item.namesLanguages
-        data["roDesc"] = item.roDesc
-        data["enDesc"] = item.enDesc
-        data["huDesc"] = item.huDesc
-        data["sbDesc"] = item.sbDesc
-        data["ruDesc"] = item.ruDesc
-        data["stage1"] = item.stage1
-        data["stage2"] = item.stage2
-        data["stage3"] = item.stage3
-        data["stage4"] = item.stage4
-        data["stage5"] = item.stage5
-        data["category"] = item.category
-        
-        tmpList.append(data)
-    
-        
-    tmpData['data'] = tmpList
-    tmpData["success"] = True
-    #print json.dumps(tmpData, indent = 3)
-    jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
-    
+def fetchProducts(request):
+    excludes = []
+    products = Products.objects.all()
+    response = getJsonFromModel(products, excludes)
 
+    jsonObj = simplejson.dumps(response, encoding="utf-8")
     return HttpResponse(jsonObj, mimetype="application/json")
     
 #-----------------------------------------------------------------------
@@ -114,33 +116,18 @@ def fetchExcel(request):
 
 @csrf_exempt
 def fetchOrders(request):
+    excludes = []
     
     if request.is_ajax():
         try:
-            obj = Orders.objects.all()
-            tmpList = []
-            tmpData = {}
-            
-            for x in obj:
-                order = {}
-                order["id"] = x.id
-                order["name"] = x.name
-                order["note"] = x.note
-                time = str(x.timestamp)
-                time = time.split(".")[0]
-                order["timestamp"] = time
-                order['status'] = x.status.status
-                
-                tmpList.append(order)
-            tmpData["data"] = tmpList
-            tmpData["success"] = True
-            jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+            orders = Orders.objects.all()
+            response = getJsonFromModel(orders, excludes)
+            jsonObj = simplejson.dumps(response, encoding="utf-8")
             return HttpResponse(jsonObj, mimetype="application/json")
-        
+            
         except Exception, err:
             jsonObj = simplejson.dumps({"success": False, "reason": err})
             return HttpResponse(jsonObj, mimetype="application/json")
-
     else:
         return Http404
 
@@ -213,10 +200,8 @@ def fetchOrderProducts(request):
     get = request.GET
     if get.has_key("orderId"):
         orderId = get["orderId"]
-        
         order = Orders.objects.get(pk=orderId)
         products = OrderProduct.objects.filter(order=order)
-        
         tmpList = []
         for product in products.all():
             product = model_to_dict(product)
@@ -226,10 +211,6 @@ def fetchOrderProducts(request):
             tmpList.append(data)
             
         print tmpList
-            
-        
-        
-        
         tmpList = []
         tmpData = {}
         data = {}
@@ -303,16 +284,11 @@ def deleteOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            # todo: make the right extjs  model for the OrderProduct ...
-            #print json.dumps(postData, indent=3)
-            
-            
             if isinstance(postData, dict) and postData.has_key('id'):
                 queryObj = OrderProduct.objects.filter(pk=postData['id'])
                 if len(queryObj) == 0:
                     jsonObj = simplejson.dumps({"success": False})
                     return HttpResponse(jsonObj, mimetype="application/json")
-                
                 queryObj.delete()
                 
             elif isinstance(postData, list):
@@ -322,9 +298,8 @@ def deleteOrderProduct(request):
                         if len(queryObj) == 0:
                             jsonObj = simplejson.dumps({"success": False})
                             return HttpResponse(jsonObj, mimetype="application/json")
-                        
                         queryObj.delete()
-            
+
             jsonObj = simplejson.dumps({"success": True, "data": []})
             return HttpResponse(jsonObj, mimetype="application/json")
         
@@ -344,9 +319,6 @@ def updateProducts(request):
 
         tmp = request.read()
         tmp = json.loads(tmp)
-        
-        #print json.dumps(tmp, indent=3)
-        
         if isinstance(tmp, list):
             for item in tmp:
                 try:
