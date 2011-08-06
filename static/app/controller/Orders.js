@@ -62,7 +62,8 @@ Ext.define('AM.controller.Orders', {
     onOrdersStoreLoad: function(store, records) {
 
             //the user that was loaded
-            var order = store.first();
+            //var order = store.first();
+
 
             console.log("Produse pentru " + order.get('name'));
 //            console.log(order.orderProducts().count() + " produse in comanda");
@@ -75,6 +76,8 @@ Ext.define('AM.controller.Orders', {
 //
 //                console.log(orderProduct.get('quantity') + ' orders of ' + orderProduct.get('name'));
 //            });
+
+
 
     }
 });

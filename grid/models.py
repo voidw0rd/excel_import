@@ -1,9 +1,5 @@
 from django.db import models
     
-    
-class basicExample(models.Model):
-    pass
-    
 
 class Products(models.Model):
     
@@ -30,7 +26,6 @@ class Products(models.Model):
     
 class OrderProduct(models.Model):
     
-    #product = models.ForeignKey("Products")
     quantity = models.IntegerField()
     order = models.ForeignKey("Orders", related_name = "order_products")
     note = models.TextField()
@@ -56,18 +51,21 @@ class OrderProduct(models.Model):
     stage5 = models.CharField(max_length = 10)
     category = models.CharField(max_length = 1)
     
+
+
+class OrderStatuses(models.Model):
     
+    status = models.CharField(max_length = 10)
+
+
 class Orders(models.Model):
     
     timestamp = models.DateTimeField(auto_now_add = True)
     note = models.TextField()
     name = models.CharField(max_length = 50, blank = False, null = False)
-    
+    status = models.ForeignKey(OrderStatuses, related_name = "ordersStatus")
     
 
-class OrderStatus(models.Model):
-    
-    status = models.CharField(max_length = 10)
     
     
 

@@ -9,7 +9,8 @@ Ext.define("formular", {
         Ext.apply(this, {
             border:true,
             collapsible: false,
-            height:300,
+            height: 300,
+            //autoHeight: true,
             split: true,
             viewConfig: {
                     stripeRows: false,
@@ -130,7 +131,7 @@ Ext.define('AM.view.order.Edit', {
     title : 'Edit Orders',
     //layout: 'fit',
     autoShow: true,
-    height: 580,
+    height: 490,
     width: 700,
     
 
