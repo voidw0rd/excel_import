@@ -8,7 +8,7 @@ import settings
 urlpatterns = patterns('',
     
     (r'^$', index),
-    (r"^import/", importDataBase),
+    #(r"^import/", importDataBase),
     # products
     (r"^data/products", fetchExcel),
     (r"^data/updateProducts", updateProducts),
@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     (r"^data/orders", fetchOrders),
     (r"^data/updateOrder", updateOrders),
     (r"^data/deleteOrder", deleteOrder),
-    (r"^data/createOrder", createOrder),
+    (r"^data/createorder", createOrder),
     
     # order products 
     (r"^data/orderProducts", fetchOrderProducts),

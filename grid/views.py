@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import csv
 import datetime
-
+from django.forms.models import model_to_dict
 
 
 
@@ -33,7 +33,7 @@ def importDataBase(request):
     
     for row in reader:
         data = {}
-        print row[0]
+        
         data["cod"] = row[0]
         data['denumirePlic'] = row[1]
         data['denumireOferta'] = row[2]
@@ -152,7 +152,7 @@ def updateOrders(request):
     try:
         postData = request.read()
         postData = json.loads(postData)
-        print postData
+        #print postData
         if isinstance(postData, list):
             for item in postData:
                 queryObj = Orders.objects.filter(pk=item["id"])
@@ -183,7 +183,7 @@ def createOrder(request):
     
     postData = request.read()
     postData = json.loads(postData)
-    print postData
+    #print postData
     if isinstance(postData, dict) and postData.has_key("status"):
         orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
         
@@ -214,6 +214,22 @@ def fetchOrderProducts(request):
     if get.has_key("orderId"):
         orderId = get["orderId"]
         
+        order = Orders.objects.get(pk=orderId)
+        products = OrderProduct.objects.filter(order=order)
+        
+        tmpList = []
+        for product in products.all():
+            product = model_to_dict(product)
+            data = {}
+            for key in product.keys():
+                data[key] = product[key]
+            tmpList.append(data)
+            
+        print tmpList
+            
+        
+        
+        
         tmpList = []
         tmpData = {}
         data = {}
@@ -229,60 +245,8 @@ def fetchOrderProducts(request):
         
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
-    
-    
-    #if request.is_ajax():
-    if request:
-        tmpList = []
-        tmpData = {}
-        data = {}
-        
-        data["id"] = 1
-        data["quantity"] = 10
-        data["cod"] = "cod"
-        data["name"] = "name"
-        
-        tmpList.append(data)
-        tmpData["data"] = tmpList
-        tmpData["success"] = True
-        
-        jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
-        return HttpResponse(jsonObj, mimetype="application/json")
-        
-        
-        
-        
-        try:
-            obj = OrderProduct.objects.all()
-            tmpList = []
-            tmpData = {}
-            
-            for x in obj:
-                data = {}
-                
-                data["id"] = x.id
-                data["quantity"] = x.quantity
-                data["note"] = x.note
-                data["orderName"] = x.order.name
-                time = str(x.order.timestamp)
-                time = time.split(".")[0]
-                data["timestamp"] = time
-                data["productCode"] = x.product.cod
-                data["productDenumite"] = x.product.denumirePlic
-                
-                tmpList.append(data)
-                
-            tmpData["data"] = tmpList
-            jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
-            return HttpResponse(jsonObj, mimetype="application/json")
-            
-        except Exception, err:
-            print err
-            jsonObj = simplejson.dumps({"success": False, "reason": err})
-            return HttpResponse(jsonObj, mimetype="application/json")
-    
+
     else:
-        print "404"
         return Http404
     
     
@@ -291,44 +255,43 @@ def fetchOrderProducts(request):
 def updateOrderProducts(request):
 
     postData = request.read()
-    print postData
+    #print postData
 
-    jsonObj = simplejson.dumps({"success": False, "reason": err})
+    jsonObj = simplejson.dumps({"success": False})
     return HttpResponse(jsonObj, mimetype="application/json")
 
 
 
-@csrf_exempt   
+@csrf_exempt 
 def createOrderProduct(request):
     
-    if request.is_ajax():
-    
+    if request.is_ajax():   
         try:
-            
             postData = request.read()
             postData = json.loads(postData)
-            print json.dumps(postData, indent=3)
-            if isinstance(postData, dict):
-                pass
+
+            if isinstance(postData, dict) and postData.has_key("order_id"):
+                excludes = ['id', 'product_id', 'order_id', 'name']
+                order = Orders.objects.get(pk=postData['order_id'])
+                for exclude in excludes:
+                    postData.pop(exclude)
                 
+                obj = model_to_dict(Products.objects.get(pk=1))
+                for key in obj.keys():
+                    postData[key] = obj[key]
+                    
+                postData["order"] = order
+                postData["note"] = "test note for  a product"
+                product = OrderProduct.objects.create(**postData)
                 
-                
-            # todo: make the right extjs  model for the OrderProduct ...
-            
-     
-            
             jsonObj = simplejson.dumps({"success": True})
             return HttpResponse(jsonObj, mimetype="application/json")
-                
-                
-                
+            
         except Exception, err:
             print err
 
-
-
     else:
-        jsonObj = simplejson.dumps({"success": False, "reason": err})
+        jsonObj = simplejson.dumps({"success": False})
         return HttpResponse(jsonObj, mimetype="application/json")
 
 
@@ -341,7 +304,7 @@ def deleteOrderProduct(request):
             postData = request.read()
             postData = json.loads(postData)
             # todo: make the right extjs  model for the OrderProduct ...
-            print json.dumps(postData, indent=3)
+            #print json.dumps(postData, indent=3)
             
             
             if isinstance(postData, dict) and postData.has_key('id'):
@@ -376,13 +339,13 @@ def deleteOrderProduct(request):
 
 @csrf_exempt    
 def updateProducts(request):
-        
+    
     if request.method == "POST":
 
         tmp = request.read()
         tmp = json.loads(tmp)
         
-        print json.dumps(tmp, indent=3)
+        #print json.dumps(tmp, indent=3)
         
         if isinstance(tmp, list):
             for item in tmp:

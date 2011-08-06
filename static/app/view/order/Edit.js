@@ -84,12 +84,18 @@ Ext.define("formular", {
     },
 
     onAddClick: function(){
+        var win  = this.up("window"),
+            form = win.down("form"),
+            record = form.getRecord();
+        console.log(record);
+             
         var rec = new AM.model.OrderProduct({
+            order_id: record.data.id,
             cod: '',
             name: '',
             quantity: ''
         }), edit = this.editing;
-
+        
         edit.cancelEdit();
         this.store.insert(0, rec);
         edit.startEdit(0,1);
