@@ -17,7 +17,8 @@ Ext.define('AM.controller.Products', {
     init: function() {
         this.control({
             'tabpanel > productlist dataview': {
-                itemdblclick: this.editProduct
+                itemdblclick: this.editProduct,
+                refresh: this.afterListRefresh
             },
             'productedit button[action=save]': {
                 click: this.updateProduct
@@ -40,5 +41,10 @@ Ext.define('AM.controller.Products', {
         record.set(values);
         win.close();
         this.getProductsStore().sync();
+    },
+
+    afterListRefresh: function (){
+        console.log('Products grid just refreshed!!!!')
+        
     }
 });

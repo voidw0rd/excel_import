@@ -65,16 +65,16 @@ Ext.define('AM.controller.Orders', {
             var order = store.first();
 
             console.log("Produse pentru " + order.get('name'));
-            console.log(order.orderProducts().count() + " produse in comanda");
-
-            //iterate over the Products for each Order
-            order.orderProducts().each(function(orderProduct) {
-                //we know that the Product data is already loaded, so we can use the synchronous getProduct
-                //usually, we would use the asynchronous version (see Ext.data.BelongsToAssociation)
-                //var product = orderProduct.getProduct();
-
-                console.log(orderProduct.get('quantity') + ' orders of ' + orderProduct.get('name'));
-            });
+//            console.log(order.orderProducts().count() + " produse in comanda");
+//
+//            //iterate over the Products for each Order
+//            order.orderProducts().each(function(orderProduct) {
+//                //we know that the Product data is already loaded, so we can use the synchronous getProduct
+//                //usually, we would use the asynchronous version (see Ext.data.BelongsToAssociation)
+//                //var product = orderProduct.getProduct();
+//
+//                console.log(orderProduct.get('quantity') + ' orders of ' + orderProduct.get('name'));
+//            });
 
     }
 });

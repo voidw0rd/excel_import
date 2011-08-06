@@ -40,7 +40,23 @@ Ext.define("formular", {
                 Ext.create('Ext.grid.RowNumberer'),
                 {header: "id", flex: 1, dataIndex: 'id', hidden:true},
                 {header: "Cod", flex: 1, dataIndex: 'cod', editor: {xtype:'textfield'}},
-                {header: "Name", flex: 1, dataIndex: 'name', editor: {xtype:'textfield'}},
+                {header: "Name", flex: 1, dataIndex: 'name',
+                    field: {
+                        xtype: 'combobox',
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        selectOnTab: true,
+                        store: [
+                            ['Shade','Shade'],
+                            ['Mostly Shady','Mostly Shady'],
+                            ['Sun or Shade','Sun or Shade'],
+                            ['Mostly Sunny','Mostly Sunny'],
+                            ['Sunny','Sunny']
+                        ],
+                        lazyRender: true,
+                        listClass: 'x-combo-list-small'
+                    }
+                },
                 {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}}
             ],
             selType: 'rowmodel',
@@ -83,7 +99,9 @@ Ext.define("formular", {
     },
 
     onAddClick: function(){
+
         var rec = new AM.model.OrderProduct({
+            order_id: this.up('form').getRecord().data.id, // order_id se poate seta si cand se seteaza restu din Selectu din combo
             cod: '',
             name: '',
             quantity: ''
