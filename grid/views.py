@@ -27,7 +27,8 @@ def index(request):
 
 def importDataBase(request):
     
-    _file = open("/tmp/test.csv", "rb")
+    _file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
+    #_file = open("/tmp/test.csv", "rb")
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
     
     for row in reader:
@@ -173,7 +174,7 @@ def updateOrders(request):
         jsonObj = simplejson.dumps({"success": False})
         return HttpResponse(jsonObj, mimetype="application/json")
 
-
+@csrf_exempt    
 def createOrder(request):
     
     postData = request.read()
@@ -181,6 +182,16 @@ def createOrder(request):
     
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
+
+@csrf_exempt  
+def deleteOrder(request):
+    
+    postData = request.read()
+    print postData
+    
+    jsonObj = simplejson.dumps({"success": True})
+    return HttpResponse(jsonObj, mimetype="application/json")
+
 
 
 @csrf_exempt    

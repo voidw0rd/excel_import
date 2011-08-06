@@ -25,6 +25,9 @@ Ext.define('AM.controller.Orders', {
             },
             'orderlist button[action=new]': {
                 click: this.newOrder
+            },
+            'orderlist button[action=delete]': {
+                click: this.deleteOrder
             }
 
         });
@@ -36,8 +39,8 @@ Ext.define('AM.controller.Orders', {
     },
 
     newOrder: function (button){
-
-        console.log(button);
+        //console.log(button);
+        var edit = Ext.create('AM.view.order.Edit').show();
     },
 
     editOrder: function(grid, record) {
@@ -56,6 +59,14 @@ Ext.define('AM.controller.Orders', {
         win.close();
         this.getOrderProductsStore().sync();
         this.getOrdersStore().sync();
+        
+    },
+    
+    deleteOrder: function(button) {
+        var win    = button.up('tabpanel'),
+            grid   = win.down("gridpanel").next("gridpanel"),
+            record = grid.getView().getSelectionModel().getSelection()[0];
+        this.getOrdersStore().remove(record);
         
     },
 

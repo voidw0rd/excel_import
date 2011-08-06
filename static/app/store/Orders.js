@@ -8,7 +8,8 @@ Ext.define('AM.store.Orders', {
         type: 'ajax',
         api: {
             read: 'data/orders',
-            update: 'data/updateOrder'
+            update: 'data/updateOrder',
+            destroy: "data/deleteOrder"
         },
         reader: {
             type: 'json',

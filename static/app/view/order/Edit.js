@@ -115,7 +115,7 @@ Ext.define('AM.view.order.Edit', {
     autoShow: true,
     height: 490,
     width: 700,
-    
+    id: "ordersList",
 
     
     initComponent: function() {
