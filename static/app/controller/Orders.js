@@ -28,6 +28,11 @@ Ext.define('AM.controller.Orders', {
             }
 
         });
+
+        this.getOrdersStore().on({
+            scope:this,
+            load: this.onOrdersStoreLoad
+        });
     },
 
     newOrder: function (button){
@@ -37,9 +42,14 @@ Ext.define('AM.controller.Orders', {
     },
 
     editOrder: function(grid, record) {
-        var x = Ext.data.StoreManager.lookup('OrderProducts');
         var edit = Ext.create('AM.view.order.Edit').show();
         edit.down('form').loadRecord(record);
+
+        var orders = Ext.data.StoreManager.lookup('Orders');
+        //var orderProductsStore = orders.data.items[record.index].orderProductsStore;
+        var orderProducts = orders.data.items[record.index].getAssociatedData();
+        edit.down('gridpanel').store.add(orderProducts.orderProducts);
+
     },
 
     updateOrder: function(button) {
@@ -53,6 +63,25 @@ Ext.define('AM.controller.Orders', {
         this.getOrderProductsStore().sync();
         this.getOrdersStore().sync();
         
+    },
+
+    onOrdersStoreLoad: function(store, records) {
+
+            //the user that was loaded
+            var order = store.first();
+
+            console.log("Produse pentru " + order.get('name'));
+            console.log(order.orderProducts().count() + " produse in comanda");
+
+            //iterate over the Products for each Order
+            order.orderProducts().each(function(orderProduct) {
+                //we know that the Product data is already loaded, so we can use the synchronous getProduct
+                //usually, we would use the asynchronous version (see Ext.data.BelongsToAssociation)
+                //var product = orderProduct.getProduct();
+
+                console.log(orderProduct.get('quantity') + ' orders of ' + orderProduct.get('name'));
+            });
+
     }
 });
 

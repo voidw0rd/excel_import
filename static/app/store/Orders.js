@@ -2,7 +2,8 @@ Ext.define('AM.store.Orders', {
     extend: 'Ext.data.Store',
     model: 'AM.model.Order',
     autoLoad: true,
-    
+    autoSync: true,
+
     proxy: {
         type: 'ajax',
         api: {
@@ -15,4 +16,5 @@ Ext.define('AM.store.Orders', {
             successProperty: 'success'
         }
     }
+
 });

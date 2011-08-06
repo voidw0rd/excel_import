@@ -4,3 +4,4 @@ extjs-4.0.2a/
 settings.py
 /static/app.js
 .idea
+grid/templates/index.html

@@ -1,4 +1,5 @@
 Ext.define('AM.model.OrderProduct', {
     extend: 'Ext.data.Model',
-    fields: ['id', 'cod', 'name', 'quantity'],
+    fields: ['id',  'order_id', 'product_id', 'cod', 'name', 'quantity'],
+    belongsTo: {model:'AM.model.Order'}
 });

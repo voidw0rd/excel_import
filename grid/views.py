@@ -173,14 +173,41 @@ def fetchOrders(request):
             tmpData = {}
             
             for x in obj:
-                data = {}
-                data["id"] = x.id
-                data["name"] = x.name
-                data["note"] = x.note
+                order = {}
+                order["id"] = x.id
+                order["name"] = x.name
+                order["note"] = x.note
                 time = str(x.timestamp)
                 time = time.split(".")[0]
-                data["timestamp"] = time
-                tmpList.append(data)
+                order["timestamp"] = time
+                'id',  'order_id', 'product_id', 'cod', 'name', 'quantity'
+                order["orderproducts"] = []
+                orderprod1 = {}
+                orderprod1["id"] = 1
+                orderprod1["order_id"] = 1
+                orderprod1["product_id"] = 1
+                orderprod1["cod"] = 'ps03'
+                orderprod1["name"] = 'cucuruz'
+                orderprod1["quantity"] = 11
+                orderprod2 = {}
+                orderprod2["id"] = 1
+                orderprod2["order_id"] = 1
+                orderprod2["product_id"] = 4
+                orderprod2["cod"] = 'ps04'
+                orderprod2["name"] = 'malai'
+                orderprod2["quantity"] = 15
+                orderprod3 = {}
+                orderprod3["id"] = 1
+                orderprod3["order_id"] = 1
+                orderprod3["product_id"] = 3
+                orderprod3["cod"] = 'ps05'
+                orderprod3["name"] = 'orez'
+                orderprod3["quantity"] = 1991
+                order["orderproducts"].append(orderprod1)
+                order["orderproducts"].append(orderprod2)
+                order["orderproducts"].append(orderprod3)
+
+                tmpList.append(order)
             tmpData["data"] = tmpList
             tmpData["success"] = True
             jsonObj = simplejson.dumps(tmpData, encoding="utf-8")

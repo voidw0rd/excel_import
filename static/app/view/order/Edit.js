@@ -18,31 +18,15 @@ Ext.define("formular", {
             store:  new Ext.data.Store({
 
                 model: 'AM.model.OrderProduct',
-                autoLoad: true,
-
-                proxy: {
-                    type: 'ajax',
-                    api: {
-                        read: 'data/orderProducts',
-                        update: 'data/updateOrderProducts',
-                        create: 'data/createOrderProduct',
-                        destroy: "data/deleteOrderProduct",
-                    },
-                    reader: {
-                        type: 'json',
-                        root: 'data',
-                        successProperty: 'success'
-                    },
-                }
-
-
+                autoLoad: false
             }),
 
             columns: [
                 Ext.create('Ext.grid.RowNumberer'),
+                {header: "id", flex: 1, dataIndex: 'id', hidden:true},
                 {header: "Cod", flex: 1, dataIndex: 'cod', editor: {xtype:'textfield'}},
                 {header: "Name", flex: 1, dataIndex: 'name', editor: {xtype:'textfield'}},
-                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}},
+                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}}
             ],
             selType: 'rowmodel',
             plugins: [this.editing],
