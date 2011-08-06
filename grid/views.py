@@ -196,7 +196,11 @@ def createOrder(request):
 def deleteOrder(request):
     
     postData = request.read()
-    print postData
+    postData = json.loads(postData)
+    
+    if isinstance(postData, dict) and postData.has_key("id"):
+        order = Orders.objects.filter(pk=postData['id'])
+        order.delete()
     
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
