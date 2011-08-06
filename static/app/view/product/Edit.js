@@ -93,11 +93,13 @@ Ext.define('AM.view.product.Edit', {
 							defaults:{
 										anchor: '100%',
 										grow:true,
-										labelWidth: 25
+										labelWidth: 25,
+                                        height: 90,
+                                        width: 280,
 									},
 							items :[{
 										name : 'roDesc',
-										fieldLabel: 'RO'
+										fieldLabel: 'RO',
 									},{
 										name : 'enDesc',
 										fieldLabel: 'EN'
@@ -109,7 +111,7 @@ Ext.define('AM.view.product.Edit', {
 										fieldLabel: 'SB'
 									},{
 										name : 'ruDesc',
-										fieldLabel: 'RU'
+										fieldLabel: 'RU',
 									}]
 						},{
 							columnWidth:1,

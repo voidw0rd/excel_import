@@ -4,7 +4,7 @@ from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from models import Products, Orders, OrderProduct
+from models import Products, Orders, OrderProduct, OrderStatuses
 from django.views.decorators.csrf import csrf_exempt
 import json
 import csv
@@ -15,7 +15,7 @@ import datetime
 
 def index(request):    
     
-    #x = Orders.objects.create(name="test-order", note="test - note ...")
+    #x = Orders.objects.create(name="test-order", note="test - note ...", status=OrderStatuses.objects.create(status="pending"))
     #x.save()
     
     return render_to_response(
@@ -24,58 +24,9 @@ def index(request):
                               }, 
                               context_instance=RequestContext(request)
                              )
-    
-@csrf_exempt
-def fetch(request):
-    
-    
-    if request.is_ajax():
-    
-        if request.method == "PUT":
-            return HttpResponse(simplejson.dumps({"request": "PUT"}), mimetype="application/json")
-        
-        elif request.method == "POST":
-            return HttpResponse(simplejson.dumps({"request": "POST"}), mimetype="application/json")
-            
-        elif request.method == "DELETE":
-            return HttpResponse(simplejson.dumps({"request": "DELETE"}), mimetype="application/json")
-            
-        elif request.method == "GET":
-            return HttpResponse(simplejson.dumps({"request": "GET"}), mimetype="application/json")
-    
-        
-        return render_to_response(
-                              'index.html', 
-                              { 
-                              }, 
-                              context_instance=RequestContext(request)
-                             )
-    else:
-        
-        return render_to_response(
-                              'index.html', 
-                              { 
-                              }, 
-                              context_instance=RequestContext(request)
-                             )
-    
 
 def importDataBase(request):
     
-    
-    #f = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'r')
-    #writer = open("c:/python27/scripts/excel_import/static/excel_example.csv", 'w')
-    #tmp = f.readlines()
-
-    #for line in tmp:
-    #    x = line.replace("||", "|-|")
-    #    writer.write(x)
-        
-    #f.close()
-    #writer.close()
-    
-    
-    #_file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
     _file = open("/tmp/test.csv", "rb")
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
     
@@ -163,19 +114,11 @@ def fetchExcel(request):
 @csrf_exempt
 def fetchOrders(request):
     
-    
     if request.is_ajax():
-    #if request.method == "GET":
-    
         try:
             obj = Orders.objects.all()
             tmpList = []
             tmpData = {}
-            
-            
-            print dir(Orders)
-            
-            
             
             for x in obj:
                 order = {}
@@ -185,33 +128,8 @@ def fetchOrders(request):
                 time = str(x.timestamp)
                 time = time.split(".")[0]
                 order["timestamp"] = time
-                #'id',  'order_id', 'product_id', 'cod', 'name', 'quantity'
-                order["orderproducts"] = []
-                orderprod1 = {}
-                orderprod1["id"] = 1
-                orderprod1["order_id"] = 1
-                orderprod1["product_id"] = 1
-                orderprod1["cod"] = 'ps03'
-                orderprod1["name"] = 'cucuruz'
-                orderprod1["quantity"] = 11
-                orderprod2 = {}
-                orderprod2["id"] = 1
-                orderprod2["order_id"] = 1
-                orderprod2["product_id"] = 4
-                orderprod2["cod"] = 'ps04'
-                orderprod2["name"] = 'malai'
-                orderprod2["quantity"] = 15
-                orderprod3 = {}
-                orderprod3["id"] = 1
-                orderprod3["order_id"] = 1
-                orderprod3["product_id"] = 3
-                orderprod3["cod"] = 'ps05'
-                orderprod3["name"] = 'orez'
-                orderprod3["quantity"] = 1991
-                order["orderproducts"].append(orderprod1)
-                order["orderproducts"].append(orderprod2)
-                order["orderproducts"].append(orderprod3)
-
+                order['status'] = x.status.status
+                
                 tmpList.append(order)
             tmpData["data"] = tmpList
             tmpData["success"] = True
@@ -221,7 +139,7 @@ def fetchOrders(request):
         except Exception, err:
             jsonObj = simplejson.dumps({"success": False, "reason": err})
             return HttpResponse(jsonObj, mimetype="application/json")
-    
+
     else:
         return Http404
 

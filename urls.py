@@ -6,9 +6,8 @@ import settings
 #admin.autodiscover()
 
 urlpatterns = patterns('',
-    #url(r'^admin/', include(admin.site.urls)),
+    
     (r'^$', index),
-    (r'^fetch-data/', fetch),
     (r"^import/", importDataBase),
     # products
     (r"^data/products", fetchExcel),
