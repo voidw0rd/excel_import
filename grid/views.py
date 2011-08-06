@@ -172,6 +172,11 @@ def fetchOrders(request):
             tmpList = []
             tmpData = {}
             
+            
+            print dir(Orders)
+            
+            
+            
             for x in obj:
                 order = {}
                 order["id"] = x.id
@@ -180,7 +185,7 @@ def fetchOrders(request):
                 time = str(x.timestamp)
                 time = time.split(".")[0]
                 order["timestamp"] = time
-                'id',  'order_id', 'product_id', 'cod', 'name', 'quantity'
+                #'id',  'order_id', 'product_id', 'cod', 'name', 'quantity'
                 order["orderproducts"] = []
                 orderprod1 = {}
                 orderprod1["id"] = 1
@@ -262,6 +267,27 @@ def createOrder(request):
 
 @csrf_exempt    
 def fetchOrderProducts(request):
+    
+    get = request.GET
+    if get.has_key("orderId"):
+        orderId = get["orderId"]
+        
+        tmpList = []
+        tmpData = {}
+        data = {}
+        
+        data["id"] = 1
+        data["quantity"] = 20
+        data["cod"] = "order code %s" % orderId
+        data["name"] = "blabla"
+        
+        tmpList.append(data)
+        tmpData["data"] = tmpList
+        tmpData["success"] = True
+        
+        jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+        return HttpResponse(jsonObj, mimetype="application/json")
+    
     
     #if request.is_ajax():
     if request:

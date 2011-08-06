@@ -38,18 +38,12 @@ Ext.define('AM.controller.Orders', {
     newOrder: function (button){
 
         console.log(button);
-
     },
 
     editOrder: function(grid, record) {
         var edit = Ext.create('AM.view.order.Edit').show();
         edit.down('form').loadRecord(record);
-
-        var orders = Ext.data.StoreManager.lookup('Orders');
-        //var orderProductsStore = orders.data.items[record.index].orderProductsStore;
-        var orderProducts = orders.data.items[record.index].getAssociatedData();
-        edit.down('gridpanel').store.add(orderProducts.orderProducts);
-
+        edit.down('gridpanel').store.load({params: {orderId: record.data.id}});
     },
 
     updateOrder: function(button) {

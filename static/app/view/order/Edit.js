@@ -18,7 +18,22 @@ Ext.define("formular", {
             store:  new Ext.data.Store({
 
                 model: 'AM.model.OrderProduct',
-                autoLoad: false
+                autoLoad: false,
+                autoSync: false,
+
+                proxy: {
+                    api: {
+                        read: "data/orderProducts",
+                        update: "data/updateOrderProducts",
+                        create: "data/createOrderProduct",
+                        destroy: "data/deleteOrderProduct"
+                    },
+                    type: "ajax",
+                    reader: {
+                        root: "data",
+                        successProperty: "success",
+                    }
+                }
             }),
 
             columns: [
