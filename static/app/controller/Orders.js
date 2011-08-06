@@ -39,8 +39,24 @@ Ext.define('AM.controller.Orders', {
     },
 
     newOrder: function (button){
-        //console.log(button);
-        var edit = Ext.create('AM.view.order.Edit').show();
+
+        var record = new AM.model.Order({
+            id     : "",
+            name   : "",
+            note   : "",
+            status : Math.floor(Math.random()*200) + '',
+            timestamp : "",
+        });
+
+        this.getOrdersStore().add(record);
+        this.getOrdersStore().load({callback: function(records, operation, success) {
+            Ext.each(records, function(item){
+                if(item.data.status === record.data.status) {
+                    var edit = Ext.create('AM.view.order.Edit').show();
+                    edit.down("form").loadRecord(item);
+                }
+            });
+        }});
     },
 
     editOrder: function(grid, record) {

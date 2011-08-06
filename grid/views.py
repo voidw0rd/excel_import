@@ -14,7 +14,7 @@ import datetime
 
 
 def index(request):    
-    
+
     #x = Orders.objects.create(name="test-order", note="test - note ...", status=OrderStatuses.objects.create(status="pending"))
     #x.save()
     
@@ -158,12 +158,15 @@ def updateOrders(request):
                 queryObj = Orders.objects.filter(pk=item["id"])
                 item.pop("id")
                 item.pop("timestamp")
+                item['status'] = OrderStatuses.objects.create(status = "pending")
                 queryObj.update(**item)
                 
         elif isinstance(postData, dict) and postData.has_key("id"):
             queryObj = Orders.objects.filter(pk=postData['id'])
             postData.pop("id")
             postData.pop("timestamp")
+            #postData.pop("status")
+            postData['status'] = OrderStatuses.objects.create(status = "pending")
             queryObj.update(**postData)
         
         jsonObj = simplejson.dumps({"success": True})
@@ -176,9 +179,15 @@ def updateOrders(request):
 
 @csrf_exempt    
 def createOrder(request):
+
     
     postData = request.read()
+    postData = json.loads(postData)
     print postData
+    if isinstance(postData, dict) and postData.has_key("status"):
+        orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
+        
+    
     
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
@@ -295,7 +304,11 @@ def createOrderProduct(request):
             postData = request.read()
             postData = json.loads(postData)
             print json.dumps(postData, indent=3)
-     
+            if isinstance(postData, dict):
+                pass
+                
+                
+                
             # todo: make the right extjs  model for the OrderProduct ...
             
      
@@ -355,6 +368,8 @@ def deleteOrderProduct(request):
         jsonObj = simplejson.dumps({"success": False})
         return HttpResponse(jsonObj, mimetype="application/json")
     
+    
+
 @csrf_exempt    
 def updateProducts(request):
         
