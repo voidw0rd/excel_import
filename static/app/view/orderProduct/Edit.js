@@ -31,16 +31,17 @@ Ext.define("AM.view.orderProduct.Edit", {
                         multiSelect: false,
                         forceSelection : true,
                         displayField:'denumirePlic',
-                        valueField:'id',
+                        valueField:'denumirePlic',
                         store: Ext.create('AM.store.Products'),
                         lazyRender: true,
                         listeners: {
                             'select': function(combo, record){
-                                console.log('record.data.id' + record[0].data.id);
+                                console.log(record[0]);
                                 var gridRecord = combo.up('form').getRecord();
                                 gridRecord.data.product_id = record[0].data.id;
                                 gridRecord.data.cod = record[0].data.cod;
-                                gridRecord.data.name = record[0].data.name;
+                                gridRecord.data.name = record[0].data.denumirePlic;
+                                combo.up('form').loadRecord(gridRecord);
                             }
                         }
             }

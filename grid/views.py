@@ -64,7 +64,7 @@ def index(request):
 def importDataBase(request):
     
     #_file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
-    _file = open("/tmp/test.csv", "rb")
+    _file = open("/home/void/workspace/extjs/gridtest/static/excel_example.csv", "rb")
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
     
     for row in reader:
@@ -251,7 +251,7 @@ def createOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            #print postData
+            print postData
 
             if isinstance(postData, dict) and postData.has_key("order_id"):
                 excludes = ['id', 'order_id', 'name', 'product_id']
@@ -259,16 +259,16 @@ def createOrderProduct(request):
                 product = Products.objects.get(pk=1)#postData['product_id'])
                 order = Orders.objects.get(pk=postData['order_id'])                
                 
-                for exclude in excludes:
-                    postData.pop(exclude)
-                obj = model_to_dict(Products.objects.get(pk=1))
+                
+                obj = model_to_dict(Products.objects.get(pk=postData['product_id']))#pk=1))
                 for key in obj.keys():
                     postData[key] = obj[key]
-                    
+                
+                for exclude in excludes:
+                    postData.pop(exclude)    
                 postData["order"] = order
                 postData['product'] = product
-                postData["note"] = "test note for  a product"
-                postData.pop("id")
+                postData["note"] = postData['note']
                 product = OrderProduct.objects.create(**postData)
                 
             jsonObj = simplejson.dumps({"success": True})

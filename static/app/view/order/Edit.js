@@ -33,7 +33,7 @@ Ext.define('AM.view.order.Edit', {
                         fieldLabel: "Note"
                     },
                     {
-                        xtype: "textfield",
+                        xtype: "displayfield",
                         width: 370,
                         name: "timestamp",
                         fieldLabel: "Created on",
