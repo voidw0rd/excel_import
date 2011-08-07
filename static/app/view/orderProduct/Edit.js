@@ -21,7 +21,6 @@ Ext.define("AM.view.orderProduct.Edit", {
 
             columns: [
                 Ext.create('Ext.grid.RowNumberer'),
-                {header: "id", flex: 1, dataIndex: 'id', hidden:true},
                 {header: "Cod", flex: 1, dataIndex: 'cod', editor: {xtype:'textfield'}},
                 {header: "Name", flex: 1, dataIndex: 'name', gridId:'orderproductsgrid', xtype:'combocolumn',
                    field: {
@@ -29,14 +28,19 @@ Ext.define("AM.view.orderProduct.Edit", {
                         typeAhead: true,
                         triggerAction: 'all',
                         selectOnTab: true,
-                        displayField:'cod',
+                        multiSelect: false,
+                        forceSelection : true,
+                        displayField:'denumirePlic',
                         valueField:'id',
                         store: Ext.create('AM.store.Products'),
                         lazyRender: true,
                         listeners: {
                             'select': function(combo, record){
-                                console.log('record.data.id' + record.data.id)
-                                combo.gridEditor.record.set('product_id', record.data.id);
+                                console.log('record.data.id' + record[0].data.id);
+                                var gridRecord = combo.up('form').getRecord();
+                                gridRecord.data.product_id = record[0].data.id;
+                                gridRecord.data.cod = record[0].data.cod;
+                                gridRecord.data.name = record[0].data.name;
                             }
                         }
             }

@@ -5,7 +5,7 @@ Ext.define('AM.controller.Orders', {
 
     models: ['Order', 'OrderProduct'],
 
-    views: ['order.Edit', 'order.List'],
+    views: ['order.Edit', 'order.List', 'orderProduct.Edit'],
 
     refs: [
         {
