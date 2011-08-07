@@ -1,65 +1,107 @@
+Ext.define("AM.view.orderProduct.Edit", {
 
+    extend: "Ext.grid.Panel",
 
-Ext.define('AM.view.order.Edit', {
-    
-    extend: 'Ext.window.Window',
-    alias : 'widget.orderedit',
+    initComponent: function(){
 
-    requires: ['Ext.form.Panel'],
+        this.editing = Ext.create('Ext.grid.plugin.RowEditing');
 
-    title : 'Edit Orders',
-    layout: 'fit',
-    autoShow: true,
-    height: 380,
-    width: 400,
-
-    initComponent: function() {
-        this.items = [
-            {
-                xtype: 'form',
-                padding: '5 5 0 5',
-                border: false,
-                style: 'background-color: #fff;',
-
-                items: [
-                    {
-                        xtype: 'textfield',
-                        width: 370,
-                        name : 'name',
-                        fieldLabel: 'Name'
-                    },
-                    {
-                        xtype: "textarea",
-                        width: 370,
-                        name: "note",
-                        fieldLabel: "Note"
-                    },
-                    {
-                        xtype: "textfield",
-                        width: 370,
-                        name: "timestamp",
-                        fieldLabel: "Created on",
-                        readOnly: true
-                    },
-                    
-
-                ]
-            }
-        ];
-        this.buttons = [
-            {
-                text: 'Save',
-                action: 'save'
+        Ext.apply(this, {
+            border:true,
+            collapsible: false,
+            height: 300,
+            //autoHeight: true,
+            split: true,
+            viewConfig: {
+                    stripeRows: false,
+                    autoScroll: true
             },
-            {
-                text: 'Cancel',
-                scope: this,
-                handler: this.close
-            }
-        ];
+            store: Ext.create('AM.store.OrderProducts'),
 
-        this.callParent(arguments);
+            columns: [
+                Ext.create('Ext.grid.RowNumberer'),
+                {header: "id", flex: 1, dataIndex: 'id', hidden:true},
+                {header: "Cod", flex: 1, dataIndex: 'cod', editor: {xtype:'textfield'}},
+                {header: "Name", flex: 1, dataIndex: 'name',
+                    field: {
+                        xtype: 'combobox',
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        selectOnTab: true,
+                        store: [
+                            ['Shade','Shade'],
+                            ['Mostly Shady','Mostly Shady'],
+                            ['Sun or Shade','Sun or Shade'],
+                            ['Mostly Sunny','Mostly Sunny'],
+                            ['Sunny','Sunny']
+                        ],
+                        lazyRender: true,
+                        listClass: 'x-combo-list-small'
+                    }
+                },
+                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}},
+                {header: "Note", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
+            ],
+            selType: 'rowmodel',
+            plugins: [this.editing],
+
+            tbar: [{
+                    text:"Add new",
+                    scope: this,
+                    handler: this.onAddClick
+            },{
+                    text:"Delete",
+                    scope: this,
+                    handler: this.onDeleteClick
+            }]
+
+        });
+        this.callParent();
+        this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
+        this.editing.on('edit', function(editor, e) {
+            editor.store.sync();
+                    var x = Ext.create('AM.view.notify');
+                    x.show();
+                    var width = (document.documentElement.offsetWidth / 2) - (x.width / 2);
+                    x.setPagePosition(width, -30);
+                    setTimeout(function(){
+                        x.hide();
+                    }, 6000);
+        });
+    },
+
+
+    onSelectChange: function(selModel, selections){
+        //this.down('#delete').setDisabled(selections.length === 0);
+    },
+
+    onSync: function(){
+        console.log("formular store sync");
+        this.store.sync();
+    },
+
+    onDeleteClick: function(){
+        var selection = this.getView().getSelectionModel().getSelection()[0];
+        if (selection) {
+            console.log("formular record delete");
+            this.store.remove(selection);
+            this.store.sync();
+        }
+    },
+
+    onAddClick: function(){
+
+        var rec = new AM.model.OrderProduct({
+            order_id: this.up('form').getRecord().data.id,
+            cod: '',
+            name: '',
+            quantity: ''
+        }), edit = this.editing;
+        
+        edit.cancelEdit();
+        this.store.insert(0, rec);
+        edit.startEdit(0,1);
     }
+
+
 });
-
-
