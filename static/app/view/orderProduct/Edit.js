@@ -1,12 +1,13 @@
 Ext.define("AM.view.orderProduct.Edit", {
 
     extend: "Ext.grid.Panel",
-
+    requires:['Ext.grid.column.Combo'],
     initComponent: function(){
 
         this.editing = Ext.create('Ext.grid.plugin.RowEditing');
 
         Ext.apply(this, {
+            id:'orderproductsgrid',
             border:true,
             collapsible: false,
             height: 300,
@@ -22,22 +23,23 @@ Ext.define("AM.view.orderProduct.Edit", {
                 Ext.create('Ext.grid.RowNumberer'),
                 {header: "id", flex: 1, dataIndex: 'id', hidden:true},
                 {header: "Cod", flex: 1, dataIndex: 'cod', editor: {xtype:'textfield'}},
-                {header: "Name", flex: 1, dataIndex: 'name',
-                    field: {
+                {header: "Name", flex: 1, dataIndex: 'name', gridId:'orderproductsgrid', xtype:'combocolumn',
+                   field: {
                         xtype: 'combobox',
                         typeAhead: true,
                         triggerAction: 'all',
                         selectOnTab: true,
-                        store: [
-                            ['Shade','Shade'],
-                            ['Mostly Shady','Mostly Shady'],
-                            ['Sun or Shade','Sun or Shade'],
-                            ['Mostly Sunny','Mostly Sunny'],
-                            ['Sunny','Sunny']
-                        ],
+                        displayField:'cod',
+                        valueField:'id',
+                        store: Ext.create('AM.store.Products'),
                         lazyRender: true,
-                        listClass: 'x-combo-list-small'
-                    }
+                        listeners: {
+                            'select': function(combo, record){
+                                console.log('record.data.id' + record.data.id)
+                                combo.gridEditor.record.set('product_id', record.data.id);
+                            }
+                        }
+            }
                 },
                 {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}},
                 {header: "Note", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
@@ -93,6 +95,7 @@ Ext.define("AM.view.orderProduct.Edit", {
 
         var rec = new AM.model.OrderProduct({
             order_id: this.up('form').getRecord().data.id,
+            product_id:'',
             cod: '',
             name: '',
             quantity: ''
