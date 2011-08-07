@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     (r'^$', index),
     #(r"^import/", importDataBase),
     # products
-    (r"^data/products", fetchExcel),
+    (r"^data/products", fetchProducts),
     (r"^data/updateProducts", updateProducts),
     
     # orders 
