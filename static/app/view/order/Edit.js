@@ -58,7 +58,8 @@ Ext.define("formular", {
                         listClass: 'x-combo-list-small'
                     }
                 },
-                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}}
+                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}},
+                {header: "Note", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
             ],
             selType: 'rowmodel',
             plugins: [this.editing],
@@ -76,8 +77,21 @@ Ext.define("formular", {
         });
         this.callParent();
         this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
-
-
+        this.editing.on('edit', function(editor, e) {
+            editor.store.sync();
+                   var x = Ext.create('Ext.window.Window', {
+                        height: 100,
+                        width: 400,
+                        //layout: 'fit',
+                        frame: false,
+                        headerPosition: 'top',
+                    });
+                    x.show();
+                    x.setPagePosition(0, -30);
+                    setTimeout(function(){
+                        x.hide();
+                    }, 2000);
+        });
     },
 
 
@@ -111,9 +125,6 @@ Ext.define("formular", {
         edit.cancelEdit();
         this.store.insert(0, rec);
         edit.startEdit(0,1);
-        edit.on('edit', function(editor, e) {
-            editor.store.sync();
-        });
     }
 
 

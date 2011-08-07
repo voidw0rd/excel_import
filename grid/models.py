@@ -26,6 +26,7 @@ class Products(models.Model):
     
 class OrderProduct(models.Model):
     
+    product = models.ForeignKey("Products", related_name = "products")
     quantity = models.IntegerField()
     order = models.ForeignKey("Orders", related_name = "order_products")
     note = models.TextField()

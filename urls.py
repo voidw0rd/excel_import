@@ -8,15 +8,15 @@ import settings
 urlpatterns = patterns('',
     
     (r'^$', index),
-    #(r"^import/", importDataBase),
+    (r"^import/", importDataBase),
     # products
     (r"^data/products", fetchProducts),
     (r"^data/updateProducts", updateProducts),
     
     # orders 
     (r"^data/orders", fetchOrders),
-    (r"^data/updateOrder", updateOrders),
-    (r"^data/deleteOrder", deleteOrder),
+    (r"^data/updateorder", updateOrders),
+    (r"^data/deleteorder", deleteOrder),
     (r"^data/createorder", createOrder),
     
     # order products 

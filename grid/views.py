@@ -63,8 +63,8 @@ def index(request):
 
 def importDataBase(request):
     
-    _file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
-    #_file = open("/tmp/test.csv", "rb")
+    #_file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
+    _file = open("/tmp/test.csv", "rb")
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
     
     for row in reader:
@@ -167,14 +167,10 @@ def updateOrders(request):
 @csrf_exempt    
 def createOrder(request):
 
-    
     postData = request.read()
     postData = json.loads(postData)
-    #print postData
     if isinstance(postData, dict) and postData.has_key("status"):
         orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
-        
-    
     
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
@@ -202,23 +198,23 @@ def fetchOrderProducts(request):
         orderId = get["orderId"]
         order = Orders.objects.get(pk=orderId)
         products = OrderProduct.objects.filter(order=order)
-        tmpList = []
-        for product in products.all():
-            product = model_to_dict(product)
-            data = {}
-            for key in product.keys():
-                data[key] = product[key]
-            tmpList.append(data)
-            
-        print tmpList
+        if not products:
+            jsonObj = simplejson.dumps({"success": True}, encoding="utf-8")
+            return HttpResponse(jsonObj, mimetype="application/json")
+        
         tmpList = []
         tmpData = {}
-        data = {}
-        
-        data["id"] = 1
-        data["quantity"] = 20
-        data["cod"] = "order code %s" % orderId
-        data["name"] = "blabla"
+        for product in products.all():
+            tmpProduct = product
+            product = model_to_dict(product)
+            data = {}
+            data['product_id'] = tmpProduct.product.id
+            data['order_id'] = tmpProduct.order.id
+            for key in product.keys():
+                data[key] = product[key]
+                if key == "denumirePlic":
+                    data['name'] = product[key]
+            tmpList.append(data)
         
         tmpList.append(data)
         tmpData["data"] = tmpList
@@ -226,7 +222,6 @@ def fetchOrderProducts(request):
         
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
-
     else:
         return Http404
     
@@ -234,9 +229,15 @@ def fetchOrderProducts(request):
 
 @csrf_exempt   
 def updateOrderProducts(request):
-
+    excludes = ['product_id', 'order_id', 'name', 'id', 'cod']
     postData = request.read()
+    postData = json.loads(postData)
     #print postData
+    if isinstance(postData, dict) and postData.has_key("id"):
+        product = OrderProduct.objects.get(pk=postData['id'])
+        product.quantity = postData['quantity']
+        product.note = postData['note']
+        product.save()
 
     jsonObj = simplejson.dumps({"success": False})
     return HttpResponse(jsonObj, mimetype="application/json")
@@ -250,19 +251,24 @@ def createOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
+            #print postData
 
             if isinstance(postData, dict) and postData.has_key("order_id"):
-                excludes = ['id', 'product_id', 'order_id', 'name']
-                order = Orders.objects.get(pk=postData['order_id'])
+                excludes = ['id', 'order_id', 'name', 'product_id']
+                
+                product = Products.objects.get(pk=1)#postData['product_id'])
+                order = Orders.objects.get(pk=postData['order_id'])                
+                
                 for exclude in excludes:
                     postData.pop(exclude)
-                
                 obj = model_to_dict(Products.objects.get(pk=1))
                 for key in obj.keys():
                     postData[key] = obj[key]
                     
                 postData["order"] = order
+                postData['product'] = product
                 postData["note"] = "test note for  a product"
+                postData.pop("id")
                 product = OrderProduct.objects.create(**postData)
                 
             jsonObj = simplejson.dumps({"success": True})
@@ -284,6 +290,7 @@ def deleteOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
+            print postData
             if isinstance(postData, dict) and postData.has_key('id'):
                 queryObj = OrderProduct.objects.filter(pk=postData['id'])
                 if len(queryObj) == 0:
