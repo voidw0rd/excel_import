@@ -101,13 +101,8 @@ Ext.define("formular", {
 
     onAddClick: function(){
 
-        var win  = this.up("window"),
-            form = win.down("form"),
-            record = form.getRecord();
-        console.log(record);
-             
         var rec = new AM.model.OrderProduct({
-            order_id: record.data.id,
+            order_id: this.up('form').getRecord().data.id,
             cod: '',
             name: '',
             quantity: ''

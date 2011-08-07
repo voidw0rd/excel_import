@@ -92,7 +92,7 @@ Ext.define('AM.controller.Orders', {
             //var order = store.first();
 
 
-            console.log("Produse pentru " + order.get('name'));
+            //console.log("Produse pentru " + order.get('name'));
 //            console.log(order.orderProducts().count() + " produse in comanda");
 //
 //            //iterate over the Products for each Order
