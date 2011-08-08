@@ -233,12 +233,23 @@ def updateOrderProducts(request):
     postData = request.read()
     postData = json.loads(postData)
     #print postData
+    
     if isinstance(postData, dict) and postData.has_key("id"):
         product = OrderProduct.objects.get(pk=postData['id'])
         product.quantity = postData['quantity']
         product.note = postData['note']
         product.save()
-
+    elif isinstance(postData, list):
+        for obj in postData:
+            if isinstance(obj, dict) and obj.has_key("id"):
+                product = OrderProduct.objects.get(pk=obj['id'])
+                product.quantity = obj['quantity']
+                product.note = obj['note']
+                product.save()
+    else:
+        jsonObj = simplejson.dumps({"success": False})
+        return HttpResponse(jsonObj, mimetype="application/json")
+        
     jsonObj = simplejson.dumps({"success": False})
     return HttpResponse(jsonObj, mimetype="application/json")
 
