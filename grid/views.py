@@ -36,7 +36,7 @@ def getJsonFromModel(querySet, excludes):
         
         requestDict['data'] = requestList
         requestDict['success'] = True
-        print json.dumps(requestDict, indent = 3)
+        #print json.dumps(requestDict, indent = 3)
         
         if len(excludes) > 0:
             for exclude in excludes:
@@ -246,19 +246,16 @@ def updateOrderProducts(request):
 
 @csrf_exempt 
 def createOrderProduct(request):
-    
+    excludes = ['id', 'order_id', 'name', 'product_id']
     if request.is_ajax():   
         try:
             postData = request.read()
             postData = json.loads(postData)
-            print postData
+            #print postData
 
             if isinstance(postData, dict) and postData.has_key("order_id"):
-                excludes = ['id', 'order_id', 'name', 'product_id']
-                
-                product = Products.objects.get(pk=1)#postData['product_id'])
+                product = Products.objects.get(pk=postData['product_id'])
                 order = Orders.objects.get(pk=postData['order_id'])                
-                
                 
                 obj = model_to_dict(Products.objects.get(pk=postData['product_id']))#pk=1))
                 for key in obj.keys():
@@ -268,11 +265,43 @@ def createOrderProduct(request):
                     postData.pop(exclude)    
                 postData["order"] = order
                 postData['product'] = product
-                postData["note"] = postData['note']
                 product = OrderProduct.objects.create(**postData)
                 
-            jsonObj = simplejson.dumps({"success": True})
-            return HttpResponse(jsonObj, mimetype="application/json")
+                jsonObj = simplejson.dumps({"success": True})
+                return HttpResponse(jsonObj, mimetype="application/json")
+            
+            elif isinstance(postData, list):
+                for obj in postData:
+                    if isinstance(obj, dict) and obj.has_key("order_id"):
+                        product = Products.objects.get(pk=obj['product_id'])
+                        order = Orders.objects.get(pk=obj['order_id'])
+                        
+                        try:
+                            x = obj.copy()
+                            for exlude in excludes:
+                                x.pop(exlude)
+                            x['order'] = order.id
+                            x['product'] = product.id
+                            prod = OrderProduct.objects.filter(**x)
+                            if prod:
+                                continue
+                        except Exception, err:
+                            print err
+                        #queryDict = model_to_dict(Products.objects.get(pk=obj['product_id']))
+                        queryDict = model_to_dict(product)
+
+                        for key in queryDict.keys():
+                            obj[key] = queryDict[key]
+                            
+                        for exlude in excludes:
+                            obj.pop(exlude)
+                            
+                        obj['order'] = order
+                        obj['product'] = product
+                        product = OrderProduct.objects.create(**obj)
+                        
+                jsonObj = simplejson.dumps({"success": True})
+                return HttpResponse(jsonObj, mimetype="application/json")
             
         except Exception, err:
             print err
@@ -290,7 +319,7 @@ def deleteOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            print postData
+            #print postData
             if isinstance(postData, dict) and postData.has_key('id'):
                 queryObj = OrderProduct.objects.filter(pk=postData['id'])
                 if len(queryObj) == 0:
