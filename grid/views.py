@@ -11,7 +11,7 @@ import json
 import csv
 import datetime
 from django.forms.models import model_to_dict
-
+from gridtest.settings import STATIC_FILE_PATH
 
 
 def getJsonFromModel(querySet, excludes):
@@ -63,8 +63,13 @@ def index(request):
 
 def importDataBase(request):
     
-    #_file = open("c:/python27/scripts/excel_import/static/excel_example.csv", "rb")
-    _file = open("/home/void/workspace/extjs/gridtest/static/excel_example.csv", "rb")
+    fileName = "excel_example.csv"
+    filePath = STATIC_FILE_PATH + '/' + fileName
+    try:
+        _file = open(filePath, "rb")
+    except Exception, err:
+        print err
+    
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
     
     for row in reader:
@@ -189,6 +194,67 @@ def deleteOrder(request):
     return HttpResponse(jsonObj, mimetype="application/json")
 
 
+@csrf_exempt 
+def printOrder(request):
+    
+    if isinstance(request.GET, dict) and request.GET.has_key("orderId"):
+        orderId = request.GET['orderId']
+    else:
+        return Http404
+    orderInfo = _prepPrint(orderId)
+    
+    return render_to_response(
+                              'printOrder.html', 
+                              {
+                                "order": orderInfo
+                              }, 
+                              context_instance=RequestContext(request)
+                             )
+
+
+def _prepPrint(orderId):
+    
+    try:
+        order = Orders.objects.get(pk=int(orderId))
+        orderProducts = OrderProduct.objects.filter(order = order)
+        printFileds = ['cod', 'quantity', 'denumirePlic', 'soi']
+        orderInfo = {}
+        orderInfo["name"] = order.name
+        orderInfo['timestamp'] = str(order.timestamp).split('.')[0]
+        orderInfo['products'] = []
+        
+        for product in orderProducts:
+            productDict = model_to_dict(product)
+            obj = {}
+            
+            for key in productDict.keys():
+                if key in printFileds:
+                    obj[key] =  productDict[key]
+            
+            orderInfo['products'].append(obj)
+        orderInfo['total'] = 1000    
+        
+        print json.dumps(orderInfo, indent = 4)
+        return orderInfo
+    except Exception, err:
+        print err
+        return None
+
+
+
+@csrf_exempt   
+def downloadOrder(request):
+    
+    orderId = request.path.split("=")[-1]
+    order = str(_prepPrint(orderId))
+    print order
+    response = HttpResponse(order, mimetype='application/text-plain')
+    response['Content-Disposition'] = 'attachment; filename=foo.txt'
+    
+    return response
+
+
+
 
 @csrf_exempt    
 def fetchOrderProducts(request):
@@ -268,7 +334,7 @@ def createOrderProduct(request):
                 product = Products.objects.get(pk=postData['product_id'])
                 order = Orders.objects.get(pk=postData['order_id'])                
                 
-                obj = model_to_dict(Products.objects.get(pk=postData['product_id']))#pk=1))
+                obj = model_to_dict(Products.objects.get(pk=postData['product_id']))
                 for key in obj.keys():
                     postData[key] = obj[key]
                 

@@ -6,9 +6,22 @@
 
 
     <title>Test</title>
+    <style>
+        #example-grid {
+            margin-left: 50px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<div id="example-grid"></div>
+<div id="example-grid">
+
+    <p> what the fuck is this ???</p>
+    {% for item in junk %}
+        <p> {{ item }}</p>
+    {% endfor %}
+
+</div>
  
 </body>
 </html>

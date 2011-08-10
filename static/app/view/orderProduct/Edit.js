@@ -11,7 +11,6 @@ Ext.define("AM.view.orderProduct.Edit", {
             border:true,
             collapsible: false,
             height: 300,
-            //autoHeight: true,
             split: true,
             viewConfig: {
                     stripeRows: false,
@@ -56,11 +55,16 @@ Ext.define("AM.view.orderProduct.Edit", {
                     text:"Add new",
                     scope: this,
                     handler: this.onAddClick
-            },{
+            },"-",{
                     text:"Delete",
                     scope: this,
                     handler: this.onDeleteClick
-            }]
+            },Ext.create('Ext.Toolbar.Fill'),{
+                text: "Print",
+                action: "printOrder",
+                scope: this,
+                handler: this.printOrder
+            },"&nbsp;"]
 
         });
         this.callParent();
@@ -109,6 +113,56 @@ Ext.define("AM.view.orderProduct.Edit", {
         edit.cancelEdit();
         this.store.insert(0, rec);
         edit.startEdit(0,1);
+    },
+    
+    printOrder: function() {
+        var orderId = this.up('form').getRecord().data.id;
+        var request = Ext.Ajax.request({
+            url: "printOrder",
+            params: {"orderId": orderId},
+            method: "GET",
+            success: function(result, req){
+                console.log(result);
+                Ext.create("Ext.window.Window", {
+                    title: "Print Order",
+                    height: 600,
+                    width: 700,
+                    autoScroll: true,
+                    html: result.responseText,
+                    items: {
+                        xtype: "button",
+                        text: "Download as CSV",
+                        id: "download",
+                        handler: function() {
+                            var body = Ext.getBody(),
+                                frame = body.createChild({
+                                    tag:'iframe',
+                                    cls:'x-hidden',
+                                    id:'iframe',
+                                    name:'iframe',
+                                }),
+                                form = body.createChild({
+                                    tag: "form",
+                                    cls: "x-hidden",
+                                    id: "form",
+                                    action: "downloadOrder&orderId=" + orderId,
+                                    target:'iframe',
+                                    standardSubmit: true,
+                                    baseParams: {
+                                        orderId: orderId
+                                    }
+                            });
+                            console.log(form);
+                            form.dom.submit();
+                        }
+                    }
+                }).show();
+            },
+            failure: function(result, req){
+                console.log(result);
+            }
+        });
+        
     }
 
 

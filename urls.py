@@ -18,6 +18,8 @@ urlpatterns = patterns('',
     (r"^data/updateorder", updateOrders),
     (r"^data/deleteorder", deleteOrder),
     (r"^data/createorder", createOrder),
+    (r"^printOrder", printOrder),
+    (r"^downloadOrder", downloadOrder),
     
     # order products 
     (r"^data/orderProducts", fetchOrderProducts),

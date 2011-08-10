@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+    <title>Test</title>
+    <style>
+        #wrapper {
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 20px;
+            font-size: 17px;
+        }
+        
+        #name {
+            float: left;
+        }
+        
+        #timestamp {
+            font-size: 13px;
+            float: right;
+        }
+        
+        #total {
+            margin-top: 20px;
+            float: right;
+        }
+        
+        #products {
+            margin-top: -20px;
+        }
+        
+        #innerProducts {
+            margin-left: 30px;
+            margin-right: 30px;
+            margin-top: 10px;
+            background: #E6EFEF;
+        }
+        
+        .clr {
+            clear: both;
+        }
+        
+        #download {
+            margin-bottom: 5px;
+            float: right;
+            border: none;
+        }
+        
+    </style>
+</head>
+<body>
+<div id="wrapper">
+
+    <p class="clr"></p>
+    <div id='name'>
+        <p>Order name: {{ order.name }}</p>
+    </div>
+    
+    <div id='timestamp'>
+        <p>Created on: {{ order.timestamp }}</p>
+    </div>
+    
+        <p class="clr"></p>
+        
+    <div id="total">
+        Total summary: {{ order.total }}
+    </div>
+        
+        <p class="clr"></p>
+        
+    <div id="products">
+        <p>Products in this order: </p>
+        <div id="innerProducts">
+            {% for item in order.products %}
+            
+                <p>Product code: {{ item.cod }}</p>
+                <p>Product soi: {{ item.soi }}</p>
+                <p>Product quantity: {{ item.quantity }}</p>
+                <p>Product name: {{ item.denumitePlic }}</p>
+                <hr />
+            {% endfor %}
+        </div>
+    </div>
+    
+    
+    
+
+    
+    
+    
+
+</div>
+ 
+</body>
+</html>
