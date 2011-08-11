@@ -4,7 +4,6 @@ from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-# coding=utf8
 
 
 
@@ -20,10 +19,10 @@ class makePDF(object):
         pdfmetrics.registerFont(TTFont('Junicode', '/home/void/workspace/extjs/gridtest/static/junicode.ttf'))
     
     
-    def first(self, c, doc):
+    def firstPage(self, c, doc):
         c.saveState()
         c.setFont('Junicode', 14)
-        c.drawString(inch + 5, self.height - inch, "Order name : %s" % unicode(self.orderName))
+        c.drawString(inch + 5, self.height - inch, u"Order name : %s" % unicode(self.orderName))
         c.setFont('Junicode', 14)
         c.drawString(self.width - inch * 3, self.height - inch, "created on: %s" % unicode(self.timestamp))
         c.restoreState()
@@ -37,23 +36,20 @@ class makePDF(object):
         story = [Spacer(1, inch)]
         styles = getSampleStyleSheet()
         style = styles['Normal']
+        style.fontName = "Junicode"
+        style.fontSize = 13
         
         products = data['products']
         for product in products:
-            try: 
-                name = product['denumirePlic']
-                #name = unicode(name,'utf-8')
-                code = product['cod']
-                quantity = product['quantity']                
-                text = "Product name: %s  -  product code: %s  -  product quantity: %s" % (name, code, quantity)
+            try:             
+                text = "Product name: %s  -  product code: %s  -  product quantity: %s" % (product['denumirePlic'], product['cod'], product['quantity'])
                 p = Paragraph(text, style)
-                
             except Exception, err:
                 print err
             story.append(p)
-            story.append(Spacer(1, 0.2 * inch))
+            story.append(Spacer(1, 0.3 * inch))
         
-        doc.build(story,  onFirstPage = self.first)
+        doc.build(story,  onFirstPage = self.firstPage)
         
 
 

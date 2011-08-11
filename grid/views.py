@@ -255,7 +255,7 @@ def downloadOrder(request):
     _file = open("/tmp/%s" % order['name'], "rb")
     
     response = HttpResponse(_file, mimetype='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=foo.pdf'
+    response['Content-Disposition'] = 'attachment; filename=%s.pdf' % order['name']
     
     return response
 
