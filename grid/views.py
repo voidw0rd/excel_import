@@ -5,13 +5,16 @@ from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.core.mail import send_mail
 from models import Products, Orders, OrderProduct, OrderStatuses
 from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
+from gridtest.settings import STATIC_FILE_PATH
 import json
 import csv
 import datetime
-from django.forms.models import model_to_dict
-from gridtest.settings import STATIC_FILE_PATH
+from api import makePDF
+
 
 
 def getJsonFromModel(querySet, excludes):
@@ -210,7 +213,7 @@ def printOrder(request):
                               }, 
                               context_instance=RequestContext(request)
                              )
-
+    
 
 def _prepPrint(orderId):
     
@@ -246,10 +249,13 @@ def _prepPrint(orderId):
 def downloadOrder(request):
     
     orderId = request.path.split("=")[-1]
-    order = str(_prepPrint(orderId))
-    print order
-    response = HttpResponse(order, mimetype='application/text-plain')
-    response['Content-Disposition'] = 'attachment; filename=foo.txt'
+    order = _prepPrint(orderId)
+    pdf = makePDF()
+    pdf.generatePDF(order['name'], order)
+    _file = open("/tmp/%s" % order['name'], "rb")
+    
+    response = HttpResponse(_file, mimetype='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=foo.pdf'
     
     return response
 
