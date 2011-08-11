@@ -54,7 +54,6 @@ Ext.define('AM.view.order.Edit', {
                 handler: this.close
             }
         ];
-
         this.callParent(arguments);
     }
 });

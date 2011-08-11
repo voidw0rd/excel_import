@@ -254,7 +254,30 @@ def downloadOrder(request):
     return response
 
 
+@csrf_exempt
+def sendMail(request):
+    
+    orderId = request.read().split("=")[-1]
+    order = Orders.objects.get(pk=orderId)
+    
+    if _sendMail(order.name):
+        tmpData = {"success": True}
+        jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+        return HttpResponse(jsonObj, mimetype="application/json")
+        
+    else:
+        tmpData = {"success": False}
+        jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+        return HttpResponse(jsonObj, mimetype="application/json")
+        
 
+    
+
+def _sendMail(orderName):
+    #to do w8 for sendGrid to validate my account and integrate it with django
+    
+    print "\n\n" + orderName + "\n\n"
+    return True
 
 @csrf_exempt    
 def fetchOrderProducts(request):

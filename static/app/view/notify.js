@@ -13,9 +13,6 @@ Ext.define('AM.view.notify', {
     bodyStyle: 'padding: 5px; background-color: #FFFBA9; opacity: 0.5',
     
     initComponent: function() {
-    
-    
-    
         this.callParent(arguments);
     }
     

@@ -3,5 +3,7 @@
 extjs-4.0.2a/
 settings.py
 /static/app.js
+/static/grid/
+/static/am.db
 .idea
 grid/templates/index.html

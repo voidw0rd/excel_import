@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     (r"^data/createorder", createOrder),
     (r"^printOrder", printOrder),
     (r"^downloadOrder", downloadOrder),
+    (r"^sendMail", sendMail),
     
     # order products 
     (r"^data/orderProducts", fetchOrderProducts),

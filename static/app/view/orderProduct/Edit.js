@@ -148,11 +148,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                                     action: "downloadOrder&orderId=" + orderId,
                                     target:'iframe',
                                     standardSubmit: true,
-                                    baseParams: {
-                                        orderId: orderId
-                                    }
                             });
-                            console.log(form);
                             form.dom.submit();
                         }
                     }
