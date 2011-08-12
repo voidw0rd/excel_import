@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from models import Products, Orders, OrderProduct, OrderStatuses
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from gridtest.settings import STATIC_FILE_PATH
+from settings import STATIC_FILE_PATH
 import json
 import csv
 import datetime

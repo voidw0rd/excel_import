@@ -37,16 +37,29 @@ Ext.define("AM.view.orderProduct.Edit", {
                             'select': function(combo, record){
                                 console.log(record[0]);
                                 var gridRecord = combo.up('form').getRecord();
+                                var idExisting = gridRecord.store.findExact('product_id', record[0].data.id);
+                                if (idExisting != -1){
+                                    Ext.MessageBox.alert('Produs duplicat', 'Produsul selectat exista deja in comanda!');
+                                    //var q = gridRecord.store.getAt(idExisting).data.quantity;
+                                    gridRecord.data.quantity = gridRecord.store.getAt(idExisting).data.quantity;
+                                    gridRecord.data.note = gridRecord.store.getAt(idExisting).data.note;
+                                    gridRecord.store.removeAt(idExisting);
+                                    //gridRecord.data.quantity = q;
+                                }
                                 gridRecord.data.product_id = record[0].data.id;
                                 gridRecord.data.cod = record[0].data.cod;
                                 gridRecord.data.name = record[0].data.denumirePlic;
                                 combo.up('form').loadRecord(gridRecord);
                             }
                         }
-            }
+                   }
                 },
-                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'textfield'}},
-                {header: "Note", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
+                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'numberfield',
+                                                                              minValue:0,
+                                                                              allowBlank:false,
+                                                                              hideTrigger: true
+                }},
+                {header: "Note", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}}
             ],
             selType: 'rowmodel',
             plugins: [this.editing],
