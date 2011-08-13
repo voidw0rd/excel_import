@@ -21,7 +21,8 @@ class Products(models.Model):
     stage4 = models.CharField(max_length = 10)
     stage5 = models.CharField(max_length = 10)
     category = models.CharField(max_length = 1)
-    
+    notes = models.TextField()
+    barCode = models.CharField(max_length = 13)
     
     
 class OrderProduct(models.Model):

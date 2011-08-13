@@ -96,6 +96,8 @@ def importDataBase(request):
         data["stage4"] = row[15]
         data["stage5"] = row[16]
         data["category"] = row[17]
+        data['notes'] = "Product notes"
+        data['barCode'] = "11134ABNCCA"
         
         x = Products.objects.create(**data)
         
