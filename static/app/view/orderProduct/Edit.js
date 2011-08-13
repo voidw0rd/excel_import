@@ -5,6 +5,7 @@ Ext.define("AM.view.orderProduct.Edit", {
     initComponent: function(){
 
         this.editing = Ext.create('Ext.grid.plugin.RowEditing');
+        this.summary = Ext.create('Ext.grid.feature.Summary');
 
         Ext.apply(this, {
             id:'orderproductsgrid',
@@ -14,13 +15,20 @@ Ext.define("AM.view.orderProduct.Edit", {
             split: true,
             viewConfig: {
                     stripeRows: false,
-                    autoScroll: true
+                    autoScroll: true,
+                    enableRowBody: true,
+                    getRowClass: function(record){ 
+                        if(record.data.modified){
+                            return 'orderProducts_modified'
+                        }
+                        
+                    }
             },
             store: Ext.create('AM.store.OrderProducts'),
 
             columns: [
                 Ext.create('Ext.grid.RowNumberer'),
-                {header: "Cod", flex: 1, dataIndex: 'cod', editor: {xtype:'textfield'}},
+                {header: "Code", flex: 1, dataIndex: 'cod'},
                 {header: "Name", flex: 1, dataIndex: 'name', gridId:'orderproductsgrid', xtype:'combocolumn',
                    field: {
                         xtype: 'combobox',
@@ -29,6 +37,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                         selectOnTab: true,
                         multiSelect: false,
                         forceSelection : true,
+                        emptyText: 'Search product',
                         displayField:'denumirePlic',
                         valueField:'denumirePlic',
                         store: Ext.create('AM.store.Products'),
@@ -40,11 +49,9 @@ Ext.define("AM.view.orderProduct.Edit", {
                                 var idExisting = gridRecord.store.findExact('product_id', record[0].data.id);
                                 if (idExisting != -1){
                                     Ext.MessageBox.alert('Produs duplicat', 'Produsul selectat exista deja in comanda!');
-                                    //var q = gridRecord.store.getAt(idExisting).data.quantity;
                                     gridRecord.data.quantity = gridRecord.store.getAt(idExisting).data.quantity;
                                     gridRecord.data.note = gridRecord.store.getAt(idExisting).data.note;
                                     gridRecord.store.removeAt(idExisting);
-                                    //gridRecord.data.quantity = q;
                                 }
                                 gridRecord.data.product_id = record[0].data.id;
                                 gridRecord.data.cod = record[0].data.cod;
@@ -54,15 +61,16 @@ Ext.define("AM.view.orderProduct.Edit", {
                         }
                    }
                 },
-                {header: "Quantity", flex: 1, dataIndex: 'quantity', editor: {xtype:'numberfield',
-                                                                              minValue:0,
-                                                                              allowBlank:false,
-                                                                              hideTrigger: true
-                }},
-                {header: "Note", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}}
+                {header: "Quantity", flex: 1, dataIndex: 'quantity',
+                    editor: { xtype:'numberfield', minValue:0, allowBlank:false, hideTrigger: true},
+                    summaryType: 'sum'
+                },
+                {header: "Notes", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
+                {header: "Modified",dataIndex: 'modified',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}}
             ],
             selType: 'rowmodel',
             plugins: [this.editing],
+            features: [this.summary],
 
             tbar: [{
                     text:"Add new",
@@ -73,6 +81,27 @@ Ext.define("AM.view.orderProduct.Edit", {
                     scope: this,
                     handler: this.onDeleteClick
             },Ext.create('Ext.Toolbar.Fill'),{
+                text: "Import",
+                action: "importCsv",
+                scope: this,
+                handler: this.importCsv
+            },{
+                text: "Export",
+                scope: this,
+                menu:[{
+                        text:'CSV',
+                        action: "exportCsv",
+                        scope: this,
+                        handler: this.exportCsv
+                    },{
+                        text:'PDF',
+                        action: "exportPdf",
+                        scope: this,
+                        handler: this.exportPdf
+                    }
+                
+                ]
+            },{
                 text: "Print",
                 action: "printOrder",
                 scope: this,
@@ -172,7 +201,11 @@ Ext.define("AM.view.orderProduct.Edit", {
             }
         });
         
-    }
+    },
+
+    importCsv: function(){console.log('Import CSV clicked')},
+    exportCsv: function(){console.log('Export CSV clicked')},
+    exportPdf: function(){console.log('Export PDF clicked')}
 
 
 });
