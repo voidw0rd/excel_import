@@ -14,6 +14,7 @@ import json
 import csv
 import datetime
 from api import makePDF
+import cStringIO as StringIO
 
 
 
@@ -53,9 +54,8 @@ def getJsonFromModel(querySet, excludes):
 
 
 def index(request):    
-
-    #x = Orders.objects.create(name="test-order", note="test - note ...", status=OrderStatuses.objects.create(status="pending"))
-    #x.save()
+    
+    #send_mail('sendGrid - email', 'Greetz, this is just a test email ', 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
     
     return render_to_response(
                               'index.html', 
@@ -96,6 +96,8 @@ def importDataBase(request):
         data["stage4"] = row[15]
         data["stage5"] = row[16]
         data["category"] = row[17]
+        data['notes'] = "Product notes"
+        data['barCode'] = "11134ABNCCA"
         
         x = Products.objects.create(**data)
         
@@ -237,7 +239,7 @@ def _prepPrint(orderId):
             orderInfo['products'].append(obj)
         orderInfo['total'] = 1000    
         
-        print json.dumps(orderInfo, indent = 4)
+        #print json.dumps(orderInfo, indent = 4)
         return orderInfo
     except Exception, err:
         print err
@@ -247,18 +249,20 @@ def _prepPrint(orderId):
 
 @csrf_exempt   
 def downloadOrder(request):
-    
-    orderId = request.path.split("=")[-1]
-    order = _prepPrint(orderId)
-    pdf = makePDF()
-    pdf.generatePDF(order['name'], order)
-    _file = open("/tmp/%s" % order['name'], "rb")
-    
-    response = HttpResponse(_file, mimetype='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=%s.pdf' % order['name']
-    
-    return response
-
+    try:
+        orderId = request.path.split("=")[-1]
+        order = _prepPrint(orderId)
+        pdf = makePDF()
+        resp = pdf.generatePDF(order)
+        response = HttpResponse(resp.getvalue(), mimetype='application/pdf')
+        name = order['name'].encode('ascii', 'ignore')
+        
+        response['Content-Disposition'] = 'attachment; filename=order-%s' % str(datetime.datetime.now()).split('.')[0]
+        
+        return response
+    except Exception, err:
+        print err
+        return Http404
 
 @csrf_exempt
 def sendMail(request):
@@ -285,55 +289,118 @@ def _sendMail(orderName):
     print "\n\n" + orderName + "\n\n"
     return True
 
+
 @csrf_exempt    
 def fetchOrderProducts(request):
     
-    get = request.GET
-    if get.has_key("orderId"):
-        orderId = get["orderId"]
-        order = Orders.objects.get(pk=orderId)
-        products = OrderProduct.objects.filter(order=order)
-        if not products:
-            jsonObj = simplejson.dumps({"success": True}, encoding="utf-8")
-            return HttpResponse(jsonObj, mimetype="application/json")
-        
-        tmpList = []
-        tmpData = {}
-        for product in products.all():
-            tmpProduct = product
-            product = model_to_dict(product)
-            data = {}
-            data['product_id'] = tmpProduct.product.id
-            data['order_id'] = tmpProduct.order.id
-            for key in product.keys():
-                data[key] = product[key]
-                if key == "denumirePlic":
-                    data['name'] = product[key]
-            tmpList.append(data)
-        
-        tmpList.append(data)
-        tmpData["data"] = tmpList
-        tmpData["success"] = True
-        
-        jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
-        return HttpResponse(jsonObj, mimetype="application/json")
+    if request.is_ajax():
+        get = request.GET
+        if isinstance(get, dict) and get.has_key("orderId"):
+            try:
+                orderId  = get['orderId']
+                order    = Orders.objects.get(pk=orderId)
+                products = OrderProduct.objects.filter(order=order)
+                if len(products) == 0:
+                    jsonObj = simplejson.dumps({"success": True}, encoding="utf-8")
+                    return HttpResponse(jsonObj, mimetype="application/json")
+                
+                tmpList = []
+                tmpData = {}
+                for product in products.all():
+                    orderProduct = model_to_dict(product)
+                    data = {}
+                    data['product_id'] = product.product.id
+                    data['order_id']   = product.order.id
+                    data['quantity']   = product.quantity
+                    data['note']       = product.note 
+                    product = model_to_dict(product.product)
+                    for key in product.keys():
+                        data[key] = product[key]
+                        if key == "denumirePlic":
+                            data['name'] = product[key]
+                    tmpList.append(data)
+                tmpList.append(data)
+                tmpData["data"] = tmpList
+                tmpData["success"] = True
+                
+                #print json.dumps(tmpData, indent = 4)
+                jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+                return HttpResponse(jsonObj, mimetype="application/json")
+            except Exception, err:
+                print err 
+                return Http404
     else:
         return Http404
     
+
+@csrf_exempt 
+def createOrderProduct(request):
     
+    if request.is_ajax():
+        excludes = ['id', 'order_id', 'name', 'product_id', 'cod']
+        try:
+            postData = request.read()
+            postData = json.loads(postData)
+            
+            if isinstance(postData, dict) and postData.has_key("order_id") and postData.has_key("product_id"):
+                product = Products.objects.get(pk=postData['product_id'])
+                order = Orders.objects.get(pk=postData['order_id'])
+                print postData
+                for exclude in excludes:
+                    postData.pop(exclude)
+                postData['order'] = order
+                postData['product'] = product
+                obj = OrderProduct.objects.create(**postData)
+                jsonObj = simplejson.dumps({"success": True})
+                return HttpResponse(jsonObj, mimetype="application/json")
+            
+            elif isinstance(postData, list) and len(postData) > 0:
+                for obj in postData:
+                    if isinstance(obj, dict) and obj.has_key("order_id") and obj.has_key("product_id"):
+                        try:
+                            product = Products.objects.get(pk=obj['product_id'])
+                            order = Orders.objects.get(pk=obj['order_id'])
+                            for exclude in excludes:
+                                obj.pop(exclude)
+                            obj['order'] = order
+                            obj['product'] = product
+                            obj = OrderProduct.objects.create(**obj) 
+                            jsonObj = simplejson.dumps({"success": True})
+                            return HttpResponse(jsonObj, mimetype="application/json")
+                        except Exception, err:
+                            print err
+                            return Http404
+                    else:
+                        return Http404
+            else:
+                return Http404
+        except Exception, err:
+            print err
+            return Http404
+    else:
+        return Http404
+    
+
+
 
 @csrf_exempt   
 def updateOrderProducts(request):
-    excludes = ['product_id', 'order_id', 'name', 'id', 'cod']
     postData = request.read()
     postData = json.loads(postData)
-    #print postData
     
     if isinstance(postData, dict) and postData.has_key("id"):
-        product = OrderProduct.objects.get(pk=postData['id'])
-        product.quantity = postData['quantity']
-        product.note = postData['note']
-        product.save()
+        try:
+            product = OrderProduct.objects.get(pk=postData['id'])
+            product.quantity = postData['quantity']
+            product.note     = postData['note']
+            product.save()
+            jsonObj = simplejson.dumps({"success": True})
+            return HttpResponse(jsonObj, mimetype="application/json")
+            
+        except Exception, err:
+            print err
+            return Http404
+
     elif isinstance(postData, list):
         for obj in postData:
             if isinstance(obj, dict) and obj.has_key("id"):
@@ -341,81 +408,11 @@ def updateOrderProducts(request):
                 product.quantity = obj['quantity']
                 product.note = obj['note']
                 product.save()
-    else:
-        jsonObj = simplejson.dumps({"success": False})
+        jsonObj = simplejson.dumps({"success": True})
         return HttpResponse(jsonObj, mimetype="application/json")
+    else:
+        return Http404
         
-    jsonObj = simplejson.dumps({"success": False})
-    return HttpResponse(jsonObj, mimetype="application/json")
-
-
-
-@csrf_exempt 
-def createOrderProduct(request):
-    excludes = ['id', 'order_id', 'name', 'product_id']
-    if request.is_ajax():   
-        try:
-            postData = request.read()
-            postData = json.loads(postData)
-            #print postData
-
-            if isinstance(postData, dict) and postData.has_key("order_id"):
-                product = Products.objects.get(pk=postData['product_id'])
-                order = Orders.objects.get(pk=postData['order_id'])                
-                
-                obj = model_to_dict(Products.objects.get(pk=postData['product_id']))
-                for key in obj.keys():
-                    postData[key] = obj[key]
-                
-                for exclude in excludes:
-                    postData.pop(exclude)    
-                postData["order"] = order
-                postData['product'] = product
-                product = OrderProduct.objects.create(**postData)
-                
-                jsonObj = simplejson.dumps({"success": True})
-                return HttpResponse(jsonObj, mimetype="application/json")
-            
-            elif isinstance(postData, list):
-                for obj in postData:
-                    if isinstance(obj, dict) and obj.has_key("order_id"):
-                        product = Products.objects.get(pk=obj['product_id'])
-                        order = Orders.objects.get(pk=obj['order_id'])
-                        
-                        try:
-                            x = obj.copy()
-                            for exlude in excludes:
-                                x.pop(exlude)
-                            x['order'] = order.id
-                            x['product'] = product.id
-                            prod = OrderProduct.objects.filter(**x)
-                            if prod:
-                                continue
-                        except Exception, err:
-                            print err
-                        #queryDict = model_to_dict(Products.objects.get(pk=obj['product_id']))
-                        queryDict = model_to_dict(product)
-
-                        for key in queryDict.keys():
-                            obj[key] = queryDict[key]
-                            
-                        for exlude in excludes:
-                            obj.pop(exlude)
-                            
-                        obj['order'] = order
-                        obj['product'] = product
-                        product = OrderProduct.objects.create(**obj)
-                        
-                jsonObj = simplejson.dumps({"success": True})
-                return HttpResponse(jsonObj, mimetype="application/json")
-            
-        except Exception, err:
-            print err
-
-    else:
-        jsonObj = simplejson.dumps({"success": False})
-        return HttpResponse(jsonObj, mimetype="application/json")
-
 
 
 @csrf_exempt    
@@ -447,7 +444,6 @@ def deleteOrderProduct(request):
         
         except Exception, err:
             print err
-        
     else:
         jsonObj = simplejson.dumps({"success": False})
         return HttpResponse(jsonObj, mimetype="application/json")

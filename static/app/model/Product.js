@@ -3,7 +3,7 @@ Ext.define('AM.model.Product', {
     fields: [
         'id', 'cod', 'denumirePlic', 'denumireOferta', 'denumireLatina', 'soi', 'photoCode',
         'namesLanguages', 'roDesc', 'enDesc', 'huDesc', 'sbDesc', 'ruDesc',
-        'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'category'
+        'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'category', "barCode", "notes"
     ],
     hasMany: ['OrderProduct']
 });

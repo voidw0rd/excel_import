@@ -23,6 +23,8 @@ Ext.define('AM.view.product.List' ,{
         {header: 'Stage3', dataIndex: 'stage3', flex: 1},
         {header: 'Stage4', dataIndex: 'stage4', flex: 1},
         {header: 'Stage5', dataIndex: 'stage5', flex: 1},
-        {header: 'Category', dataIndex: 'category', flex: 1}
+        {header: 'Category', dataIndex: 'category', flex: 1},
+        {header: "Bar code", dataIndex: 'barCode', flex: 1},
+        {header: "Notes", dataIndex: 'notes', flex: 1}
     ]
 });

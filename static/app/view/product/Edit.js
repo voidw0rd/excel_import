@@ -49,7 +49,14 @@ Ext.define('AM.view.product.Edit', {
 										},{
 											name : 'category',
 											fieldLabel: 'Category'
-										}]
+										},{
+                                            name : 'barCode',
+											fieldLabel: 'EAN13'
+                                        },{
+                                            name: "notes",
+                                            fieldLabel: "Notes",
+                                            xtype: "textareafield"
+                                        }]
 									},{
 										xtype: 'fieldset',
 										bodyStyle: 'padding:5px 5px 0',

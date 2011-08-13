@@ -104,8 +104,8 @@ Ext.define("AM.view.orderProduct.Edit", {
             },{
                 text: "Print",
                 action: "printOrder",
-                scope: this,
-                handler: this.printOrder
+                scope: this
+                //handler: this.printOrder
             },"&nbsp;"]
 
         });
@@ -156,7 +156,7 @@ Ext.define("AM.view.orderProduct.Edit", {
         this.store.insert(0, rec);
         edit.startEdit(0,1);
     },
-    
+
     printOrder: function() {
         var orderId = this.up('form').getRecord().data.id;
         var request = Ext.Ajax.request({
@@ -181,7 +181,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                                     tag:'iframe',
                                     cls:'x-hidden',
                                     id:'iframe',
-                                    name:'iframe',
+                                    name:'iframe'
                                 }),
                                 form = body.createChild({
                                     tag: "form",
@@ -189,7 +189,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                                     id: "form",
                                     action: "downloadOrder&orderId=" + orderId,
                                     target:'iframe',
-                                    standardSubmit: true,
+                                    standardSubmit: true
                             });
                             form.dom.submit();
                         }
