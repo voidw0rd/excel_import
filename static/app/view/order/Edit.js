@@ -133,6 +133,30 @@ Ext.define('AM.view.order.Edit', {
                 ]
             }
         ];
+        this.tools = [{
+                type:'save',
+                qtip: 'Save',
+                // hidden:true,
+                handler: function(event, toolEl, panel){
+                    // refresh logic
+                    }
+                },{
+                type:'email',
+                qtip: 'Email form Data',
+                // hidden:true,
+                handler: function(event, toolEl, panel){
+                    // refresh logic
+                    }
+                },{
+                    type:'print',
+                    qtip: 'Print form Data',
+                    // hidden:true,
+                    handler: function(event, toolEl, panel){
+                        // refresh logic
+                    }
+                }
+
+        ],
         this.buttons = [
             {
                 text: 'Save',
