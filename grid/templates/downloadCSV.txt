@@ -1,0 +1,3 @@
+{% autoescape off %}{% for item in data %}{{ item.cod }}|{{ item.denumirePlic }}|{{ item.denumireOferta }}|{{ item.denumireLatina }}|{{ item.soi }}|{{ item.photoCode }}|{{ item.namesLanguages }}|{{ item.roDesc }}|{{ item.enDesc }}|{{ item.huDesc }}|{{ item.sbDesc }}|{{ item.ruDesc }}|{{ item.stage1 }}|{{ item.stage2 }}|{{ item.stage3 }}|{{ item.stage4 }}|{{ item.stage5 }}|{{ item.category }}|{{ item.notes }}|{{ item.barCode }}|{{ item.note }}|{{ item.quantity }}
+{% endfor %}
+{% endautoescape %}

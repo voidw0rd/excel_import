@@ -19,11 +19,14 @@ Ext.define('printMenu', {
     },
     
     print: function(e) {
+        
         console.log("[ dd ] print button clicked");
         var win    = e.parentMenu.zIndexParent,
             form   = win.down("form"),
             record = form.getRecord(); 
         console.log("[ dd ] Print order : " + record.data.name);
+
+        
     },
     
     printPreview: function(e) {
@@ -40,7 +43,6 @@ Ext.define('printMenu', {
             params: {"orderId": orderId},
             method: "GET",
             success: function(result, req){
-                console.log(result);
                 Ext.create("Ext.window.Window", {
                     title: "Print Order",
                     height: 600,

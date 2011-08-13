@@ -13,7 +13,7 @@ from settings import STATIC_FILE_PATH
 import json
 import csv
 import datetime
-from api import makePDF
+from api import makePDF, makeCSV
 import cStringIO as StringIO
 
 
@@ -449,6 +449,27 @@ def deleteOrderProduct(request):
         return HttpResponse(jsonObj, mimetype="application/json")
     
     
+
+@csrf_exempt  
+def downloadOrderProductCsv(request):
+    
+    try:
+        orderId = request.path.split("=")[-1]
+        order = Orders.objects.get(pk=orderId)
+        products = OrderProduct.objects.filter(order = order)
+        if len(products) > 0:
+            make = makeCSV()
+            csvFile = make.generateCSV(products)
+            response = HttpResponse(csvFile.getvalue(), mimetype = "text/csv")
+            response['Content-Disposition'] = 'attachment; filename=order-%s.csv' % str(datetime.datetime.now()).split('.')[0]
+            
+            return response
+            
+    except Exception, err:
+        print err
+        return Http404
+        
+
 
 @csrf_exempt    
 def updateProducts(request):

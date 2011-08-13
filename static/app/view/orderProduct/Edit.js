@@ -73,10 +73,17 @@ Ext.define("AM.view.orderProduct.Edit", {
                     scope: this,
                     handler: this.onDeleteClick
             },Ext.create('Ext.Toolbar.Fill'),{
-                text: "Print",
-                action: "printOrder",
-                scope: this,
-                //handler: this.printOrder
+                xtype: "button",
+                text: "Download as",
+                menu: [{
+                        text: "as CSV",
+                        handler: this.downloadCsv
+                        
+                    },{
+                        text: "as PDF",
+                        handler: this.downloadPdf
+                    }
+                ],
             },"&nbsp;"]
 
         });
@@ -127,4 +134,34 @@ Ext.define("AM.view.orderProduct.Edit", {
         this.store.insert(0, rec);
         edit.startEdit(0,1);
     },
+    
+    downloadCsv: function(e) {
+        var win    = e.parentMenu.zIndexParent,
+            form   = win.down("form"),
+            record = form.getRecord(); 
+        console.log("[ dd ] CSV - download products from order : " + record.data.name);
+        
+        
+        var body  = Ext.getBody(),
+            frame = body.createChild({
+                        tag:'iframe',
+                        cls:'x-hidden',
+                        id:'iframe',
+                        name:'iframe'}),
+            form = body.createChild({
+                        tag: "form",
+                        cls: "x-hidden",
+                        id: "form",
+                        action: "downloadCsv&orderId=" + record.data.id,
+                        target:'iframe',
+                        standardSubmit: true});
+        form.dom.submit();
+    },
+    
+    downloadPdf: function(e) {
+        var win    = e.parentMenu.zIndexParent,
+            form   = win.down("form"),
+            record = form.getRecord(); 
+        console.log("[ dd ] PDF - download products from order : " + record.data.name);
+    }
 });
