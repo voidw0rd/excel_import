@@ -31,7 +31,7 @@ class OrderProduct(models.Model):
     quantity = models.IntegerField()
     order = models.ForeignKey("Orders", related_name = "order_products")
     note = models.TextField()
-
+    modified = models.BooleanField()
 
 class OrderStatuses(models.Model):
     
