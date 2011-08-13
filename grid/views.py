@@ -337,10 +337,11 @@ def fetchOrderProducts(request):
 def createOrderProduct(request):
     
     if request.is_ajax():
-        excludes = ['id', 'order_id', 'name', 'product_id', 'cod']
+        excludes = ['id', 'order_id', 'name', 'product_id', 'cod', 'modified']
         try:
             postData = request.read()
             postData = json.loads(postData)
+            print postData
             
             if isinstance(postData, dict) and postData.has_key("order_id") and postData.has_key("product_id"):
                 product = Products.objects.get(pk=postData['product_id'])
@@ -422,7 +423,8 @@ def deleteOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            #print postData
+            print postData
+            
             if isinstance(postData, dict) and postData.has_key('id'):
                 queryObj = OrderProduct.objects.filter(pk=postData['id'])
                 if len(queryObj) == 0:
@@ -433,10 +435,7 @@ def deleteOrderProduct(request):
             elif isinstance(postData, list):
                 for item in postData:
                     if item.has_key("id"):
-                        queryObj = OrderProduct.objects.filter(pk=item['id'])
-                        if len(queryObj) == 0:
-                            jsonObj = simplejson.dumps({"success": False})
-                            return HttpResponse(jsonObj, mimetype="application/json")
+                        queryObj = OrderProduct.objects.get(pk=item['id'])
                         queryObj.delete()
 
             jsonObj = simplejson.dumps({"success": True, "data": []})

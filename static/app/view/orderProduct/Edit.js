@@ -185,7 +185,7 @@ Ext.define("AM.view.orderProduct.Edit", {
             form   = win.down("form"),
             record = form.getRecord(); 
         console.log("[ dd ] PDF - download products from order : " + record.data.name);
-    }
+    },
 
     printOrder: function() {
         var orderId = this.up('form').getRecord().data.id;

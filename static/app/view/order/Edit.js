@@ -37,47 +37,7 @@ Ext.define('printMenu', {
         console.log("[ dd ] Get print preview for order : " + record.data.name);
         
         
-        var orderId = record.data.id;
-        var request = Ext.Ajax.request({
-            url: "printOrder",
-            params: {"orderId": orderId},
-            method: "GET",
-            success: function(result, req){
-                Ext.create("Ext.window.Window", {
-                    title: "Print Order",
-                    height: 600,
-                    width: 700,
-                    autoScroll: true,
-                    html: result.responseText,
-                    items: {
-                        xtype: "button",
-                        text: "Download as CSV",
-                        id: "download",
-                        handler: function() {
-                            var body = Ext.getBody(),
-                                frame = body.createChild({
-                                    tag:'iframe',
-                                    cls:'x-hidden',
-                                    id:'iframe',
-                                    name:'iframe',
-                                }),
-                                form = body.createChild({
-                                    tag: "form",
-                                    cls: "x-hidden",
-                                    id: "form",
-                                    action: "downloadOrder&orderId=" + orderId,
-                                    target:'iframe',
-                                    standardSubmit: true,
-                            });
-                            form.dom.submit();
-                        }
-                    }
-                }).show();
-            },
-            failure: function(result, req){
-                console.log(result);
-            }
-        });
+        
     }
     
 });
@@ -98,9 +58,6 @@ Ext.define('AM.view.order.Edit', {
     width: 700,
     
     initComponent: function() {
-        this.tools = [
-            Ext.create("printMenu")
-        ],
         
         this.items = [
             {
@@ -152,7 +109,51 @@ Ext.define('AM.view.order.Edit', {
                     qtip: 'Print form Data',
                     // hidden:true,
                     handler: function(event, toolEl, panel){
-                        // refresh logic
+                        
+                        console.log
+                        
+                        
+                        var orderId = 1;//record.data.id;
+                        var request = Ext.Ajax.request({
+                            url: "printOrder",
+                            params: {"orderId": orderId},
+                            method: "GET",
+                            success: function(result, req){
+                                Ext.create("Ext.window.Window", {
+                                    title: "Print Order",
+                                    height: 600,
+                                    width: 700,
+                                    autoScroll: true,
+                                    html: result.responseText,
+                                    items: {
+                                        xtype: "button",
+                                        text: "Download as CSV",
+                                        id: "download",
+                                        handler: function() {
+                                            var body = Ext.getBody(),
+                                                frame = body.createChild({
+                                                    tag:'iframe',
+                                                    cls:'x-hidden',
+                                                    id:'iframe',
+                                                    name:'iframe',
+                                                }),
+                                                form = body.createChild({
+                                                    tag: "form",
+                                                    cls: "x-hidden",
+                                                    id: "form",
+                                                    action: "downloadOrder&orderId=" + orderId,
+                                                    target:'iframe',
+                                                    standardSubmit: true,
+                                            });
+                                            form.dom.submit();
+                                        }
+                                    }
+                                }).show();
+                            },
+                            failure: function(result, req){
+                                console.log(result);
+                            }
+                        });                    
                     }
                 }
 
