@@ -92,12 +92,12 @@ Ext.define("AM.view.orderProduct.Edit", {
                         text:'CSV',
                         action: "exportCsv",
                         scope: this,
-                        handler: this.exportCsv
+                        handler: this.downloadCsv
                     },{
                         text:'PDF',
                         action: "exportPdf",
                         scope: this,
-                        handler: this.exportPdf
+                        handler: this.downloadPdf
                     }
                 
                 ]
@@ -156,6 +156,36 @@ Ext.define("AM.view.orderProduct.Edit", {
         this.store.insert(0, rec);
         edit.startEdit(0,1);
     },
+    
+    downloadCsv: function(e) {
+        var win    = e.parentMenu.zIndexParent,
+            form   = win.down("form"),
+            record = form.getRecord(); 
+        console.log("[ dd ] CSV - download products from order : " + record.data.name);
+        
+        
+        var body  = Ext.getBody(),
+            frame = body.createChild({
+                        tag:'iframe',
+                        cls:'x-hidden',
+                        id:'iframe',
+                        name:'iframe'}),
+            form = body.createChild({
+                        tag: "form",
+                        cls: "x-hidden",
+                        id: "form",
+                        action: "downloadCsv&orderId=" + record.data.id,
+                        target:'iframe',
+                        standardSubmit: true});
+        form.dom.submit();
+    },
+    
+    downloadPdf: function(e) {
+        var win    = e.parentMenu.zIndexParent,
+            form   = win.down("form"),
+            record = form.getRecord(); 
+        console.log("[ dd ] PDF - download products from order : " + record.data.name);
+    },
 
     printOrder: function() {
         var orderId = this.up('form').getRecord().data.id;
@@ -202,10 +232,6 @@ Ext.define("AM.view.orderProduct.Edit", {
         });
         
     },
-
+    
     importCsv: function(){console.log('Import CSV clicked')},
-    exportCsv: function(){console.log('Export CSV clicked')},
-    exportPdf: function(){console.log('Export PDF clicked')}
-
-
 });
