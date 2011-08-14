@@ -307,23 +307,26 @@ def fetchOrderProducts(request):
                 tmpList = []
                 tmpData = {}
                 for product in products.all():
-                    orderProduct = model_to_dict(product)
                     data = {}
                     data['product_id'] = product.product.id
                     data['order_id']   = product.order.id
                     data['quantity']   = product.quantity
                     data['note']       = product.note 
+                    data['modified']   = product.modified
+                    data['id']         = product.id
                     product = model_to_dict(product.product)
+                    product.pop("id")
                     for key in product.keys():
-                        data[key] = product[key]
-                        if key == "denumirePlic":
+                        if key == "denumirePlic": 
                             data['name'] = product[key]
+                        data[key] = product[key]
                     tmpList.append(data)
                 tmpList.append(data)
                 tmpData["data"] = tmpList
                 tmpData["success"] = True
                 
-                #print json.dumps(tmpData, indent = 4)
+                print "-" * 30
+                print json.dumps(tmpData, indent = 4)
                 jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
                 return HttpResponse(jsonObj, mimetype="application/json")
             except Exception, err:
@@ -388,12 +391,15 @@ def createOrderProduct(request):
 def updateOrderProducts(request):
     postData = request.read()
     postData = json.loads(postData)
+    print "-" * 30
+    print postData
     
     if isinstance(postData, dict) and postData.has_key("id"):
         try:
             product = OrderProduct.objects.get(pk=postData['id'])
             product.quantity = postData['quantity']
             product.note     = postData['note']
+            product.modified = postData['modified']
             product.save()
             jsonObj = simplejson.dumps({"success": True})
             return HttpResponse(jsonObj, mimetype="application/json")
@@ -408,6 +414,7 @@ def updateOrderProducts(request):
                 product = OrderProduct.objects.get(pk=obj['id'])
                 product.quantity = obj['quantity']
                 product.note = obj['note']
+                product.modified = obj['modified']
                 product.save()
         jsonObj = simplejson.dumps({"success": True})
         return HttpResponse(jsonObj, mimetype="application/json")

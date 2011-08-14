@@ -101,11 +101,6 @@ Ext.define("AM.view.orderProduct.Edit", {
                     }
                 
                 ]
-            },{
-                text: "Print",
-                action: "printOrder",
-                scope: this
-                //handler: this.printOrder
             },"&nbsp;"]
 
         });
