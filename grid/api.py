@@ -3,8 +3,9 @@ import cStringIO as StringIO
 from django.template import Context, Template
 from django.template.loader import get_template
 from django.forms import model_to_dict
-from models import Products
-
+from models import Products, OrderProduct, Orders
+from gridtest.settings import STATIC_FILE_PATH
+import csv
 
 
 class makePDF(object):
@@ -37,32 +38,61 @@ class makeCSV(object):
     def __init__(self):
         pass
         
-    def generateCSV(self, products):
-        excludes = ["product", "id", 'notes']
-        try:
+    def generateCSV(self, products):        
+        
+        try: 
             data = []
             for product in products.all():
-                tmpProduct = model_to_dict(product)
                 obj = {}
-                for key in tmpProduct.keys():
-                    obj[key] = tmpProduct[key]
-                
-                product = model_to_dict(product.product)
+                obj['product_name'] = product.product.denumirePlic
+                obj['cod'] = product.product.cod
+                obj['order_name'] = product.order.name
+                product = model_to_dict(product)
                 for key in product.keys():
                     obj[key] = product[key]
                 
-                for exclude in excludes:
-                    obj.pop(exclude)
-                
                 data.append(obj)
-                    
+            
             t = get_template("downloadCSV.txt")
             c = Context({'data': data})
-            csv = t.render(c)
-            
-            resp = StringIO.StringIO(csv)
-            return resp
+            obj = t.render(c)
+            print data
+            return StringIO.StringIO(obj)
             
         except Exception, err:
             print err
             return None
+
+
+
+class importCSV(object):
+    
+    def __init__(self):
+        pass
+        
+        
+    def handleCSV(self, _file):
+        
+        destination = open(STATIC_FILE_PATH + '/' + _file.name, 'wb')
+        for chunk in _file.chunks():
+            destination.write(chunk.replace('\x00', ''))
+        destination.close()
+
+        reader = csv.reader(open(STATIC_FILE_PATH + '/' + _file.name), delimiter='|', quotechar='|', dialect=csv.excel)
+        data = {}
+        for row in reader:
+            if len(row) > 0:
+                try:
+                    data['order'] = Orders.objects.get(pk=row[1])
+                    data['product'] = Products.objects.get(pk=row[3])
+                    data['note'] = row[5]
+                    data['quantity'] = row[6]
+                    data['modified'] = row[7]
+                    obj = OrderProduct.objects.create(**data)
+                    
+                except Exception, err:
+                    print err
+                    return None
+        return True
+        
+        

@@ -27,7 +27,8 @@ urlpatterns = patterns('',
     (r"^data/updateOrderProducts", updateOrderProducts),
     (r"^data/createOrderProduct", createOrderProduct),
     (r"^data/deleteOrderProduct", deleteOrderProduct),
-    (r"^downloadCsv", downloadOrderProductCsv),
+    (r"^downloadCsv", exportOrderProductCsv),
+    (r"^importOrderProductCsv", importOrderProductCsv)
 )
 
 

@@ -1,3 +1,3 @@
-{% autoescape off %}{% for item in data %}{{ item.cod }}|{{ item.denumirePlic }}|{{ item.denumireOferta }}|{{ item.denumireLatina }}|{{ item.soi }}|{{ item.photoCode }}|{{ item.namesLanguages }}|{{ item.roDesc }}|{{ item.enDesc }}|{{ item.huDesc }}|{{ item.sbDesc }}|{{ item.ruDesc }}|{{ item.stage1 }}|{{ item.stage2 }}|{{ item.stage3 }}|{{ item.stage4 }}|{{ item.stage5 }}|{{ item.category }}|{{ item.notes }}|{{ item.barCode }}|{{ item.note }}|{{ item.quantity }}
+{% autoescape off %}{% for item in data %}{{ item.order_name }}|{{ item.order }}|{{ item.product_name }}|{{ item.product }}|{{ item.cod }}|{{ item.note }}|{{ item.quantity }}|{{ item.modified }}
 {% endfor %}
 {% endautoescape %}

@@ -46,8 +46,28 @@ class Orders(models.Model):
     status = models.ForeignKey(OrderStatuses, related_name = "ordersStatus")
     
 
+
+class Address(models.Model):
     
+    str = models.TextField()
+    postalCode = models.CharField(max_length = 20)
+    town = models.CharField(max_length = 20)
+    county = models.CharField(max_length = 20)
+    country = models.CharField(max_length = 20)
     
+
+class Supplier(models.Model):
+    
+    firstName = models.CharField(max_length = 20)
+    lastName = models.CharField(max_length = 20)
+    address = models.ForeignKey(Address, related_name = "primaryAddress")
+    secondaryAddress = models.ForeignKey(Address, related_name = "secondaryAddress", null = True, blank = True)
+    phone = models.CharField(max_length = 20)
+    secondaryPhone = models.CharField(max_length = 20, null = True, blank = True)
+    email = models.EmailField(max_length=75)
+    secondaryEmail = models.EmailField(max_length=75)
+    note = models.TextField()
+
 
 
 

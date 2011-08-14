@@ -109,11 +109,7 @@ Ext.define('AM.view.order.Edit', {
                     qtip: 'Print form Data',
                     // hidden:true,
                     handler: function(event, toolEl, panel){
-                        
-                        console.log
-                        
-                        
-                        var orderId = 1;//record.data.id;
+                        var orderId = panel.up("window").down("form").getRecord().data.id;
                         var request = Ext.Ajax.request({
                             url: "printOrder",
                             params: {"orderId": orderId},
@@ -127,7 +123,7 @@ Ext.define('AM.view.order.Edit', {
                                     html: result.responseText,
                                     items: {
                                         xtype: "button",
-                                        text: "Download as CSV",
+                                        text: "Download as PDF",
                                         id: "download",
                                         handler: function() {
                                             var body = Ext.getBody(),
@@ -156,7 +152,6 @@ Ext.define('AM.view.order.Edit', {
                         });                    
                     }
                 }
-
         ],
         this.buttons = [
             {

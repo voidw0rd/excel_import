@@ -1,3 +1,82 @@
+Ext.define("uploadForm", {
+    
+    extend: "Ext.form.Panel",
+    alias: "widget.uploadForm",
+    
+    frame: false,
+    
+    initComponent: function() {
+        
+        this.bodyStyle = 'background: none; border: none;',
+        
+        this.items = [{
+            xtype: 'filefield',
+            emptyText: 'Select an csv file',
+            hideLabel: true,
+            name: 'csvFile',
+            buttonText: 'Browse',
+            width: 350,
+            style: "margin-top: 15px; margin-left: 10px;"
+        }],
+        
+        this.buttons = [{
+            text: 'Upload',
+            
+            handler: function(){
+                var form = this.up('form').getForm();
+                var win = this.up("window");
+                if(form.isValid()){
+                    form.submit({
+                        url: 'importOrderProductCsv',
+                        waitMsg: 'Uploading your csv...',
+                        success: function(fp, o) {
+                            console.log("csv has been uploaded ...");
+                            win.hide();
+                        },
+                        
+                        failure: function(fp, o) {
+                            console.log("failed");
+                        }
+                    });
+                }
+            }
+        },{
+            text: 'Reset',
+            style: "margin-right: 13px;",
+            handler: function() {
+                this.up('form').getForm().reset();
+            }
+        }]    
+        this.callParent();
+    }
+});
+
+
+
+
+
+Ext.define("uploadWindow", {
+
+    extend: "Ext.window.Window",
+    
+    title: 'Upload a Photo',
+    width: 385,
+    height: 120,
+    
+    initComponent: function(){
+        
+        this.items = [{
+            xtype: "uploadForm"
+        }]
+
+        this.callParent();
+    }
+});
+
+
+
+
+
 Ext.define("AM.view.orderProduct.Edit", {
 
     extend: "Ext.grid.Panel",
@@ -182,51 +261,14 @@ Ext.define("AM.view.orderProduct.Edit", {
         console.log("[ dd ] PDF - download products from order : " + record.data.name);
     },
 
-    printOrder: function() {
-        var orderId = this.up('form').getRecord().data.id;
-        var request = Ext.Ajax.request({
-            url: "printOrder",
-            params: {"orderId": orderId},
-            method: "GET",
-            success: function(result, req){
-                console.log(result);
-                Ext.create("Ext.window.Window", {
-                    title: "Print Order",
-                    height: 600,
-                    width: 700,
-                    autoScroll: true,
-                    html: result.responseText,
-                    items: {
-                        xtype: "button",
-                        text: "Download as CSV",
-                        id: "download",
-                        handler: function() {
-                            var body = Ext.getBody(),
-                                frame = body.createChild({
-                                    tag:'iframe',
-                                    cls:'x-hidden',
-                                    id:'iframe',
-                                    name:'iframe'
-                                }),
-                                form = body.createChild({
-                                    tag: "form",
-                                    cls: "x-hidden",
-                                    id: "form",
-                                    action: "downloadOrder&orderId=" + orderId,
-                                    target:'iframe',
-                                    standardSubmit: true
-                            });
-                            form.dom.submit();
-                        }
-                    }
-                }).show();
-            },
-            failure: function(result, req){
-                console.log(result);
-            }
-        });
-        
-    },
     
-    importCsv: function(){console.log('Import CSV clicked')},
+    
+    importCsv: function(e){
+
+        
+        var x = Ext.create("uploadWindow").show();
+        
+
+        
+    }
 });

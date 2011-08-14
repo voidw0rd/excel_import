@@ -13,7 +13,7 @@ from settings import STATIC_FILE_PATH
 import json
 import csv
 import datetime
-from api import makePDF, makeCSV
+from api import makePDF, makeCSV, importCSV
 import cStringIO as StringIO
 
 
@@ -325,8 +325,7 @@ def fetchOrderProducts(request):
                 tmpData["data"] = tmpList
                 tmpData["success"] = True
                 
-                print "-" * 30
-                print json.dumps(tmpData, indent = 4)
+                #print json.dumps(tmpData, indent = 4)
                 jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
                 return HttpResponse(jsonObj, mimetype="application/json")
             except Exception, err:
@@ -344,12 +343,11 @@ def createOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            print postData
+            #print postData
             
             if isinstance(postData, dict) and postData.has_key("order_id") and postData.has_key("product_id"):
                 product = Products.objects.get(pk=postData['product_id'])
                 order = Orders.objects.get(pk=postData['order_id'])
-                print postData
                 for exclude in excludes:
                     postData.pop(exclude)
                 postData['order'] = order
@@ -391,8 +389,7 @@ def createOrderProduct(request):
 def updateOrderProducts(request):
     postData = request.read()
     postData = json.loads(postData)
-    print "-" * 30
-    print postData
+    #print postData
     
     if isinstance(postData, dict) and postData.has_key("id"):
         try:
@@ -402,7 +399,8 @@ def updateOrderProducts(request):
             product.modified = postData['modified']
             product.save()
             jsonObj = simplejson.dumps({"success": True})
-            return HttpResponse(jsonObj, mimetype="application/json")
+            #return HttpResponse(jsonObj, mimetype="application/json")
+            return HttpResponse(jsonObj)
             
         except Exception, err:
             print err
@@ -417,7 +415,8 @@ def updateOrderProducts(request):
                 product.modified = obj['modified']
                 product.save()
         jsonObj = simplejson.dumps({"success": True})
-        return HttpResponse(jsonObj, mimetype="application/json")
+        #return HttpResponse(jsonObj, mimetype="application/json")
+        return HttpResponse(jsonObj)
     else:
         return Http404
         
@@ -430,13 +429,14 @@ def deleteOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            print postData
+            #print postData
             
             if isinstance(postData, dict) and postData.has_key('id'):
                 queryObj = OrderProduct.objects.filter(pk=postData['id'])
                 if len(queryObj) == 0:
                     jsonObj = simplejson.dumps({"success": False})
-                    return HttpResponse(jsonObj, mimetype="application/json")
+                    #return HttpResponse(jsonObj, mimetype="application/json")
+                    return HttpResponse(jsonObj)
                 queryObj.delete()
                 
             elif isinstance(postData, list):
@@ -446,18 +446,20 @@ def deleteOrderProduct(request):
                         queryObj.delete()
 
             jsonObj = simplejson.dumps({"success": True, "data": []})
-            return HttpResponse(jsonObj, mimetype="application/json")
+            #return HttpResponse(jsonObj, mimetype="application/json")
+            return HttpResponse(jsonObj)
         
         except Exception, err:
             print err
     else:
         jsonObj = simplejson.dumps({"success": False})
-        return HttpResponse(jsonObj, mimetype="application/json")
+        #return HttpResponse(jsonObj, mimetype="application/json")
+        return HttpResponse(jsonObj)
     
     
 
 @csrf_exempt  
-def downloadOrderProductCsv(request):
+def exportOrderProductCsv(request):
     
     try:
         orderId = request.path.split("=")[-1]
@@ -466,7 +468,7 @@ def downloadOrderProductCsv(request):
         if len(products) > 0:
             make = makeCSV()
             csvFile = make.generateCSV(products)
-            response = HttpResponse(csvFile.getvalue(), mimetype = "text/csv")
+            response = HttpResponse(csvFile.getvalue(), mimetype = "text/plain")
             response['Content-Disposition'] = 'attachment; filename=order-%s.csv' % str(datetime.datetime.now()).split('.')[0]
             
             return response
@@ -475,13 +477,31 @@ def downloadOrderProductCsv(request):
         print err
         return Http404
         
+        
+        
+        
+@csrf_exempt    
+def importOrderProductCsv(request):
+    
+    if request.FILES.has_key("csvFile"):
+        _file = importCSV()
+        obj = _file.handleCSV(request.FILES['csvFile'])
+        if obj:
+            jsonObj = simplejson.dumps({"success": True})
+            return HttpResponse(jsonObj)
+    
+    jsonObj = simplejson.dumps({"success": False})
+    return HttpResponse(jsonObj)
+    
+    
+
 
 
 @csrf_exempt    
 def updateProducts(request):
     
     if request.method == "POST":
-
+        
         tmp = request.read()
         tmp = json.loads(tmp)
         if isinstance(tmp, list):
