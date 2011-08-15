@@ -57,7 +57,7 @@ class makeCSV(object):
 			for product in products.all():
 				writer = csv.writer(_file, delimiter='|', quotechar='|', dialect=csv.excel)
 				#writer.writerow([product.id, product.product.denumirePlic, product.order.id])
-				writer.writerow(self.encodeRow([product.order.id, product.order.name, product.product.id, product.product.cod, product.product.denumirePlic, product.quantity, product.note, product.modified]))
+				writer.writerow(self.encodeRow([product.order.id, product.order.name, product.product.id, product.product.cod, product.product.denumirePlic, product.quantity, product.note or '-', product.modified]))
 			return _file
 			
         except Exception, err:
