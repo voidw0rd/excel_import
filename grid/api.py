@@ -38,31 +38,34 @@ class makeCSV(object):
     def __init__(self):
         pass
         
+    def encodeRow(self, data):
+		
+		tmp = []
+		for item in data:
+			if isinstance(item, unicode):
+				tmp.append(item.encode('UTF-8'))
+			else:
+				tmp.append(item)
+		return tmp
+				
+    
+    
     def generateCSV(self, products):        
-        
-        try: 
-            data = []
-            for product in products.all():
-                obj = {}
-                obj['product_name'] = product.product.denumirePlic
-                obj['cod'] = product.product.cod
-                obj['order_name'] = product.order.name
-                product = model_to_dict(product)
-                for key in product.keys():
-                    obj[key] = product[key]
-                
-                data.append(obj)
-            
-            t = get_template("downloadCSV.txt")
-            c = Context({'data': data})
-            obj = t.render(c)
-            print data
-            return StringIO.StringIO(obj)
-            
+        try:
+			data = []
+			_file = StringIO.StringIO()
+			for product in products.all():
+				writer = csv.writer(_file, delimiter='|', quotechar='|', dialect=csv.excel)
+				#writer.writerow([product.id, product.product.denumirePlic, product.order.id])
+				writer.writerow(self.encodeRow([product.order.id, product.order.name, product.product.id, product.product.cod, product.product.denumirePlic, product.quantity, product.note, product.modified]))
+			return _file
+			
         except Exception, err:
             print err
             return None
-
+	
+	
+	
 
 
 class importCSV(object):
@@ -83,10 +86,10 @@ class importCSV(object):
         for row in reader:
             if len(row) > 0:
                 try:
-                    data['order'] = Orders.objects.get(pk=row[1])
-                    data['product'] = Products.objects.get(pk=row[3])
-                    data['note'] = row[5]
-                    data['quantity'] = row[6]
+                    data['order'] = Orders.objects.get(pk = row[0])
+                    data['product'] = Products.objects.get(pk = row[2])
+                    data['quantity'] = row[5]
+                    data['note'] = row[6]
                     data['modified'] = row[7]
                     obj = OrderProduct.objects.create(**data)
                     

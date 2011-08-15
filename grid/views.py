@@ -303,7 +303,7 @@ def _sendMail(orderName):
 def fetchOrderProducts(request):
     
     if request.is_ajax():
-        get = request.GET	
+        get = request.GET
         if isinstance(get, dict) and get.has_key("orderId"):
             try:
                 orderId  = get['orderId']
@@ -477,10 +477,14 @@ def exportOrderProductCsv(request):
         if len(products) > 0:
             make = makeCSV()
             csvFile = make.generateCSV(products)
+            
             response = HttpResponse(csvFile.getvalue(), mimetype = "text/plain")
             response['Content-Disposition'] = 'attachment; filename=order-%s.csv' % str(datetime.datetime.now()).split('.')[0]
             
             return response
+        
+        jsonObj = simplejson.dumps({"success": True, "data": []})
+        return HttpResponse(jsonObj)
             
     except Exception, err:
         print err

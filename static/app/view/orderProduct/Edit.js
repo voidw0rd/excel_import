@@ -32,6 +32,14 @@ Ext.define("uploadForm", {
                         success: function(fp, o) {
                             console.log("csv has been uploaded ...");
                             win.hide();
+                            //store.load({params: {orderId: this.up("form").getRecord().data.id}});
+                            var grid = Ext.getCmp('orderproductsgrid'),
+                                record = grid.up("form").getRecord();
+                            
+                            grid.store.load({params: {orderId: record.data.id}});
+                            
+                            console.log();
+                            
                         },
                         
                         failure: function(fp, o) {
@@ -64,7 +72,6 @@ Ext.define("uploadWindow", {
     height: 120,
     
     initComponent: function(){
-        
         this.items = [{
             xtype: "uploadForm"
         }]
@@ -266,7 +273,13 @@ Ext.define("AM.view.orderProduct.Edit", {
     importCsv: function(e){
 
         
-        var x = Ext.create("uploadWindow").show();
+        var win = Ext.create("uploadWindow").show();
+        console.log(win.success);
+        if (win.success === true) {
+            console.log("loaded");
+            this.store.load({params: {orderId: this.up("form").getRecord().data.id}});
+        }
+        
         
 
         
