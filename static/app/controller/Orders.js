@@ -1,9 +1,9 @@
 Ext.define('AM.controller.Orders', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Orders', 'OrderProducts'],
+    stores: ['Orders', 'OrderProducts', 'Company'],
 
-    models: ['Order', 'OrderProduct'],
+    models: ['Order', 'OrderProduct', 'Company'],
 
     views: ['order.Edit', 'order.List', 'orderProduct.Edit'],
 

@@ -28,7 +28,11 @@ urlpatterns = patterns('',
     (r"^data/createOrderProduct", createOrderProduct),
     (r"^data/deleteOrderProduct", deleteOrderProduct),
     (r"^downloadCsv", exportOrderProductCsv),
-    (r"^importOrderProductCsv", importOrderProductCsv)
+    (r"^importOrderProductCsv", importOrderProductCsv),
+    
+    # company
+    (r"^data/CompanyRead", companyRead),
+    
 )
 
 

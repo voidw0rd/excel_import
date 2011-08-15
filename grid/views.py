@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.mail import send_mail
-from models import Products, Orders, OrderProduct, OrderStatuses
+from models import Products, Orders, OrderProduct, OrderStatuses, Company, Address
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from settings import STATIC_FILE_PATH
@@ -98,6 +98,7 @@ def importDataBase(request):
         data["category"] = row[17]
         data['notes'] = "Product notes"
         data['barCode'] = "11134ABNCCA"
+        data['modified'] = False
         
         x = Products.objects.create(**data)
         
@@ -149,7 +150,7 @@ def updateOrders(request):
     try:
         postData = request.read()
         postData = json.loads(postData)
-        #print postData
+        print postData
         if isinstance(postData, list):
             for item in postData:
                 queryObj = Orders.objects.filter(pk=item["id"])
@@ -174,16 +175,24 @@ def updateOrders(request):
         jsonObj = simplejson.dumps({"success": False})
         return HttpResponse(jsonObj, mimetype="application/json")
 
+
+
 @csrf_exempt    
 def createOrder(request):
+	try: 
+		postData = request.read()
+		postData = json.loads(postData)
+		print postData
+		if isinstance(postData, dict) and postData.has_key("status"):
+			orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
+		
+		jsonObj = simplejson.dumps({"success": True})
+		return HttpResponse(jsonObj, mimetype="application/json")
 
-    postData = request.read()
-    postData = json.loads(postData)
-    if isinstance(postData, dict) and postData.has_key("status"):
-        orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
-    
-    jsonObj = simplejson.dumps({"success": True})
-    return HttpResponse(jsonObj, mimetype="application/json")
+	except Exception, err:
+		print err
+		return Http404
+
 
 @csrf_exempt  
 def deleteOrder(request):
@@ -294,7 +303,7 @@ def _sendMail(orderName):
 def fetchOrderProducts(request):
     
     if request.is_ajax():
-        get = request.GET
+        get = request.GET	
         if isinstance(get, dict) and get.has_key("orderId"):
             try:
                 orderId  = get['orderId']
@@ -523,5 +532,62 @@ def updateProducts(request):
 
     jsonObj = simplejson.dumps({"success": True, "data" : []})
     return HttpResponse(jsonObj, mimetype="application/json")
-    
+
+
+
+
+@csrf_exempt   
+def companyRead(request):
+	
+	if request.is_ajax():
+		try:
+			#x = Company.objects.create(name = "SRL MintRubbing", address = Address.objects.create())
+			company = Company.objects.all()
+			
+			if len(company) == 0:
+				jsonObj = simplejson.dumps({"success": True, "data" : []})
+				return HttpResponse(jsonObj, mimetype="application/json")
+			
+			tmpList = []
+			tmpDict = {}
+			for item in company:
+				response = model_to_dict(item)
+				#print "--" * 10
+				obj = {}
+				for key in response.keys():
+					obj[key] = response[key]
+					
+				obj.pop('address')
+				response = model_to_dict(item.address)
+				for key in response.keys():
+					obj[key] = response[key]
+				
+				tmpList.append(obj)
+			
+			tmpDict['data'] = tmpList
+			tmpDict['success'] = True
+			#print json.dumps(tmpDict, indent = 4)
+			
+			jsonObj = simplejson.dumps(tmpDict)
+			return HttpResponse(jsonObj, mimetype = "application/json")
+		
+		except Exception, err:
+			print err
+			return Http404
+		
+	else:
+		pass
+
+
+
+
+
+
+
+
+
+
+
+
+   
 

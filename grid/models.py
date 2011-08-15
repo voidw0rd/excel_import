@@ -23,6 +23,8 @@ class Products(models.Model):
     category = models.CharField(max_length = 1)
     notes = models.TextField()
     barCode = models.CharField(max_length = 13)
+    modified = models.BooleanField()
+    
     
     
 class OrderProduct(models.Model):
@@ -33,18 +35,12 @@ class OrderProduct(models.Model):
     note = models.TextField()
     modified = models.BooleanField()
 
+
+
 class OrderStatuses(models.Model):
     
     status = models.CharField(max_length = 10)
 
-
-class Orders(models.Model):
-    
-    timestamp = models.DateTimeField(auto_now_add = True)
-    note = models.TextField()
-    name = models.CharField(max_length = 50, blank = False, null = False)
-    status = models.ForeignKey(OrderStatuses, related_name = "ordersStatus")
-    
 
 
 class Address(models.Model):
@@ -52,22 +48,28 @@ class Address(models.Model):
     str = models.TextField()
     postalCode = models.CharField(max_length = 20)
     town = models.CharField(max_length = 20)
-    county = models.CharField(max_length = 20)
     country = models.CharField(max_length = 20)
+
     
 
-class Supplier(models.Model):
+class Company(models.Model):
     
-    firstName = models.CharField(max_length = 20)
-    lastName = models.CharField(max_length = 20)
-    address = models.ForeignKey(Address, related_name = "primaryAddress")
-    secondaryAddress = models.ForeignKey(Address, related_name = "secondaryAddress", null = True, blank = True)
+    name = models.CharField(max_length = 20)
+    address = models.ForeignKey(Address, related_name = "CompanyAddress")
     phone = models.CharField(max_length = 20)
-    secondaryPhone = models.CharField(max_length = 20, null = True, blank = True)
     email = models.EmailField(max_length=75)
-    secondaryEmail = models.EmailField(max_length=75)
     note = models.TextField()
+    type = models.CharField(max_length = 1)
+    
+    
 
+class Orders(models.Model):
+    
+    timestamp = models.DateTimeField(auto_now_add = True)
+    note = models.TextField()
+    name = models.CharField(max_length = 50, blank = False, null = False)
+    status = models.ForeignKey(OrderStatuses, related_name = "ordersStatus")
+    company = models.ForeignKey(Company, related_name = "ordersCompany", blank = True, null = True)
 
 
 

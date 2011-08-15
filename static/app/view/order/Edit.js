@@ -85,6 +85,30 @@ Ext.define('AM.view.order.Edit', {
                         name: "timestamp",
                         fieldLabel: "Created on",
                         readOnly: true
+                    },{
+                        xtype: "combobox",
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        selectOnTab: true,
+                        multiSelect: false,
+                        forceSelection : true,
+                        emptyText: 'Select company',
+                        displayField: 'name',
+                        valueField:'name',
+                        lazyRender: true,
+                        fieldLabel: "Company",
+                        store: Ext.create("AM.store.Company"),
+                        listeners: {
+                            'select': function(combo, record){
+                                console.log(record[0]);
+                                var gridRecord = combo.up('form').getRecord();
+                                gridRecord.data.company = record[0].data.id;
+                                // force a reload
+                                gridRecord.dirty = true;
+                                combo.up("form").loadRecord(gridRecord);
+                            }
+                        },
+                        width: 370
                     },
                     Ext.create("AM.view.orderProduct.Edit")
                 ]
