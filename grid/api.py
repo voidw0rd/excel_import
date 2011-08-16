@@ -99,3 +99,66 @@ class importCSV(object):
         return True
         
         
+###############################################################
+# this is just for development                  ###############
+
+
+from models import *
+
+
+def generateCompany():
+    
+    test = Company.objects.all()
+    if len(test) > 0:
+        return True
+        
+    
+    dataDict = {}
+
+    dataDict['name'] = "SRL Example"
+    dataDict['phone'] = "0743312234"
+    dataDict['email'] = "Example@srlexample.com"
+    dataDict['note'] = "This is SRL Example note ..."
+    dataDict['type'] = "C"
+    dataDict['address'] = Address.objects.create(str = "Test street", 
+                                                 postalCode="002345", 
+                                                 town = "Timisoara",
+                                                 country = "Romania")
+    
+    obj = Company.objects.create(**dataDict)
+    
+    dataDict['name'] = "SRL Test"
+    dataDict['phone'] = "0743312234"
+    dataDict['email'] = "Test@srltest.com"
+    dataDict['note'] = "This is SRL Test note ..."
+    dataDict['type'] = "C"
+    dataDict['address'] = Address.objects.create(str = "Blabla street", 
+                                                 postalCode="00234534", 
+                                                 town = "Timisoara",
+                                                 country = "Romania")
+    obj = Company.objects.create(**dataDict)
+    
+    return True
+    
+def generateOrders():
+    
+    order = Orders.objects.all()
+    if len(order) > 0:
+        return False
+    
+    orderDict = {}
+    
+    orderDict['note'] = "note for an order ... x"
+    orderDict['name'] = "Comanda X"
+    orderDict['company'] = Company.objects.get(pk = 1)
+    orderDict['status'] = OrderStatuses.objects.create(status = "new") 
+     
+    obj = Orders.objects.create(**orderDict)
+
+    return True
+    
+    
+    
+
+    
+ 

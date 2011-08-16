@@ -36,8 +36,6 @@ Ext.define('printMenu', {
             record = form.getRecord(); 
         console.log("[ dd ] Get print preview for order : " + record.data.name);
         
-        
-        
     }
     
 });
@@ -94,7 +92,7 @@ Ext.define('AM.view.order.Edit', {
                         forceSelection : true,
                         emptyText: 'Select company',
                         displayField: 'name',
-                        valueField:'name',
+                        valueField:'company',
                         lazyRender: true,
                         fieldLabel: "Company",
                         store: Ext.create("AM.store.Company"),

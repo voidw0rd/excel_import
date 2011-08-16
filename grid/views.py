@@ -55,6 +55,10 @@ def getJsonFromModel(querySet, excludes):
 
 def index(request):    
     
+    import api
+    if api.generateCompany() and api.generateOrders():
+        pass
+    
     #send_mail('sendGrid - email', 'Greetz, this is just a test email ', 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
     
     return render_to_response(
@@ -150,7 +154,7 @@ def updateOrders(request):
     try:
         postData = request.read()
         postData = json.loads(postData)
-        print postData
+        #print postData
         if isinstance(postData, list):
             for item in postData:
                 queryObj = Orders.objects.filter(pk=item["id"])
@@ -182,7 +186,7 @@ def createOrder(request):
 	try: 
 		postData = request.read()
 		postData = json.loads(postData)
-		print postData
+		#print postData
 		if isinstance(postData, dict) and postData.has_key("status"):
 			orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
 		
@@ -320,11 +324,12 @@ def fetchOrderProducts(request):
                     data['product_id'] = product.product.id
                     data['order_id']   = product.order.id
                     data['quantity']   = product.quantity
-                    data['note']       = product.note 
+                    data['note']       = product.note
                     data['modified']   = product.modified
                     data['id']         = product.id
                     product = model_to_dict(product.product)
                     product.pop("id")
+                    product.pop("modified")
                     for key in product.keys():
                         if key == "denumirePlic": 
                             data['name'] = product[key]
@@ -334,7 +339,7 @@ def fetchOrderProducts(request):
                 tmpData["data"] = tmpList
                 tmpData["success"] = True
                 
-                #print json.dumps(tmpData, indent = 4)
+                print json.dumps(tmpData, indent = 4)
                 jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
                 return HttpResponse(jsonObj, mimetype="application/json")
             except Exception, err:
@@ -348,7 +353,7 @@ def fetchOrderProducts(request):
 def createOrderProduct(request):
     
     if request.is_ajax():
-        excludes = ['id', 'order_id', 'name', 'product_id', 'cod', 'modified']
+        excludes = ['id', 'order_id', 'name', 'product_id', 'cod']
         try:
             postData = request.read()
             postData = json.loads(postData)
@@ -359,8 +364,16 @@ def createOrderProduct(request):
                 order = Orders.objects.get(pk=postData['order_id'])
                 for exclude in excludes:
                     postData.pop(exclude)
+                
+                if product.modified == True:
+                    postData['modified'] = True
+                    product.modified = False
+                    product.save()
+                
+                postData['modified'] = True
                 postData['order'] = order
                 postData['product'] = product
+                
                 obj = OrderProduct.objects.create(**postData)
                 jsonObj = simplejson.dumps({"success": True})
                 return HttpResponse(jsonObj, mimetype="application/json")
@@ -373,6 +386,12 @@ def createOrderProduct(request):
                             order = Orders.objects.get(pk=obj['order_id'])
                             for exclude in excludes:
                                 obj.pop(exclude)
+                            
+                            if product.modified == True:
+                                obj['modified'] = True
+                                product.modified = False
+                                product.save()    
+                            
                             obj['order'] = order
                             obj['product'] = product
                             obj = OrderProduct.objects.create(**obj) 

@@ -104,8 +104,10 @@ Ext.define("AM.view.orderProduct.Edit", {
                     autoScroll: true,
                     enableRowBody: true,
                     getRowClass: function(record){ 
+                        console.log(record.data);
+                        console.log(record.data.modified);
                         if(record.data.modified){
-                            return 'orderProducts_modified'
+                            return 'orderProducts_modified';
                         }
                         
                     }
