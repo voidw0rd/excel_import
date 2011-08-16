@@ -9,16 +9,49 @@
         }
         .x-tool-email {background-image: url("images/tool-email.gif") !important;}
         .x-tool-over .x-tool-email {background-position:-15px 0;}
+        
+        #msg-div {
+            position: absolute;
+            top: 0px;
+            left: 38%;
+            width: 350px;
+            height: 50px;
+            top: 2px;
+        }
+        .notify {
+            z-index: 100; 
+            position: absolute; 
+            top: 2px;
+            width: 350px; 
+            height: 50px;
+            background: #eee;
+            border: 1px solid #aaa;
+            overflow: hidden;
+        }
+        .notify_title {
+            font-size: 13px;
+            color: #000;
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+        .notify_body {
+            font-size: 12px;
+            color: #444;
+            margin-left: 20px;
+        }
     </style>
 
     
 
     <script type="text/javascript" src="extjs-4.0.2a/ext.js"></script>
+    <script type="text/javascript" src="notify.js"></script>
     <script type="text/javascript" src="extjs-4.0.2a/ext-all-debug.js"></script>
 
     
     <script type="text/javascript" src="app.js"></script>
 
 </head>
-<body></body>
+<body>
+<div id="msg-div"></div>
+</body>
 </html>
