@@ -215,7 +215,11 @@ def updateOrders(request):
                 item.pop("id")
                 item.pop("timestamp")
                 item['status'] = OrderStatuses.objects.create(status = "pending")
-                queryObj.update(**item)
+                
+                if request.user.is_staff:
+                    queryObj.update(**item)
+                else:
+                    queryObj.update(note = item['note'])
                 
         elif isinstance(postData, dict) and postData.has_key("id"):
             queryObj = Orders.objects.filter(pk=postData['id'])
@@ -223,7 +227,11 @@ def updateOrders(request):
             postData.pop("timestamp")
             #postData.pop("status")
             postData['status'] = OrderStatuses.objects.create(status = "pending")
-            queryObj.update(**postData)
+            
+            if request.user.is_staff:
+                queryObj.update(**postData)
+            else:
+                queryObj.update(note = item['note'])
         
         jsonObj = simplejson.dumps({"success": True})
         return HttpResponse(jsonObj, mimetype="application/json")
@@ -237,24 +245,30 @@ def updateOrders(request):
 @login_required
 @csrf_exempt    
 def createOrder(request):
-	try: 
-		postData = request.read()
-		postData = json.loads(postData)
+	
+    if not request.user.is_staff:
+        return Http404
+    
+    try: 
+        postData = request.read()
+        postData = json.loads(postData)
 		#print postData
-		if isinstance(postData, dict) and postData.has_key("status"):
-			orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
+        if isinstance(postData, dict) and postData.has_key("status"):
+            orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
 		
-		jsonObj = simplejson.dumps({"success": True})
-		return HttpResponse(jsonObj, mimetype="application/json")
+        jsonObj = simplejson.dumps({"success": True})
+        return HttpResponse(jsonObj, mimetype="application/json")
 
-	except Exception, err:
-		print err
-		return Http404
+    except Exception, err:
+        print err
+        return Http404
 
 
 @csrf_exempt  
 def deleteOrder(request):
-    
+    if not request.user.is_staff:
+        return Http404
+        
     postData = request.read()
     postData = json.loads(postData)
     
@@ -316,6 +330,9 @@ def _prepPrint(orderId):
 @login_required
 @csrf_exempt   
 def downloadOrder(request):
+    if not request.user.is_staff:
+        return Http404
+    
     try:
         orderId = request.path.split("=")[-1]
         order = _prepPrint(orderId)
@@ -336,6 +353,9 @@ def downloadOrder(request):
 @csrf_exempt
 def sendMail(request):
     
+    if not request.user.is_staff:
+        return Http404
+        
     orderId = request.read().split("=")[-1]
     order = Orders.objects.get(pk=orderId)
     
@@ -409,7 +429,9 @@ def fetchOrderProducts(request):
 @login_required
 @csrf_exempt 
 def createOrderProduct(request):
-    
+    if not request.user.is_staff:
+        return Http404
+
     if request.is_ajax():
         excludes = ['id', 'order_id', 'name', 'product_id', 'cod']
         try:
@@ -474,6 +496,10 @@ def createOrderProduct(request):
 @login_required
 @csrf_exempt   
 def updateOrderProducts(request):
+    
+    if not request.user.is_staff:
+        return Http404
+    
     postData = request.read()
     postData = json.loads(postData)
     #print postData
@@ -513,6 +539,9 @@ def updateOrderProducts(request):
 @csrf_exempt    
 def deleteOrderProduct(request):
     
+    if not request.user.is_staff:
+        return Http404
+    
     if request.is_ajax():
         try:
             postData = request.read()
@@ -550,6 +579,9 @@ def deleteOrderProduct(request):
 @csrf_exempt  
 def exportOrderProductCsv(request):
     
+    if not request.user.is_staff:
+        return Http404
+    
     try:
         orderId = request.path.split("=")[-1]
         order = Orders.objects.get(pk=orderId)
@@ -577,6 +609,9 @@ def exportOrderProductCsv(request):
 @csrf_exempt    
 def importOrderProductCsv(request):
     
+    if not request.user.is_staff:
+        return Http404
+    
     if request.FILES.has_key("csvFile"):
         _file = importCSV()
         obj = _file.handleCSV(request.FILES['csvFile'])
@@ -593,6 +628,9 @@ def importOrderProductCsv(request):
 @login_required
 @csrf_exempt    
 def updateProducts(request):
+    
+    if not request.user.is_staff:
+        return Http404
     
     if request.method == "POST":
         

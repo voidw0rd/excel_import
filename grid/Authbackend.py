@@ -12,22 +12,26 @@ class ExcelAuthBackend(object):
     def authenticate(self, username=None, password=None):
 
         try:
-            usr = Admins.objects.get(username = username, password = password)
-            user = self.get_usr(username, password)
-            user.is_staff = True
-            user.save()
-            
-            return user
+            usr = Admins.objects.get(username = username)
+            if password == usr.password:
+                user = self.get_usr(username, password)
+                user.is_staff = True
+                user.save()
+                return user
+            else:
+                return None
         except Exception, err:
             print err
         
         try: 
-            usr = Company.objects.get(email = username, password = password)
-            user = self.get_usr(username, password)
-            user.is_staff = False
-            user.save()
-            
-            return user
+            usr = Company.objects.get(email = username)
+            if password == usr.password:
+                user = self.get_usr(username, password)
+                user.is_staff = False
+                user.save()
+                return user
+            else:
+                return None
         except Exception, err:
             print err
             return None
@@ -43,8 +47,8 @@ class ExcelAuthBackend(object):
     def get_usr(self, username, password):
         
         try:
-            user = User.objects.get(username = username, password = password)
-            return User
+            user = User.objects.get(username = username)
+            return user
         except User.DoesNotExist:
             user = User(username = username, password = password)
             return user
