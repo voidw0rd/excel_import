@@ -7,8 +7,11 @@ import settings
 
 urlpatterns = patterns('',
     
+    (r"^login/$", userLogin),
+    (r"^logout/$", userLogout),
     (r'^$', index),
     (r"^import/", importDataBase),
+    
     # products
     (r"^data/products", fetchProducts),
     (r"^data/updateProducts", updateProducts),

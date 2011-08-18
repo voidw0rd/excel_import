@@ -9,12 +9,17 @@ from django.core.mail import send_mail
 from models import Products, Orders, OrderProduct, OrderStatuses, Company, Address
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
+from django.contrib.auth.decorators import login_required
 from settings import STATIC_FILE_PATH
 import json
 import csv
 import datetime
 from api import makePDF, makeCSV, importCSV
 import cStringIO as StringIO
+from forms import Login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
 
 
 
@@ -52,13 +57,47 @@ def getJsonFromModel(querySet, excludes):
         return Http404
 
 
-
-def index(request):    
+def userLogin(request):
     
     import api
     if api.generateCompany() and api.generateOrders():
         pass
     
+    
+    if request.method == "POST":
+        form = Login(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['username']
+            pwd = form.cleaned_data['password']
+            
+            user = authenticate(username = user, password = pwd)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponseRedirect("/")
+                else:
+                    pass
+            else:
+                pass
+    else:
+        form = Login()
+    
+    return render_to_response(  
+                              'login.html', 
+                              { "form": form }, 
+                              context_instance=RequestContext(request)
+                             )
+
+
+@login_required(login_url=None, redirect_field_name=None)
+def userLogout(request):
+    logout(request)
+    return HttpResponseRedirect("/login/")
+
+
+@login_required
+def index(request):    
+
     #send_mail('sendGrid - email', 'Greetz, this is just a test email ', 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
     
     return render_to_response(
@@ -116,7 +155,7 @@ def importDataBase(request):
                               context_instance=RequestContext(request)
                              )
     
-    
+@login_required
 @csrf_exempt
 def fetchProducts(request):
     excludes = []
@@ -129,13 +168,22 @@ def fetchProducts(request):
 #-----------------------------------------------------------------------
 #   Orders related view functions 
 
+
+@login_required
 @csrf_exempt
 def fetchOrders(request):
+    
+    try:
+        company = Company.objects.get(email = request.user)
+    except Exception, err:
+        print err
+        return Http404
+    
     excludes = []
     
     if request.is_ajax():
         try:
-            orders = Orders.objects.all()
+            orders = Orders.objects.filter(company = company)
             response = getJsonFromModel(orders, excludes)
             jsonObj = simplejson.dumps(response, encoding="utf-8")
             return HttpResponse(jsonObj, mimetype="application/json")
@@ -147,7 +195,7 @@ def fetchOrders(request):
         return Http404
 
 
-
+@login_required
 @csrf_exempt  
 def updateOrders(request):
         
@@ -180,7 +228,7 @@ def updateOrders(request):
         return HttpResponse(jsonObj, mimetype="application/json")
 
 
-
+@login_required
 @csrf_exempt    
 def createOrder(request):
 	try: 
@@ -259,7 +307,7 @@ def _prepPrint(orderId):
         return None
 
 
-
+@login_required
 @csrf_exempt   
 def downloadOrder(request):
     try:
@@ -277,6 +325,8 @@ def downloadOrder(request):
         print err
         return Http404
 
+
+@login_required
 @csrf_exempt
 def sendMail(request):
     
@@ -303,6 +353,7 @@ def _sendMail(orderName):
     return True
 
 
+@login_required
 @csrf_exempt    
 def fetchOrderProducts(request):
     
@@ -349,6 +400,7 @@ def fetchOrderProducts(request):
         return Http404
     
 
+@login_required
 @csrf_exempt 
 def createOrderProduct(request):
     
@@ -413,6 +465,7 @@ def createOrderProduct(request):
 
 
 
+@login_required
 @csrf_exempt   
 def updateOrderProducts(request):
     postData = request.read()
@@ -450,6 +503,7 @@ def updateOrderProducts(request):
         
 
 
+@login_required
 @csrf_exempt    
 def deleteOrderProduct(request):
     
@@ -486,6 +540,7 @@ def deleteOrderProduct(request):
     
     
 
+@login_required
 @csrf_exempt  
 def exportOrderProductCsv(request):
     
@@ -511,7 +566,8 @@ def exportOrderProductCsv(request):
         
         
         
-        
+
+@login_required
 @csrf_exempt    
 def importOrderProductCsv(request):
     
@@ -528,7 +584,7 @@ def importOrderProductCsv(request):
     
 
 
-
+@login_required
 @csrf_exempt    
 def updateProducts(request):
     
@@ -558,7 +614,7 @@ def updateProducts(request):
 
 
 
-
+@login_required
 @csrf_exempt   
 def companyRead(request):
 	

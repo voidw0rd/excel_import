@@ -117,7 +117,8 @@ def generateCompany():
 
     dataDict['name'] = "SRL Example"
     dataDict['phone'] = "0743312234"
-    dataDict['email'] = "Example@srlexample.com"
+    dataDict['email'] = "test@test.com"
+    dataDict['password'] = "test"
     dataDict['note'] = "This is SRL Example note ..."
     dataDict['type'] = "C"
     dataDict['address'] = Address.objects.create(str = "Test street", 
@@ -129,7 +130,8 @@ def generateCompany():
     
     dataDict['name'] = "SRL Test"
     dataDict['phone'] = "0743312234"
-    dataDict['email'] = "Test@srltest.com"
+    dataDict['email'] = "x@x.com"
+    dataDict['password'] = "test"
     dataDict['note'] = "This is SRL Test note ..."
     dataDict['type'] = "C"
     dataDict['address'] = Address.objects.create(str = "Blabla street", 

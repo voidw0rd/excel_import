@@ -57,7 +57,8 @@ class Company(models.Model):
     name = models.CharField(max_length = 20)
     address = models.ForeignKey(Address, related_name = "CompanyAddress")
     phone = models.CharField(max_length = 20)
-    email = models.EmailField(max_length=75)
+    email = models.EmailField(max_length=75, unique = True)
+    password = models.CharField(max_length = 20)
     note = models.TextField()
     type = models.CharField(max_length = 1)
     
