@@ -1,5 +1,9 @@
 import os
 
+LOGIN_URL = "/login/"
+REDIRECT_FIELD_NAME = None
+
+
 # sendGrid api configuration
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = '****'
@@ -37,7 +41,7 @@ LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
-MEDIA_ROOT = ''
+MEDIA_ROOT = STATIC_FILE_PATH#''
 MEDIA_URL = ''
 STATIC_ROOT = ''
 STATIC_URL = STATIC_FILE_PATH
@@ -73,7 +77,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    #'django.contrib.auth',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -101,3 +105,5 @@ LOGGING = {
         },
     }
 }
+AUTHENTICATION_BACKENDS = ('grid.Authbackend.ExcelAuthBackend',)
+
