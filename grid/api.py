@@ -160,7 +160,13 @@ def generateOrders():
     return True
     
     
+def genAdmins():
+    adm = Admins.objects.all()
+    if len(adm) > 0:
+        return False
     
-
+    adm = Admins(username = "admin", password = "1234", email = "admin@x.com")
+    adm.save()
+    return True
     
  

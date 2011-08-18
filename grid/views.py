@@ -62,6 +62,7 @@ def userLogin(request):
     import api
     if api.generateCompany() and api.generateOrders():
         pass
+    api.genAdmins()
     
     
     if request.method == "POST":
@@ -173,17 +174,22 @@ def fetchProducts(request):
 @csrf_exempt
 def fetchOrders(request):
     
-    try:
-        company = Company.objects.get(email = request.user)
-    except Exception, err:
-        print err
-        return Http404
+    user = request.user
+    if user.is_staff:
+        orders = Orders.objects.all()
+    
+    else:
+        try:
+            company = Company.objects.get(email = request.user)
+            orders = Orders.objects.filter(company = company)
+        except Exception, err:
+            print err
+            return Http404
     
     excludes = []
     
     if request.is_ajax():
         try:
-            orders = Orders.objects.filter(company = company)
             response = getJsonFromModel(orders, excludes)
             jsonObj = simplejson.dumps(response, encoding="utf-8")
             return HttpResponse(jsonObj, mimetype="application/json")

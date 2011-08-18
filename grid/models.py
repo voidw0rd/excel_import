@@ -73,5 +73,9 @@ class Orders(models.Model):
     company = models.ForeignKey(Company, related_name = "ordersCompany", blank = True, null = True)
 
 
-
+class Admins(models.Model):
+    
+    username = models.CharField(max_length = 20)
+    password = models.CharField(max_length = 20)
+    email = models.EmailField()
 
