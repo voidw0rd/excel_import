@@ -1,47 +1,3 @@
-Ext.define('printMenu', {
-    extend: 'Ext.button.Button',
-    alias: 'widget.printMenu',
-    
-    text: "Print",
-    style: "border: 1px solid #92C5D6; margin-right: 20px; background: #AFD5E2;",
-    
-    initComponent: function() {
-        
-        this.menu = [{
-                    text: "Print",
-                    handler: this.print,
-                },{
-                    text: "Print Preview",
-                    handler: this.printPreview,
-                },
-        ],
-        this.callParent(arguments);
-    },
-    
-    print: function(e) {
-        
-        console.log("[ dd ] print button clicked");
-        var win    = e.parentMenu.zIndexParent,
-            form   = win.down("form"),
-            record = form.getRecord(); 
-        console.log("[ dd ] Print order : " + record.data.name);
-
-        
-    },
-    
-    printPreview: function(e) {
-        console.log("[ dd ] printPreview button clicked");
-        var win    = e.parentMenu.zIndexParent,
-            form   = win.down("form"),
-            record = form.getRecord(); 
-        console.log("[ dd ] Get print preview for order : " + record.data.name);
-        
-    }
-    
-});
-
-
-
 Ext.define('AM.view.order.Edit', {
 
     extend: 'Ext.window.Window',
@@ -54,7 +10,8 @@ Ext.define('AM.view.order.Edit', {
     autoShow: true,
     height: 490,
     width: 700,
-    
+    closable: true,
+    //onEsc: function(){console.log('am apsat pe ESC!!!!');this.close();},
     initComponent: function() {
         
         this.items = [
@@ -112,19 +69,34 @@ Ext.define('AM.view.order.Edit', {
                 ]
             }
         ];
-        this.tools = [{
-                type:'save',
-                qtip: 'Save',
+        this.tools = [//{
+                //type:'save',
+                //qtip: 'Save',
                 // hidden:true,
-                handler: function(event, toolEl, panel){
+                //handler: function(event, toolEl, panel){
                     // refresh logic
-                    }
-                },{
+                //    }
+                //}/{
+                {
                 type:'email',
                 qtip: 'Email form Data',
                 // hidden:true,
                 handler: function(event, toolEl, panel){
-                    // refresh logic
+                        var record = panel.up("window").down("form").getRecord()
+                        var orderId = record.data.id;
+                        Ext.Ajax.request({
+                            url: "sendMail",
+                            params: {"orderId": orderId},
+                            method: "POST",
+                            success: function(result, req){
+                                var response = Ext.JSON.decode(result.responseText);
+                                Ext.notify.msg("- send email -", Ext.String.format("Email has been send to: {0}", response['email']));
+                            }, 
+                            failure: function(result, req){
+                                var response = Ext.JSON.decode(result.responseText);
+                                Ext.notify.msg("- send email -", Ext.String.format("Failed to send email to: {0}", response['email']));
+                            }
+                        });
                     }
                 },{
                     type:'print',
@@ -173,6 +145,9 @@ Ext.define('AM.view.order.Edit', {
                             }
                         });                    
                     }
+                },{
+                    type:'printpreview',
+                    qtip: 'Print Preview'
                 }
         ],
         this.buttons = [

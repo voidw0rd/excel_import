@@ -334,12 +334,12 @@ def sendMail(request):
     order = Orders.objects.get(pk=orderId)
     
     if _sendMail(order.name):
-        tmpData = {"success": True}
+        tmpData = {"success": True, "email": order.company.email}
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
         
     else:
-        tmpData = {"success": False}
+        tmpData = {"success": False, "email": order.company.email}
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
         
