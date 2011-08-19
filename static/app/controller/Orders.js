@@ -75,20 +75,6 @@ Ext.define('AM.controller.Orders', {
         win.close();
         this.getOrderProductsStore().sync();
         this.getOrdersStore().sync();
-        setTimeout(function(){
-            Ext.Ajax.request({
-                url: "sendMail",
-                params: {
-                    orderId: record.data.id
-                },
-                success: function(response){
-                    console.log("mail has been send");
-                },
-                failure: function(response){
-                    console.log("failed to send mail");
-                }
-            });
-        }, 2000);
     },
     
     deleteOrder: function(button) {

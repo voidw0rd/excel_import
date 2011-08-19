@@ -4,7 +4,8 @@ from django.db.models.query import QuerySet
 from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template import RequestContext, Template, Context
+from django.template.loader import get_template
 from django.core.mail import send_mail
 from models import Products, Orders, OrderProduct, OrderStatuses, Company, Address
 from django.views.decorators.csrf import csrf_exempt
@@ -380,10 +381,23 @@ def sendMail(request):
 
 def _sendMail(order):
     #to do w8 for sendGrid to validate my account and integrate it with django
-    #send_mail('sendGrid - email', 'Order name: %s\n Order id: %s' % (order.name, order.id), 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
-    print "\n\n" + order.name + "\n\n"
-    return True
-
+    try:
+        t = get_template("order_notification_email_template.txt")
+        c = Context({"orderName": order.name,
+                     "orderUser": order.company.name})
+        body = t.render(c)
+        print body
+        send_mail('SemLuca Print Order notification', 
+                  body, 
+                  'admin@semluca.net', 
+                  [order.company.email], 
+                  fail_silently=False)
+                  
+        print "\n\n" + order.name + "\n\n"
+        return True
+    except Exception, err:
+        print err
+        return False
 
 @login_required
 @csrf_exempt    

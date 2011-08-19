@@ -1,0 +1,10 @@
+Hi {{ orderUser }},
+
+you received this email from the SemLuca printing orders management system. You can login <link>here</link> with your email and password.
+
+This mail was sent regarding the order {{ orderName }}. 
+
+If you received this email by mistake please ignore it or reply <mailto:admin@semluca>here</mailto>.
+
+Have a nice day,
+@semluca team
