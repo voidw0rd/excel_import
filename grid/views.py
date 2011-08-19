@@ -301,30 +301,36 @@ def printOrder(request):
 def _prepPrint(orderId):
     
     try:
-        order = Orders.objects.get(pk=int(orderId))
-        orderProducts = OrderProduct.objects.filter(order = order)
+        order = Orders.objects.get(pk=orderId)
+        orderProducts = OrderProduct.objects.filter(order=order)
         printFileds = ['cod', 'quantity', 'denumirePlic', 'soi']
+        total = 0
         orderInfo = {}
         orderInfo["name"] = order.name
         orderInfo['timestamp'] = str(order.timestamp).split('.')[0]
         orderInfo['products'] = []
-        
         for product in orderProducts:
-            productDict = model_to_dict(product)
             obj = {}
-            
-            for key in productDict.keys():
+            obj['quantity'] = product.quantity
+            total += product.quantity
+            prod = model_to_dict(product.product)
+            print prod
+            for key in prod.keys():
                 if key in printFileds:
-                    obj[key] =  productDict[key]
-            
+                    obj[key] = prod[key]
             orderInfo['products'].append(obj)
-        orderInfo['total'] = 1000    
         
-        #print json.dumps(orderInfo, indent = 4)
+        orderInfo['total'] = total
+        print json.dumps(orderInfo, indent = 4)
         return orderInfo
     except Exception, err:
         print err
         return None
+    
+    
+    
+    
+
 
 
 @login_required
@@ -416,7 +422,7 @@ def fetchOrderProducts(request):
                 tmpData["data"] = tmpList
                 tmpData["success"] = True
                 
-                print json.dumps(tmpData, indent = 4)
+                #print json.dumps(tmpData, indent = 4)
                 jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
                 return HttpResponse(jsonObj, mimetype="application/json")
             except Exception, err:

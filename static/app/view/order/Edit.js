@@ -147,9 +147,22 @@ Ext.define('AM.view.order.Edit', {
                     }
                 },{
                     type:'printpreview',
-                    qtip: 'Print Preview'
-                }
-        ],
+                    qtip: 'Print Preview',
+                    handler: function(event, toolEl, panel){
+                        var orderId = panel.up("window").down("form").getRecord().data.id;
+                        Ext.Ajax.request({
+                            url: "printOrder",
+                            params: {"orderId": orderId},
+                            method: "GET",
+                            success: function(result, req){
+                                var win = window.open("", "print","width=10,height=10");
+                                win.moveTo(20, 20);
+                                win.document.write(result.responseText);
+                                win.document.write("<script>setTimeout(function(){window.print()}, 500);setTimeout(function(){window.close()}, 1500);</script>")
+                            }
+                        });
+                    }
+                }],
         this.buttons = [
             {
                 text: 'Save',
