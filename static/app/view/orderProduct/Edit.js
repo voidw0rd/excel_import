@@ -25,21 +25,20 @@ Ext.define("uploadForm", {
             handler: function(){
                 var form = this.up('form').getForm();
                 var win = this.up("window");
+                var record = Ext.getCmp('orderproductsgrid').up("form").getRecord();
+                
                 if(form.isValid()){
                     form.submit({
                         url: 'importOrderProductCsv',
+                        params: {orderId: record.data.id},
+                        method: "POST",
                         waitMsg: 'Uploading your csv...',
                         success: function(fp, o) {
                             console.log("csv has been uploaded ...");
                             win.hide();
                             //store.load({params: {orderId: this.up("form").getRecord().data.id}});
-                            var grid = Ext.getCmp('orderproductsgrid'),
-                                record = grid.up("form").getRecord();
-                            
+                            var grid = Ext.getCmp('orderproductsgrid');
                             grid.store.load({params: {orderId: record.data.id}});
-                            
-                            console.log();
-                            
                         },
                         
                         failure: function(fp, o) {
@@ -276,14 +275,10 @@ Ext.define("AM.view.orderProduct.Edit", {
 
         
         var win = Ext.create("uploadWindow").show();
-        console.log(win.success);
+        
         if (win.success === true) {
             console.log("loaded");
             this.store.load({params: {orderId: this.up("form").getRecord().data.id}});
         }
-        
-        
-
-        
     }
 });

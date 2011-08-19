@@ -618,9 +618,9 @@ def importOrderProductCsv(request):
     if not request.user.is_staff:
         return Http404
     
-    if request.FILES.has_key("csvFile"):
+    if request.FILES.has_key("csvFile") and request.POST.has_key("orderId"):
         _file = importCSV()
-        obj = _file.handleCSV(request.FILES['csvFile'])
+        obj = _file.handleCSV(request.FILES['csvFile'], request.POST['orderId'])
         if obj:
             jsonObj = simplejson.dumps({"success": True})
             return HttpResponse(jsonObj)

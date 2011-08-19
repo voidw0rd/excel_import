@@ -46,6 +46,7 @@ class makeCSV(object):
 				tmp.append(item.encode('UTF-8'))
 			else:
 				tmp.append(item)
+		print tmp
 		return tmp
 				
     
@@ -56,8 +57,8 @@ class makeCSV(object):
 			_file = StringIO.StringIO()
 			for product in products.all():
 				writer = csv.writer(_file, delimiter='|', quotechar='|', dialect=csv.excel)
-				#writer.writerow([product.id, product.product.denumirePlic, product.order.id])
-				writer.writerow(self.encodeRow([product.order.id, product.order.name, product.product.id, product.product.cod, product.product.denumirePlic, product.quantity, product.note or '-', product.modified]))
+				writer.writerow(self.encodeRow([product.product.id, product.quantity, product.note or '-', product.product.cod, product.product.denumirePlic, product.order.name, product.order.id]))
+				#writer.writerow(self.encodeRow([product.order.id, product.order.name, product.product.id, product.product.cod, product.product.denumirePlic, product.quantity, product.note or '-', product.modified]))
 			return _file
 			
         except Exception, err:
@@ -74,7 +75,7 @@ class importCSV(object):
         pass
         
         
-    def handleCSV(self, _file):
+    def handleCSV(self, _file, orderId):
         
         destination = open(STATIC_FILE_PATH + '/' + _file.name, 'wb')
         for chunk in _file.chunks():
@@ -86,11 +87,13 @@ class importCSV(object):
         for row in reader:
             if len(row) > 0:
                 try:
-                    data['order'] = Orders.objects.get(pk = row[0])
-                    data['product'] = Products.objects.get(pk = row[2])
-                    data['quantity'] = row[5]
-                    data['note'] = row[6]
-                    data['modified'] = row[7]
+                    data['order'] = Orders.objects.get(pk = orderId)
+                    data['product'] = Products.objects.get(pk = row[0])
+                    data['quantity'] = row[1]
+                    try:
+                        data['note'] = row[2]
+                    except Exception, err:
+                        print err
                     obj = OrderProduct.objects.create(**data)
                     
                 except Exception, err:

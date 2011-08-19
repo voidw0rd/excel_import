@@ -35,17 +35,6 @@
             float: right;
         }
         
-        #products {
-            margin-top: -20px;
-        }
-        
-        #innerProducts {
-            margin-left: 30px;
-            margin-right: 30px;
-            margin-top: 10px;
-            background: #E6EFEF;
-        }
-        
         .clr {
             clear: both;
         }
@@ -54,6 +43,42 @@
             margin-bottom: 5px;
             float: right;
             border: none;
+        }
+        
+        #prodTable {
+            text-align: left;
+            margin-top: 30px;
+            margin-left: 10px;
+        }
+        
+        #prodTable td {
+            border: 1px solid #000;
+            height: 30px;
+            text-indent: 10px;
+        }
+        
+        .cod {
+            width: 80px !important;
+            font-size: 15px;    
+        }
+        
+        .quantity {
+            width: 100px !important;
+            font-size: 15ox;
+            font-align: left !important;
+        }
+        
+        .soi {
+            width: 250px;
+        }
+        
+        .denumire {
+            width: 220px;
+        }
+        
+        .header {
+            font-weight:bold;
+            text-align: center;
         }
         
     </style>
@@ -81,14 +106,27 @@
     <div id="products">
         <p>Products in this order: </p>
         <div id="innerProducts">
-            {% for item in order.products %}
+        {% if order %}
+            <table cellspacing="2" id="prodTable">
+                <tr class="header">
+                    <td class="cod">Code</td>
+                    <td class="soi">Soi</td>
+                    <td class="quantity">Quantity</td>
+                    <td class="denumire">Name</td>
+                </tr>
             
-                <p>Product code: {{ item.cod }}</p>
-                <p>Product soi: {{ item.soi }}</p>
-                <p>Product quantity: {{ item.quantity }}</p>
-                <p>Product name: {{ item.denumirePlic }}</p>
-                <hr />
+            {% for item in order.products %}
+                <tr>
+                    <td class="cod">{{ item.cod }}</td>
+                    <td class="soi">{{ item.soi }}</td>
+                    <td class="quantity">{{ item.quantity }}</td>
+                    <td class="denumire">{{ item.denumirePlic }}</td>
+                </tr>
             {% endfor %}
+            
+            
+            </table>
+        {% endif %}
         </div>
     </div>
     
