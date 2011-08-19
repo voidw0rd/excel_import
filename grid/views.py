@@ -366,6 +366,11 @@ def sendMail(request):
     orderId = request.read().split("=")[-1]
     order = Orders.objects.get(pk=orderId)
     
+    tmpData = {"success": True, "email": order.company.email}
+    jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+    return HttpResponse(jsonObj, mimetype="application/json")
+    
+    
     if _sendMail(order):
         tmpData = {"success": True, "email": order.company.email}
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
@@ -387,9 +392,9 @@ def _sendMail(order):
                      "orderUser": order.company.name})
         body = t.render(c)
         print body
-        send_mail('SemLuca Print Order notification', 
+        send_mail('Print Order notification - %s' % order.name, 
                   body, 
-                  'admin@semluca.net', 
+                  'info@sem-luca.ro', 
                   [order.company.email], 
                   fail_silently=False)
                   
