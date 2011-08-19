@@ -365,7 +365,7 @@ def sendMail(request):
     orderId = request.read().split("=")[-1]
     order = Orders.objects.get(pk=orderId)
     
-    if _sendMail(order.name):
+    if _sendMail(order):
         tmpData = {"success": True, "email": order.company.email}
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
@@ -374,14 +374,14 @@ def sendMail(request):
         tmpData = {"success": False, "email": order.company.email}
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
-        
+    
 
     
 
-def _sendMail(orderName):
+def _sendMail(order):
     #to do w8 for sendGrid to validate my account and integrate it with django
-    
-    print "\n\n" + orderName + "\n\n"
+    #send_mail('sendGrid - email', 'Order name: %s\n Order id: %s' % (order.name, order.id), 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
+    print "\n\n" + order.name + "\n\n"
     return True
 
 
@@ -456,9 +456,9 @@ def createOrderProduct(request):
                     product.modified = False
                     product.save()
                 
-                postData['modified'] = True
                 postData['order'] = order
                 postData['product'] = product
+                
                 
                 obj = OrderProduct.objects.create(**postData)
                 jsonObj = simplejson.dumps({"success": True})
@@ -476,7 +476,7 @@ def createOrderProduct(request):
                             if product.modified == True:
                                 obj['modified'] = True
                                 product.modified = False
-                                product.save()    
+                                product.save()
                             
                             obj['order'] = order
                             obj['product'] = product
