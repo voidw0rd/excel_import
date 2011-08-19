@@ -15,7 +15,7 @@ Ext.define('AM.store.Orders', {
         reader: {
             type: 'json',
             root: 'data',
-            successProperty: 'success'
+            successProperty: 'success',
         }
     }
 
