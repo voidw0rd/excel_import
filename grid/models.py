@@ -78,7 +78,7 @@ class Orders(models.Model):
     name = models.CharField(max_length = 50, blank = False, null = False)
     status = models.ForeignKey(OrderStatuses, related_name = "ordersStatus")
     company = models.ForeignKey(Company, related_name = "ordersCompany", blank = True, null = True)
-
+    total = models.IntegerField(default = 0)
 
 class Admins(models.Model):
     

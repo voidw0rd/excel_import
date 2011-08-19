@@ -406,6 +406,26 @@ def _sendMail(order):
         print err
         return False
 
+
+
+def _calculateOrderTotal(order):
+    try:
+        order = Orders.objects.get(pk=order)
+        products = OrderProduct.objects.filter(order=order)
+        if len(products) == 0:
+            return False
+        total = 0
+        for product in products:
+            total += product.quantity
+        
+        order.total = total
+        order.save()
+        return True
+    except Exception, err:
+        print err
+        return False
+
+
 @login_required
 @csrf_exempt    
 def fetchOrderProducts(request):
@@ -418,11 +438,12 @@ def fetchOrderProducts(request):
                 order    = Orders.objects.get(pk=orderId)
                 products = OrderProduct.objects.filter(order=order)
                 if len(products) == 0:
-                    jsonObj = simplejson.dumps({"success": True}, encoding="utf-8")
+                    jsonObj = simplejson.dumps({"success": True, 'total': 0}, encoding="utf-8")
                     return HttpResponse(jsonObj, mimetype="application/json")
                 
                 tmpList = []
                 tmpData = {}
+                
                 for product in products.all():
                     data = {}
                     data['product_id'] = product.product.id
@@ -439,7 +460,6 @@ def fetchOrderProducts(request):
                             data['name'] = product[key]
                         data[key] = product[key]
                     tmpList.append(data)
-                tmpList.append(data)
                 tmpData["data"] = tmpList
                 tmpData["success"] = True
                 
@@ -482,6 +502,7 @@ def createOrderProduct(request):
                 
                 
                 obj = OrderProduct.objects.create(**postData)
+                _calculateOrderTotal(order.id)
                 jsonObj = simplejson.dumps({"success": True})
                 return HttpResponse(jsonObj, mimetype="application/json")
             
@@ -501,7 +522,8 @@ def createOrderProduct(request):
                             
                             obj['order'] = order
                             obj['product'] = product
-                            obj = OrderProduct.objects.create(**obj) 
+                            obj = OrderProduct.objects.create(**obj)
+                            _calculateOrderTotal(order.id)
                             jsonObj = simplejson.dumps({"success": True})
                             return HttpResponse(jsonObj, mimetype="application/json")
                         except Exception, err:
@@ -529,7 +551,7 @@ def updateOrderProducts(request):
     
     postData = request.read()
     postData = json.loads(postData)
-    #print postData
+    print postData
     
     if isinstance(postData, dict) and postData.has_key("id"):
         try:
@@ -538,6 +560,8 @@ def updateOrderProducts(request):
             product.note     = postData['note']
             product.modified = postData['modified']
             product.save()
+            
+            _calculateOrderTotal(postData['order_id'])
             jsonObj = simplejson.dumps({"success": True})
             #return HttpResponse(jsonObj, mimetype="application/json")
             return HttpResponse(jsonObj)
@@ -554,6 +578,8 @@ def updateOrderProducts(request):
                 product.note = obj['note']
                 product.modified = obj['modified']
                 product.save()
+                
+                _calculateOrderTotal(obj['order_id'])
         jsonObj = simplejson.dumps({"success": True})
         #return HttpResponse(jsonObj, mimetype="application/json")
         return HttpResponse(jsonObj)
@@ -582,12 +608,14 @@ def deleteOrderProduct(request):
                     #return HttpResponse(jsonObj, mimetype="application/json")
                     return HttpResponse(jsonObj)
                 queryObj.delete()
+                _calculateOrderTotal(postData['order_id'])
                 
             elif isinstance(postData, list):
                 for item in postData:
                     if item.has_key("id"):
                         queryObj = OrderProduct.objects.get(pk=item['id'])
                         queryObj.delete()
+                        _calculateOrderTotal(item['order_id'])
 
             jsonObj = simplejson.dumps({"success": True, "data": []})
             #return HttpResponse(jsonObj, mimetype="application/json")
