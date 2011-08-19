@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext, Template, Context
 from django.template.loader import get_template
 from django.core.mail import send_mail
-from models import Products, Orders, OrderProduct, OrderStatuses, Company, Address
+from models import Products, Orders, OrderProduct, OrderStatuses, Company, Address, ProductCategory
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
@@ -140,7 +140,7 @@ def importDataBase(request):
         data["stage3"] = row[14]
         data["stage4"] = row[15]
         data["stage5"] = row[16]
-        data["category"] = row[17]
+        data["category"] = ProductCategory.objects.get(pk=2)
         data['notes'] = "Product notes"
         data['barCode'] = "11134ABNCCA"
         data['modified'] = False
@@ -163,7 +163,8 @@ def fetchProducts(request):
     excludes = []
     products = Products.objects.all()
     response = getJsonFromModel(products, excludes)
-
+    
+    
     jsonObj = simplejson.dumps(response, encoding="utf-8")
     return HttpResponse(jsonObj, mimetype="application/json")
     
@@ -680,6 +681,31 @@ def updateProducts(request):
 
     jsonObj = simplejson.dumps({"success": True, "data" : []})
     return HttpResponse(jsonObj, mimetype="application/json")
+
+
+@login_required
+@csrf_exempt 
+def productCategoryRead(request):
+    try:
+        categories = ProductCategory.objects.all()
+        data = {}
+        tmpList = []
+        if len(categories) > 0:
+            for item in categories:
+                x = model_to_dict(item)
+                obj = {}
+
+                for key in x.keys():
+                    obj[key] = x[key]
+                tmpList.append(obj)
+            
+            data['success'] = True
+            data['data'] = tmpList
+            
+            return HttpResponse(simplejson.dumps(data), mimetype="application/json")
+    except Exception, err:
+        print err
+        return Http404
 
 
 

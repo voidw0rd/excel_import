@@ -7,7 +7,7 @@ Ext.define('AM.view.product.Edit', {
     title : 'Edit Product',
     layout: 'fit',
     autoShow: true,
-    height: 640,
+    height: 670,
     width: 640,
 
     initComponent: function() {
@@ -46,9 +46,6 @@ Ext.define('AM.view.product.Edit', {
 										},{
 											name : 'photoCode',
 											fieldLabel: 'Photo Code'
-										},{
-											name : 'category',
-											fieldLabel: 'Category'
 										},{
                                             name : 'barCode',
 											fieldLabel: 'EAN13'
@@ -125,7 +122,16 @@ Ext.define('AM.view.product.Edit', {
 							xtype: 'textfield',
 							name : 'namesLanguages',
 							fieldLabel: 'Names-languages'
-						}]
+						},{
+                            columnWidth:1,
+							xtype: 'combobox',
+							fieldLabel: 'Category',
+                            displayField: 'name',
+                            valueField:'id',
+                            name: 'category',
+                            id: 'category',
+                            store: Ext.create("AM.store.ProductCategories")
+                        }]
             }
         ];
 

@@ -49,9 +49,10 @@ Ext.define('AM.view.order.Edit', {
                         forceSelection : true,
                         emptyText: 'Select company',
                         displayField: 'name',
-                        valueField:'company',
+                        valueField:'id',
                         lazyRender: true,
                         fieldLabel: "Company",
+                        name: "company",
                         store: Ext.create("AM.store.Company"),
                         listeners: {
                             'select': function(combo, record){

@@ -1,6 +1,13 @@
 from django.db import models
     
 
+
+class ProductCategory(models.Model):
+    
+    name = models.CharField(max_length = 20)
+
+
+
 class Products(models.Model):
     
     cod = models.CharField(max_length = 10)
@@ -20,7 +27,7 @@ class Products(models.Model):
     stage3 = models.CharField(max_length = 10)
     stage4 = models.CharField(max_length = 10)
     stage5 = models.CharField(max_length = 10)
-    category = models.CharField(max_length = 1)
+    category = models.ForeignKey(ProductCategory, related_name="ProductsCategory")
     notes = models.TextField()
     barCode = models.CharField(max_length = 13)
     modified = models.BooleanField()

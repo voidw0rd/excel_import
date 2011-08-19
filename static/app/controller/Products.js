@@ -1,9 +1,9 @@
 Ext.define('AM.controller.Products', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Products'],
+    stores: ['Products', 'ProductCategories'],
 
-    models: ['Product'],
+    models: ['Product', 'ProductCategory'],
 
     views: ['product.Edit', 'product.List'],
 
@@ -28,7 +28,7 @@ Ext.define('AM.controller.Products', {
 
     editProduct: function(grid, record) {
         var edit = Ext.create('AM.view.product.Edit').show();
-
+        
         edit.down('form').loadRecord(record);
     },
 
