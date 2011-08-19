@@ -60,11 +60,6 @@ def getJsonFromModel(querySet, excludes):
 
 def userLogin(request):
     
-    import api
-    if api.generateCompany() and api.generateOrders():
-        pass
-    api.genAdmins()
-    
     
     if request.method == "POST":
         form = Login(request.POST)
@@ -110,6 +105,12 @@ def index(request):
                              )
 
 def importDataBase(request):
+    
+    import api
+    api.generateCompany()
+    api.generateOrders()
+    api.genAdmins()
+    api.genCategory()
     
     fileName = "excel_example.csv"
     filePath = STATIC_FILE_PATH + '/' + fileName
