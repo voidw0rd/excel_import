@@ -159,7 +159,7 @@ def generateOrders():
     orderDict['status'] = OrderStatuses.objects.create(status = "new") 
      
     obj = Orders.objects.create(**orderDict)
-
+    
     return True
     
     
@@ -172,4 +172,15 @@ def genAdmins():
     adm.save()
     return True
     
- 
+
+def genCategory():
+    
+    cat = ProductCategory.objects.all()
+    if len(cat) > 0:
+        return False
+    catNames = ['Flori', "Special", "Legume", "Aromatice"]
+    for cat in catNames:
+        tmp = ProductCategory(name = cat)
+        tmp.save()
+        
+    return True
