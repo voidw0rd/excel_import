@@ -103,8 +103,6 @@ Ext.define("AM.view.orderProduct.Edit", {
                     autoScroll: true,
                     enableRowBody: true,
                     getRowClass: function(record){ 
-                        console.log(record.data);
-                        console.log(record.data.modified);
                         if(record.data.modified){
                             return 'orderProducts_modified';
                         }
@@ -192,16 +190,7 @@ Ext.define("AM.view.orderProduct.Edit", {
         });
         this.callParent();
         this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
-        this.editing.on('edit', function(editor, e) {
-            editor.store.sync();
-                    var x = Ext.create('AM.view.notify');
-                    x.show();
-                    var width = (document.documentElement.offsetWidth / 2) - (x.width / 2);
-                    x.setPagePosition(width, -30);
-                    setTimeout(function(){
-                        x.hide();
-                    }, 6000);
-        });
+
     },
 
 
