@@ -99,11 +99,11 @@ Ext.define('AM.view.product.Edit', {
 										grow:true,
 										labelWidth: 25,
                                         height: 90,
-                                        width: 280,
+                                        width: 280
 									},
 							items :[{
 										name : 'roDesc',
-										fieldLabel: 'RO',
+										fieldLabel: 'RO'
 									},{
 										name : 'enDesc',
 										fieldLabel: 'EN'
@@ -115,7 +115,7 @@ Ext.define('AM.view.product.Edit', {
 										fieldLabel: 'SB'
 									},{
 										name : 'ruDesc',
-										fieldLabel: 'RU',
+										fieldLabel: 'RU'
 									}]
 						},{
 							columnWidth:1,

@@ -131,7 +131,6 @@ Ext.define("AM.view.orderProduct.Edit", {
                         lazyRender: true,
                         listeners: {
                             'select': function(combo, record){
-                                console.log(record[0]);
                                 var gridRecord = combo.up('form').getRecord();
                                 var idExisting = gridRecord.store.findExact('product_id', record[0].data.id);
                                 if (idExisting != -1){
@@ -236,7 +235,8 @@ Ext.define("AM.view.orderProduct.Edit", {
         
         edit.cancelEdit();
         this.store.insert(0, rec);
-        edit.startEdit(0,1);
+        edit.startEdit(0,2);
+        
     },
     
     downloadCsv: function(e) {

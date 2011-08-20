@@ -126,7 +126,7 @@ Ext.define('AM.view.order.Edit', {
                                                     tag:'iframe',
                                                     cls:'x-hidden',
                                                     id:'iframe',
-                                                    name:'iframe',
+                                                    name:'iframe'
                                                 }),
                                                 form = body.createChild({
                                                     tag: "form",
@@ -134,7 +134,7 @@ Ext.define('AM.view.order.Edit', {
                                                     id: "form",
                                                     action: "downloadOrder&orderId=" + orderId,
                                                     target:'iframe',
-                                                    standardSubmit: true,
+                                                    standardSubmit: true
                                             });
                                             form.dom.submit();
                                         }

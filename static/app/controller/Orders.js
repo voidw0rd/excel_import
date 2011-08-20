@@ -45,7 +45,7 @@ Ext.define('AM.controller.Orders', {
             name   : "",
             note   : "",
             status : Math.floor(Math.random()*200) + '',
-            timestamp : "",
+            timestamp : ""
         });
 
         this.getOrdersStore().add(record);
@@ -54,6 +54,7 @@ Ext.define('AM.controller.Orders', {
                 if(item.data.status === record.data.status) {
                     var edit = Ext.create('AM.view.order.Edit').show();
                     edit.down("form").loadRecord(item);
+                    edit.down('form').down('textfield').focus();
                 }
             });
         }});
@@ -62,6 +63,7 @@ Ext.define('AM.controller.Orders', {
     editOrder: function(grid, record) {
         var edit = Ext.create('AM.view.order.Edit').show();
         edit.down('form').loadRecord(record);
+        edit.down('form').down('textfield').focus();
         edit.down('gridpanel').store.load({params: {orderId: record.data.id}});
     },
 
