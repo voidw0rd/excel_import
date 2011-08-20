@@ -128,8 +128,8 @@ Ext.define('AM.view.product.Edit', {
 							fieldLabel: 'Category',
                             displayField: 'name',
                             valueField:'id',
-                            name: 'category',
-                            id: 'category',
+                            name: 'category_id',
+                            id: 'category_id',
                             store: Ext.create("AM.store.ProductCategories")
                         }]
             }

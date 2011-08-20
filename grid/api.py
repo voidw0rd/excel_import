@@ -4,7 +4,7 @@ from django.template import Context, Template
 from django.template.loader import get_template
 from django.forms import model_to_dict
 from models import Products, OrderProduct, Orders
-from gridtest.settings import STATIC_FILE_PATH
+from settings import STATIC_FILE_PATH
 import csv
 
 
