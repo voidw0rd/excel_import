@@ -89,7 +89,7 @@ Ext.define("AM.view.orderProduct.Edit", {
     requires:['Ext.grid.column.Combo'],
     initComponent: function(){
 
-        this.editing = Ext.create('Ext.grid.plugin.RowEditing');
+        this.editing = Ext.create('Ext.grid.plugin.RowEditing',{pluginId: 'myRowEditor'});
         this.summary = Ext.create('Ext.grid.feature.Summary');
 
         Ext.apply(this, {
@@ -114,10 +114,10 @@ Ext.define("AM.view.orderProduct.Edit", {
             columns: [
                 Ext.create('Ext.grid.RowNumberer'),
                 {header: "Code", flex: 1, dataIndex: 'cod'},
-                {header: "Name", flex: 1, dataIndex: 'name', gridId:'orderproductsgrid', xtype:'combocolumn',
+                {header: "Name", flex: 1, dataIndex: 'name',
                    field: {
                         xtype: 'combobox',
-                        typeAhead: true,
+                        //typeAhead: true,
                         triggerAction: 'all',
                         selectOnTab: true,
                         multiSelect: false,
@@ -133,13 +133,13 @@ Ext.define("AM.view.orderProduct.Edit", {
                                 var idExisting = gridRecord.store.findExact('product_id', record[0].data.id);
                                 if (idExisting != -1){
                                     Ext.MessageBox.alert('Produs duplicat', 'Produsul selectat exista deja in comanda!');
-                                    gridRecord.data.quantity = gridRecord.store.getAt(idExisting).data.quantity;
-                                    gridRecord.data.note = gridRecord.store.getAt(idExisting).data.note;
+                                    gridRecord.set('quantity', gridRecord.store.getAt(idExisting).data.quantity);
+                                    gridRecord.set('note', gridRecord.store.getAt(idExisting).data.note);
                                     gridRecord.store.removeAt(idExisting);
                                 }
-                                gridRecord.data.product_id = record[0].data.id;
-                                gridRecord.data.cod = record[0].data.cod;
-                                gridRecord.data.name = record[0].data.denumirePlic;
+                                gridRecord.set('product_id', record[0].data.id);
+                                gridRecord.set('cod', record[0].data.cod);
+                                gridRecord.set('name', record[0].data.denumirePlic);
                                 combo.up('form').loadRecord(gridRecord);
                             }
                         }
@@ -216,19 +216,13 @@ Ext.define("AM.view.orderProduct.Edit", {
 
         });
         this.callParent();
-        this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
 
+        this.editing.on('edit', function(editor, e) {
+            editor.store.sync();
+        });
     },
 
 
-    onSelectChange: function(selModel, selections){
-        //this.down('#delete').setDisabled(selections.length === 0);
-    },
-
-    onSync: function(){
-        console.log("formular store sync");
-        this.store.sync();
-    },
 
     onDeleteClick: function(){
         var selection = this.getView().getSelectionModel().getSelection()[0];
