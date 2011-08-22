@@ -150,7 +150,34 @@ Ext.define("AM.view.orderProduct.Edit", {
                     summaryType: 'sum'
                 },
                 {header: "Notes", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
-                {header: "Modified",dataIndex: 'modified',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}}
+                {header: "Modified",dataIndex: 'modified',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}},
+                {
+                    xtype:'actioncolumn',
+                    width:50,
+                    items: [{
+                        icon: 'images/orderProductDetails.png',  // Use a URL in the icon config
+                        tooltip: 'Product details',
+                        handler: function(grid, rowIndex, colIndex) {
+                            var rec = grid.getStore().getAt(rowIndex);
+                            //alert("Edit " + rec.data['denumirePlic']);
+
+                            Ext.Ajax.request({
+                                url: "productInfo/",
+                                params: {"productId": rec.data['id']},
+                                method: "GET",
+                                success: function(result, req){
+                                    var response = Ext.JSON.decode(result.responseText);
+                                    var edit = Ext.create('AM.view.product.Edit').show();
+                                    edit.down('form').loadRecord(response);
+                                },
+                                failure: function(result, req){
+                                    //var response = Ext.JSON.decode(result.responseText);
+                                    //Ext.notify.msg("- product info -", Ext.String.format("Failed to fetch products info for {0}", rec.get('denumirePlic')));
+                                }
+                            });
+                        }
+                    }]
+                }
             ],
             selType: 'rowmodel',
             plugins: [this.editing],

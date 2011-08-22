@@ -114,7 +114,7 @@ def importDataBase(request):
     api.genAdmins()
     api.genCategory()
     api.genProductImage()
-    
+
     
     fileName = "excel_example.csv"
     filePath = STATIC_FILE_PATH + '/' + fileName
@@ -170,7 +170,7 @@ def fetchProducts(request):
     products = Products.objects.all()
     requestDict = {}
     requestList = []
-    
+
     for product in products:
         prod = model_to_dict(product)
         data = {}
@@ -182,14 +182,38 @@ def fetchProducts(request):
         data['category_id'] = data['category']
         data['category'] = {'id': product.category.id, 'name': product.category.name}
         requestList.append(data)
-    
+
     requestDict['data'] = requestList
     requestDict['success'] = True
     #print json.dumps(requestDict['data'], indent = 4)
     jsonObj = simplejson.dumps(requestDict, encoding="utf-8")
     return HttpResponse(jsonObj, mimetype="application/json")
     
-    
+@login_required
+@csrf_exempt
+def productDetails(request):
+
+    if request.GET.has_key("productId"):
+        productId = request.GET['productId']
+    else:
+        return Http404
+
+    product = Products.objects.filter(id = productId)
+
+    excludes = []
+
+    if request.is_ajax():
+        try:
+            response = getJsonFromModel(product, excludes)
+            jsonObj = simplejson.dumps(response, encoding="utf-8")
+            return HttpResponse(jsonObj, mimetype="application/json")
+
+        except Exception, err:
+            jsonObj = simplejson.dumps({"success": False, "reason": err})
+            return HttpResponse(jsonObj, mimetype="application/json")
+    else:
+        return Http404
+
 #-----------------------------------------------------------------------
 #   Orders related view functions 
 
@@ -821,7 +845,7 @@ def uploadProductImage(request):
             x = thumb.handleImage(request.FILES['photo'])
             x = ContentFile(x.read())
             image.thumb.save(request.FILES['photo'].name + "_" + product.cod, x)
-            
+
             
             product.image = image
             product.save()
