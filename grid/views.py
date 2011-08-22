@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext, Template, Context
 from django.template.loader import get_template
 from django.core.mail import send_mail
-from models import Products, Orders, OrderProduct, OrderStatuses, Company, Address, ProductCategory
+from models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
@@ -15,11 +15,13 @@ from settings import STATIC_FILE_PATH
 import json
 import csv
 import datetime
-from api import makePDF, makeCSV, importCSV
+from api import makePDF, makeCSV, importCSV, importImg
 import cStringIO as StringIO
-from forms import Login
+from forms import Login, upload
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
+
 
 
 
@@ -111,6 +113,8 @@ def importDataBase(request):
     api.generateOrders()
     api.genAdmins()
     api.genCategory()
+    api.genProductImage()
+    
     
     fileName = "excel_example.csv"
     filePath = STATIC_FILE_PATH + '/' + fileName
@@ -145,6 +149,7 @@ def importDataBase(request):
         data['notes'] = "Product notes"
         data['barCode'] = "11134ABNCCA"
         data['modified'] = False
+        data['image'] = ProductImage.objects.get(pk=1)
         
         x = Products.objects.create(**data)
         
@@ -170,15 +175,17 @@ def fetchProducts(request):
         prod = model_to_dict(product)
         data = {}
         for key in prod.keys():
+            if key == "image":
+                data[key] = product.image.thumb.url
+                continue
             data[key] = prod[key]
-            
         data['category_id'] = data['category']
         data['category'] = {'id': product.category.id, 'name': product.category.name}
         requestList.append(data)
     
     requestDict['data'] = requestList
     requestDict['success'] = True
-    
+    #print json.dumps(requestDict['data'], indent = 4)
     jsonObj = simplejson.dumps(requestDict, encoding="utf-8")
     return HttpResponse(jsonObj, mimetype="application/json")
     
@@ -797,14 +804,32 @@ def companyRead(request):
 
 
 
+@login_required
+@csrf_exempt
+def uploadProductImage(request):
+    
+    
+    try:
+        if request.FILES.has_key("photo") and request.POST.has_key("productId"):
+            product = Products.objects.get(pk=request.POST.get("productId"))
+            print product.id
+            
+            _file = ContentFile(request.FILES['photo'].read())
+            image = ProductImage()
+            image.image.save(request.FILES['photo'].name + "_" + product.cod, _file)
+            thumb = importImg()
+            x = thumb.handleImage(request.FILES['photo'])
+            x = ContentFile(x.read())
+            image.thumb.save(request.FILES['photo'].name + "_" + product.cod, x)
+            
+            
+            product.image = image
+            product.save()
+        jsonObj = simplejson.dumps({'success': True})
+        return HttpResponse(jsonObj)
 
-
-
-
-
-
-
-
-
+    except Exception, err:
+        print err
+        return HttpResponse(simplejson.dumps({'success': False}))
    
 

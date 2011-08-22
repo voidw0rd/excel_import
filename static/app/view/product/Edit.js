@@ -118,21 +118,32 @@ Ext.define('AM.view.product.Edit', {
 										fieldLabel: 'RU'
 									}]
 						},{
-							columnWidth:1,
-							xtype: 'textfield',
-							name : 'namesLanguages',
-							fieldLabel: 'Names-languages'
-						},{
-                            columnWidth:1,
-							xtype: 'combobox',
-							fieldLabel: 'Category',
-                            displayField: 'name',
-                            valueField:'id',
-                            name: 'category_id',
-                            id: 'category_id',
-                            store: Ext.create("AM.store.ProductCategories")
+                            columnWidth: 0.8,
+                            border: false,
+                            defaults: {width: 450},
+                            items: [
+                            {
+                                xtype: 'textfield',
+                                name : 'namesLanguages',
+                                fieldLabel: 'Names-languages'
+                            },{
+                                xtype: 'combobox',
+                                fieldLabel: 'Category',
+                                displayField: 'name',
+                                valueField:'id',
+                                name: 'category_id',
+                                id: 'category_id',
+                                store: Ext.create("AM.store.ProductCategories")
+                            }]
+                        },{
+                           columnWidth: 0.2,
+                           border: false,
+                           name: "thumb", 
+                           id: "thumb",
+                           items: [Ext.create('Ext.Img', {src: 'http://www.sencha.com/img/20110215-feat-html5.png', height: "70", width: "70", style: 'margin-left: 15px;'}), 
+                                   Ext.create('Ext.Component', {id: "overlay", html: "<p>Click to manage</p>", style: {color: '#555555', backgroundColor:'#000000'}, width: 0, height: 0}),]
                         }]
-            }
+            }//Ext.create('Ext.Img', {src: 'http://www.sencha.com/img/20110215-feat-html5.png', height: "100", width: "50"})
         ];
 
         this.buttons = [

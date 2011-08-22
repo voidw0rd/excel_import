@@ -3,10 +3,13 @@ from django.db import models
 
 
 class ProductCategory(models.Model):
-    
     name = models.CharField(max_length = 20)
+    
 
-
+class ProductImage(models.Model):
+    image = models.ImageField(upload_to='images/big/')
+    thumb = models.ImageField(upload_to='images/thumb/')
+    
 
 class Products(models.Model):
     
@@ -31,7 +34,7 @@ class Products(models.Model):
     notes = models.TextField()
     barCode = models.CharField(max_length = 13)
     modified = models.BooleanField()
-    
+    image = models.ForeignKey(ProductImage, related_name="ProductsImage", null = True, blank = True)
     
     
 class OrderProduct(models.Model):
@@ -85,4 +88,6 @@ class Admins(models.Model):
     username = models.CharField(max_length = 20)
     password = models.CharField(max_length = 20)
     email = models.EmailField()
+
+
 

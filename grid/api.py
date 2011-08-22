@@ -3,9 +3,12 @@ import cStringIO as StringIO
 from django.template import Context, Template
 from django.template.loader import get_template
 from django.forms import model_to_dict
-from models import Products, OrderProduct, Orders
+from models import *
+from django.core.files.base import ContentFile
 from settings import STATIC_FILE_PATH
 import csv
+from PIL import Image
+
 
 
 class makePDF(object):
@@ -102,6 +105,36 @@ class importCSV(object):
         return True
         
         
+class importImg(object):
+    
+    def __init__(self):
+        pass
+    
+    def handleImage(self, img):
+        _file = StringIO.StringIO()
+        
+        for chunk in img.chunks():
+            _file.write(chunk)
+        
+        size = 100, 100
+        _file.seek(0)
+        x = StringIO.StringIO()
+        
+        im = Image.open(_file)
+        
+        im.thumbnail(size, Image.ANTIALIAS)
+        im.save(x, format= 'JPEG')
+        x.seek(0)
+        return x
+        
+        
+        
+        
+        
+        
+        
+        
+        
 ###############################################################
 # this is just for development                  ###############
 
@@ -184,3 +217,23 @@ def genCategory():
         tmp.save()
         
     return True
+
+def genProductImage():
+    img = ProductImage()
+    
+    _file = ContentFile(open(STATIC_FILE_PATH + "/test.jpg", 'rb').read())
+    image = ProductImage()
+    image.image.save("generic", _file)
+    
+    size = 70, 70
+    x = StringIO.StringIO()
+    
+    im = Image.open(open(STATIC_FILE_PATH + "/test.jpg"))
+    im.thumbnail(size, Image.ANTIALIAS)
+    im.save(x, format= 'JPEG')
+    x.seek(0)
+    
+    x = ContentFile(x.read())
+    image.thumb.save("generic", x)
+    print "[ ii ] ProductImage generated ..."
+    return 
