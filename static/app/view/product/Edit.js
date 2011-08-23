@@ -10,6 +10,18 @@ Ext.define('AM.view.product.Edit', {
     height: 670,
     width: 640,
 
+    setFieldsReadOnly: function(){
+      this.items.each( function (field){
+          field.cascade(function (f){
+              var t = f.xtype;
+              if (t == 'textfield' || t == 'textareafield' || t == 'combobox') {
+                  f.setReadOnly(true);
+              }
+          });
+
+      });
+    },
+
     initComponent: function() {
         this.items = [
             {
@@ -27,7 +39,7 @@ Ext.define('AM.view.product.Edit', {
 										bodyStyle: 'padding:5px 5px 0',
 										title: '<span style="font-size:16px;font-style:bold">Denumire<\span>',
 										style: 'border-width: 0px',
-										defaultType: 'textfield',
+										defaults:{ xtype:'textfield'},
 										items:[{
 											name : 'cod',
 											fieldLabel: 'Code'
@@ -59,29 +71,24 @@ Ext.define('AM.view.product.Edit', {
 										bodyStyle: 'padding:5px 5px 0',
 										title: '<span style="font-size:16px;font-style:bold">Perioade<\span>',
 										style: 'border-width: 0px',
-										defaultType: 'textfield',
+										defaults:{ xtype:'textfield'},
 										items:[{
-													xtype: 'textfield',
 													name : 'stage1',
 													fieldLabel: 'Stage 1'
 												},
 												{
-													xtype: 'textfield',
 													name : 'stage2',
 													fieldLabel: 'Stage 2'
 												},
 												{
-													xtype: 'textfield',
 													name : 'stage3',
 													fieldLabel: 'Stage 3'
 												},
 												{
-													xtype: 'textfield',
 													name : 'stage4',
 													fieldLabel: 'Stage 4'
 												},
 												{
-													xtype: 'textfield',
 													name : 'stage5',
 													fieldLabel: 'Stage 5'
 												}]
@@ -95,6 +102,7 @@ Ext.define('AM.view.product.Edit', {
 							border:false,
 							defaultType: 'textareafield',
 							defaults:{
+                                        xtype: 'textareafield',
 										anchor: '100%',
 										grow:true,
 										labelWidth: 25,
@@ -149,10 +157,13 @@ Ext.define('AM.view.product.Edit', {
         this.buttons = [
             {
                 text: 'Save',
-                action: 'save'
+                action: 'save',
+                id:'saveProductButton'
             },
             {
                 text: 'Cancel',
+                action: 'cancel',
+                id:'cancelProductButton',
                 scope: this,
                 handler: this.close
             }

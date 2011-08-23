@@ -6,5 +6,15 @@ Ext.define('AM.model.Product', {
         'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'category_id','category', "barCode", "notes","image"
     ],
     hasMany: ['OrderProduct'],
-    belongsTo: ['ProductCategory']
+    belongsTo: ['ProductCategory'],
+    proxy: {
+        api: {
+            read: "data/aProduct"
+        },
+        type: "ajax",
+        reader: {
+            root: "data",
+            successProperty: "success"
+        }
+    }
 });

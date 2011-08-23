@@ -15,7 +15,7 @@ Ext.define('AM.store.OrderProducts', {
         type: "ajax",
         reader: {
             root: "data",
-            successProperty: "success",
+            successProperty: "success"
         }
     }
 });

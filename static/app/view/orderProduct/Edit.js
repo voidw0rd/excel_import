@@ -158,21 +158,18 @@ Ext.define("AM.view.orderProduct.Edit", {
                         icon: 'images/orderProductDetails.png',  // Use a URL in the icon config
                         tooltip: 'Product details',
                         handler: function(grid, rowIndex, colIndex) {
-                            var rec = grid.getStore().getAt(rowIndex);
-                            //alert("Edit " + rec.data['denumirePlic']);
+                            var record = grid.getStore().getAt(rowIndex);
 
-                            Ext.Ajax.request({
-                                url: "productInfo/",
-                                params: {"productId": rec.data['id']},
-                                method: "GET",
-                                success: function(result, req){
-                                    var response = Ext.JSON.decode(result.responseText);
-                                    var edit = Ext.create('AM.view.product.Edit').show();
-                                    edit.down('form').loadRecord(response);
-                                },
-                                failure: function(result, req){
-                                    //var response = Ext.JSON.decode(result.responseText);
-                                    //Ext.notify.msg("- product info -", Ext.String.format("Failed to fetch products info for {0}", rec.get('denumirePlic')));
+                            var product = Ext.ModelManager.getModel('AM.model.Product');
+                            product.load(record.data['product_id'], {
+                                scope: this,
+                                success: function(record, operation) {
+                                    var edit = Ext.create('AM.view.product.Edit');
+
+                                    edit.show();
+                                    edit.down('form').loadRecord(record);
+                                    edit.setFieldsReadOnly();
+                                    edit.down('button[action=save]').disable();
                                 }
                             });
                         }

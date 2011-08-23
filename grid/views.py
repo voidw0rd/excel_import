@@ -191,10 +191,10 @@ def fetchProducts(request):
     
 @login_required
 @csrf_exempt
-def productDetails(request):
+def fetchProduct(request):
 
-    if request.GET.has_key("productId"):
-        productId = request.GET['productId']
+    if request.GET.has_key("id"):
+        productId = request.GET['id']
     else:
         return Http404
 
@@ -605,7 +605,7 @@ def updateOrderProducts(request):
             product.note     = postData['note']
             product.modified = postData['modified']
             product.save()
-            
+
             _calculateOrderTotal(postData['order_id'])
             jsonObj = simplejson.dumps({"success": True})
             #return HttpResponse(jsonObj, mimetype="application/json")
