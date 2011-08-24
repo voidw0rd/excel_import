@@ -167,7 +167,12 @@ def importDataBase(request):
 @csrf_exempt
 def fetchProducts(request):
     excludes = []
-    products = Products.objects.all()
+    if request.GET.has_key("id"):
+        productId = request.GET['id']
+        products = Products.objects.filter(id = productId)
+    else:
+        products = Products.objects.all()
+    
     requestDict = {}
     requestList = []
 
@@ -189,30 +194,6 @@ def fetchProducts(request):
     jsonObj = simplejson.dumps(requestDict, encoding="utf-8")
     return HttpResponse(jsonObj, mimetype="application/json")
     
-@login_required
-@csrf_exempt
-def fetchProduct(request):
-
-    if request.GET.has_key("id"):
-        productId = request.GET['id']
-    else:
-        return Http404
-
-    product = Products.objects.filter(id = productId)
-
-    excludes = []
-
-    if request.is_ajax():
-        try:
-            response = getJsonFromModel(product, excludes)
-            jsonObj = simplejson.dumps(response, encoding="utf-8")
-            return HttpResponse(jsonObj, mimetype="application/json")
-
-        except Exception, err:
-            jsonObj = simplejson.dumps({"success": False, "reason": err})
-            return HttpResponse(jsonObj, mimetype="application/json")
-    else:
-        return Http404
 
 #-----------------------------------------------------------------------
 #   Orders related view functions 
@@ -529,7 +510,7 @@ def createOrderProduct(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            #print postData
+            print postData
             
             if isinstance(postData, dict) and postData.has_key("order_id") and postData.has_key("product_id"):
                 product = Products.objects.get(pk=postData['product_id'])
@@ -849,7 +830,7 @@ def uploadProductImage(request):
             
             product.image = image
             product.save()
-        jsonObj = simplejson.dumps({'success': True})
+        jsonObj = simplejson.dumps({'success': True, 'image': product.image.thumb.url})
         return HttpResponse(jsonObj)
 
     except Exception, err:

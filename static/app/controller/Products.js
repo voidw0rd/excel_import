@@ -77,6 +77,10 @@ Ext.define('AM.controller.Products', {
                                             method: "POST",
                                             waitMsg: 'Uploading your image',
                                             success: function(fp, o) {
+                                                console.log(o);
+                                                var image = Ext.JSON.decode(o.response.responseText);
+                                                console.log(image);
+                                                edit.down('form').down('image').setSrc(image['image']);
                                                 console.log("image has been uploaded ...");
                                                 win.hide();
                                             },
@@ -106,7 +110,6 @@ Ext.define('AM.controller.Products', {
                     }
                 ]
             }).show();
-            
         };
         
         
@@ -148,7 +151,7 @@ Ext.define('AM.controller.Products', {
 
         record.set(values);
         win.close();
-        this.getProductsStore().sync();
+        this.getProductsStore().load();
     },
 
     afterListRefresh: function (){
