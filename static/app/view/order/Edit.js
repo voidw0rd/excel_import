@@ -42,7 +42,7 @@ Ext.define('AM.view.order.Edit', {
                         readOnly: true
                     },{
                         xtype: "combobox",
-                        typeAhead: true,
+                        //typeAhead: true,
                         triggerAction: 'all',
                         selectOnTab: true,
                         multiSelect: false,
@@ -54,16 +54,17 @@ Ext.define('AM.view.order.Edit', {
                         fieldLabel: "Company",
                         name: "company",
                         store: Ext.create("AM.store.Company"),
-                        listeners: {
+/*                        listeners: {
                             'select': function(combo, record){
                                 console.log(record[0]);
                                 var gridRecord = combo.up('form').getRecord();
-                                gridRecord.data.company = record[0].data.id;
+                                gridRecord.set('company', record[0].data.id);
                                 // force a reload
-                                gridRecord.dirty = true;
+                               *//* gridRecord.dirty = true;
                                 combo.up("form").loadRecord(gridRecord);
+                                *//*
                             }
-                        },
+                        },*/
                         width: 370
                     },
                     Ext.create("AM.view.orderProduct.Edit")
@@ -172,7 +173,7 @@ Ext.define('AM.view.order.Edit', {
             {
                 text: 'Cancel',
                 scope: this,
-                handler: this.close
+                action: 'cancel'
             }
         ];
         this.callParent(arguments);

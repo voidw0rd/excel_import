@@ -20,14 +20,17 @@ Ext.define('AM.controller.Orders', {
             'tabpanel > orderlist dataview': {
                 itemdblclick: this.editOrder
             },
-            'orderedit button[action=save]': {
-                click: this.updateOrder
-            },
             'orderlist button[action=new]': {
                 click: this.newOrder
             },
             'orderlist button[action=delete]': {
                 click: this.deleteOrder
+            },
+            'orderedit button[action=save]': {
+                click: this.saveEditOrder
+            },
+            'orderedit button[action=cancel]': {
+                click: this.cancelEditOrder
             }
 
         });
@@ -62,7 +65,15 @@ Ext.define('AM.controller.Orders', {
         edit.down('gridpanel').store.load({params: {orderId: record.data.id}});
     },
 
-    updateOrder: function(button) {
+    deleteOrder: function(button) {
+        var win    = button.up('tabpanel'),
+            grid   = win.down("gridpanel").next("gridpanel"),
+            record = grid.getView().getSelectionModel().getSelection()[0];
+        this.getOrdersStore().remove(record);
+
+    },
+
+    saveEditOrder: function(button) {
         var win    = button.up('window'),
             form   = win.down('form'),
             record = form.getRecord(),
@@ -74,12 +85,9 @@ Ext.define('AM.controller.Orders', {
         this.getOrdersStore().sync();
     },
     
-    deleteOrder: function(button) {
-        var win    = button.up('tabpanel'),
-            grid   = win.down("gridpanel").next("gridpanel"),
-            record = grid.getView().getSelectionModel().getSelection()[0];
-        this.getOrdersStore().remove(record);
-        
+    cancelEditOrder: function(button) {
+        this.getOrdersStore().load();
+        button.up('window').close()
     }
 });
 
