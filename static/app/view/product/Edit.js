@@ -21,7 +21,11 @@ Ext.define('AM.view.product.Edit', {
 
       });
     },
-
+    
+    setImgSrc: function(url){
+        this.down("image").setSrc(url);
+    },
+    
     initComponent: function() {
         this.items = [
             {
@@ -155,10 +159,10 @@ Ext.define('AM.view.product.Edit', {
                            border: false,
                            name: "thumb", 
                            id: "thumb",
-                           items: [Ext.create('Ext.Img', {src: 'http://www.sencha.com/img/20110215-feat-html5.png', height: "70", width: "70", style: 'margin-left: 15px;'}), 
+                           items: [Ext.create('Ext.Img', {src: 'images/thumb/generic', height: "70", width: "70", style: 'margin-left: 15px;'}), 
                                    Ext.create('Ext.Component', {id: "overlay", html: "<p>Click to manage</p>", style: {color: '#555555', backgroundColor:'#000000'}, width: 0, height: 0}),]
                         }]
-            }//Ext.create('Ext.Img', {src: 'http://www.sencha.com/img/20110215-feat-html5.png', height: "100", width: "50"})
+            }
         ];
 
         this.buttons = [

@@ -714,14 +714,17 @@ def updateProducts(request):
         return Http404
     
     if request.method == "POST":
-        
+        excludes = ['id', 'image', 'category_id']
         tmp = request.read()
+        print tmp
         tmp = json.loads(tmp)
         if isinstance(tmp, list):
             for item in tmp:
                 try:
                     queryObj = Products.objects.filter(pk=item["id"])
-                    item.pop("id")
+                    item['category'] = item['category_id']
+                    for exclude in excludes:
+                        item.pop(exclude)
                     queryObj.update(**item)
                 except Exception, e:
                     print e
@@ -729,12 +732,14 @@ def updateProducts(request):
         elif isinstance(tmp, dict):
             try:
                 queryObj = Products.objects.filter(pk=tmp["id"])
-                tmp.pop("id")
+                tmp['category'] = tmp['category_id']
+                for exclude in excludes:
+                    tmp.pop(exclude)
                 queryObj.update(**tmp)
-            except Exception, r:
+            except Exception, e:
                 print e
 
-    jsonObj = simplejson.dumps({"success": True, "data" : []})
+    jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
 
 
