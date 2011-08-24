@@ -821,11 +821,11 @@ def uploadProductImage(request):
             
             _file = ContentFile(request.FILES['photo'].read())
             image = ProductImage()
-            image.image.save(request.FILES['photo'].name + "_" + product.cod, _file)
+            image.image.save(request.FILES['photo'].name, _file)
             thumb = importImg()
             x = thumb.handleImage(request.FILES['photo'])
             x = ContentFile(x.read())
-            image.thumb.save(request.FILES['photo'].name + "_" + product.cod, x)
+            image.thumb.save(request.FILES['photo'].name, x)
 
             
             product.image = image
@@ -837,4 +837,24 @@ def uploadProductImage(request):
         print err
         return HttpResponse(simplejson.dumps({'success': False}))
    
+   
 
+@login_required
+@csrf_exempt
+def downloadProductImage(request):
+
+    try:
+        productId = request.path.split("=")[-1]
+        product = Products.objects.get(pk=productId)
+        image = open(product.image.image.path).read()
+        response = HttpResponse(image)
+        response['Content-Disposition'] = 'attachment; filename=%s' % product.image.image.name
+            
+        return response
+        
+        jsonObj = simplejson.dumps({"success": True, "data": []})
+        return HttpResponse(jsonObj)
+            
+    except Exception, err:
+        print err
+        return Http404

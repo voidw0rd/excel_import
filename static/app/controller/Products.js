@@ -94,8 +94,21 @@ Ext.define('AM.controller.Products', {
                                 }},{
                                 text: 'Download',
                                 handler: function() {
-                                    
-                                    
+                                    var body  = Ext.getBody(),
+                                    frame = body.createChild({
+                                                tag:'iframe',
+                                                cls:'x-hidden',
+                                                id:'iframe',
+                                                name:'iframe'}),
+                                    form = body.createChild({
+                                                tag: "form",
+                                                cls: "x-hidden",
+                                                id: "form",
+                                                action: "downloadProductImage&orderId=" + record.data.id,
+                                                target:'iframe',
+                                                standardSubmit: true});
+                                    form.dom.submit();
+                                    console.log('xxxxxxxxxxxxxxxxxxxx');
                                 }
                             }]
                         }), 
