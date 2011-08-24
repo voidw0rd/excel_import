@@ -77,6 +77,10 @@ Ext.define('AM.controller.Products', {
                                             method: "POST",
                                             waitMsg: 'Uploading your image',
                                             success: function(fp, o) {
+                                                console.log(o);
+                                                var image = Ext.JSON.decode(o.response.responseText);
+                                                console.log(image);
+                                                edit.down('form').down('image').setSrc(image['image']);
                                                 console.log("image has been uploaded ...");
                                                 win.hide();
                                             },
@@ -90,8 +94,21 @@ Ext.define('AM.controller.Products', {
                                 }},{
                                 text: 'Download',
                                 handler: function() {
-                                    
-                                    
+                                    var body  = Ext.getBody(),
+                                    frame = body.createChild({
+                                                tag:'iframe',
+                                                cls:'x-hidden',
+                                                id:'iframe',
+                                                name:'iframe'}),
+                                    form = body.createChild({
+                                                tag: "form",
+                                                cls: "x-hidden",
+                                                id: "form",
+                                                action: "downloadProductImage&orderId=" + record.data.id,
+                                                target:'iframe',
+                                                standardSubmit: true});
+                                    form.dom.submit();
+                                    console.log('xxxxxxxxxxxxxxxxxxxx');
                                 }
                             }]
                         }), 
@@ -106,7 +123,6 @@ Ext.define('AM.controller.Products', {
                     }
                 ]
             }).show();
-            
         };
         
         
@@ -148,7 +164,7 @@ Ext.define('AM.controller.Products', {
 
         record.set(values);
         win.close();
-        this.getProductsStore().sync();
+        this.getProductsStore().load();
     },
 
     afterListRefresh: function (){
