@@ -20,6 +20,6 @@ Ext.define('AM.view.order.List' ,{
                     text:"Delete",
                     action: "delete",
                     scope: this
-            }],
+            }]
     
 });
