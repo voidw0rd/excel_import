@@ -169,6 +169,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                                     edit.show();
                                     edit.down('form').loadRecord(record);
                                     edit.setFieldsReadOnly();
+                                    edit.setImgSrc(record.get('image'));
                                 }
                             });
                         }
