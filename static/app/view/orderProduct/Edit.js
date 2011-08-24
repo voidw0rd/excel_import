@@ -100,7 +100,7 @@ Ext.define("AM.view.orderProduct.Edit", {
             split: true,
             viewConfig: {
                     stripeRows: false,
-                    autoScroll: true,
+                    //autoScroll: true,
                     enableRowBody: true,
                     getRowClass: function(record){ 
                         if(record.data.modified){
