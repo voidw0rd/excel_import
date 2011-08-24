@@ -142,6 +142,13 @@ Ext.define('AM.view.product.Edit', {
                                 name: 'category_id',
                                 id: 'category_id',
                                 store: Ext.create("AM.store.ProductCategories")
+                            },{
+                                xtype:'checkbox',
+                                name: 'modified',
+                                type: 'boolean', 
+                                trueText: 'Yes', 
+                                falseText: 'No',
+                                fieldLabel: "Modified"
                             }]
                         },{
                            columnWidth: 0.2,
