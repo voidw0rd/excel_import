@@ -91,7 +91,10 @@ def userLogin(request):
 @login_required(login_url=None, redirect_field_name=None)
 def userLogout(request):
     logout(request)
-    return HttpResponseRedirect("/login/")
+    
+    jsonObj = simplejson.dumps({"success": True})
+    return HttpResponse(jsonObj, mimetype="application/json")
+    #return HttpResponseRedirect("/login/")
 
 
 @login_required

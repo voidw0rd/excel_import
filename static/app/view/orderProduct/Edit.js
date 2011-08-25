@@ -153,7 +153,8 @@ Ext.define("AM.view.orderProduct.Edit", {
                 {header: "Modified",dataIndex: 'modified',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}},
                 {
                     xtype:'actioncolumn',
-                    width:50,
+                    width: 50,
+                    header: "Details",
                     items: [{
                         icon: 'images/orderProductDetails.png',  // Use a URL in the icon config
                         tooltip: 'Product details',

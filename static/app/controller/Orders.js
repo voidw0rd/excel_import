@@ -98,9 +98,10 @@ Ext.define('AM.controller.Orders', {
     logout: function() {
         Ext.Ajax.request({
             url: "logout",
-            method: "POST",
+            method: "GET",
             success: function(result){
                 console.log('Logout succesful');
+                window.location = "login/"
             },
             failure: function(result){
                 console.log('Logout NOT succesful');
