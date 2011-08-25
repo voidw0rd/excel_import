@@ -20,6 +20,10 @@ Ext.define('AM.view.order.List' ,{
                     text:"Delete",
                     action: "delete",
                     scope: this
+            },Ext.create('Ext.Toolbar.Fill'),{
+                    text:"Logout",
+                    action:"logout",
+                    scope: this
             }]
     
 });

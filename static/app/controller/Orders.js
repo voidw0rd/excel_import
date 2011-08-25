@@ -26,6 +26,9 @@ Ext.define('AM.controller.Orders', {
             'orderlist button[action=delete]': {
                 click: this.deleteOrder
             },
+            'orderlist button[action=logout]': {
+                click: this.logout
+            },
             'orderedit button[action=save]': {
                 click: this.saveEditOrder
             },
@@ -90,6 +93,19 @@ Ext.define('AM.controller.Orders', {
     cancelEditOrder: function(button) {
         this.getOrdersStore().load();
         button.up('window').close()
+    },
+
+    logout: function() {
+        Ext.Ajax.request({
+            url: "logout",
+            method: "POST",
+            success: function(result){
+                console.log('Logout succesful');
+            },
+            failure: function(result){
+                console.log('Logout NOT succesful');
+            }
+        });
     }
 });
 
