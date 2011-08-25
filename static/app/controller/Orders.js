@@ -26,6 +26,9 @@ Ext.define('AM.controller.Orders', {
             'orderlist button[action=delete]': {
                 click: this.deleteOrder
             },
+            'orderlist button[action=logout]': {
+                click: this.logout
+            },
             'orderedit button[action=save]': {
                 click: this.saveEditOrder
             },
@@ -47,6 +50,7 @@ Ext.define('AM.controller.Orders', {
         });
 
         this.getOrdersStore().add(record);
+        this.getOrdersStore().sync();
         this.getOrdersStore().load({callback: function(records, operation, success) {
             Ext.each(records, function(item){
                 if(item.data.status === record.data.status) {
@@ -70,7 +74,7 @@ Ext.define('AM.controller.Orders', {
             grid   = win.down("gridpanel").next("gridpanel"),
             record = grid.getView().getSelectionModel().getSelection()[0];
         this.getOrdersStore().remove(record);
-
+        this.getOrdersStore().sync();
     },
 
     saveEditOrder: function(button) {
@@ -81,13 +85,27 @@ Ext.define('AM.controller.Orders', {
 
         record.set(values);
         win.close();
-        this.getOrderProductsStore().sync();
+        //this.getOrderProductsStore().sync();
         this.getOrdersStore().sync();
+        this.getOrdersStore().load();
     },
     
     cancelEditOrder: function(button) {
         this.getOrdersStore().load();
         button.up('window').close()
+    },
+
+    logout: function() {
+        Ext.Ajax.request({
+            url: "logout",
+            method: "POST",
+            success: function(result){
+                console.log('Logout succesful');
+            },
+            failure: function(result){
+                console.log('Logout NOT succesful');
+            }
+        });
     }
 });
 

@@ -11,7 +11,7 @@ Ext.define('AM.view.order.Edit', {
     height: 490,
     width: 700,
     closable: true,
-    //onEsc: function(){console.log('am apsat pe ESC!!!!');this.close();},
+
     initComponent: function() {
         
         this.items = [
@@ -71,14 +71,7 @@ Ext.define('AM.view.order.Edit', {
                 ]
             }
         ];
-        this.tools = [//{
-                //type:'save',
-                //qtip: 'Save',
-                // hidden:true,
-                //handler: function(event, toolEl, panel){
-                    // refresh logic
-                //    }
-                //}/{
+        this.tools = [
                 {
                 type:'email',
                 qtip: 'Email form Data',
