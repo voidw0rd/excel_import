@@ -263,7 +263,7 @@ def ordersUpdate(request):
             if request.user.is_staff:
                 queryObj.update(**postData)
             else:
-                queryObj.update(note = item['note'])
+                queryObj.update(note = postData['note'])
         
         jsonObj = simplejson.dumps({"success": True})
         return HttpResponse(jsonObj, mimetype="application/json")
@@ -575,8 +575,8 @@ def orderProductsCreate(request):
 @csrf_exempt   
 def orderProductsUpdate(request):
     
-    if not request.user.is_staff:
-        return Http404
+    #if not request.user.is_staff:
+    #    return Http404
     
     postData = request.read()
     postData = json.loads(postData)
@@ -585,15 +585,19 @@ def orderProductsUpdate(request):
     if isinstance(postData, dict) and postData.has_key("id"):
         try:
             product = OrderProduct.objects.get(pk=postData['id'])
+            
+            if not request.user.is_staff:
+                product.note     = postData['note']
+                product.save()
+                return HttpResponse(simplejson.dumps({"success": True}))
+            
             product.quantity = postData['quantity']
             product.note     = postData['note']
             product.modified = postData['modified']
             product.save()
 
             _calculateOrderTotal(postData['order_id'])
-            jsonObj = simplejson.dumps({"success": True})
-            #return HttpResponse(jsonObj, mimetype="application/json")
-            return HttpResponse(jsonObj)
+            return HttpResponse(simplejson.dumps({"success": True}))
             
         except Exception, err:
             print err
@@ -603,15 +607,20 @@ def orderProductsUpdate(request):
         for obj in postData:
             if isinstance(obj, dict) and obj.has_key("id"):
                 product = OrderProduct.objects.get(pk=obj['id'])
+                
+                if not request.user.is_staff:
+                    product.note = obj['note']
+                    product.save()
+                    return HttpResponse(simplejson.dumps({"success": True}))
+                    
                 product.quantity = obj['quantity']
                 product.note = obj['note']
                 product.modified = obj['modified']
                 product.save()
                 
                 _calculateOrderTotal(obj['order_id'])
-        jsonObj = simplejson.dumps({"success": True})
-        #return HttpResponse(jsonObj, mimetype="application/json")
-        return HttpResponse(jsonObj)
+                
+        return HttpResponse(simplejson.dumps({"success": True}))
     else:
         return Http404
         
