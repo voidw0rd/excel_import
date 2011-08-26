@@ -168,7 +168,7 @@ def importDataBase(request):
     
 @login_required
 @csrf_exempt
-def fetchProducts(request):
+def productsRead(request):
     excludes = []
     if request.GET.has_key("id"):
         productId = request.GET['id']
@@ -204,7 +204,7 @@ def fetchProducts(request):
 
 @login_required
 @csrf_exempt
-def fetchOrders(request):
+def ordersRead(request):
     
     user = request.user
     if user.is_staff:
@@ -235,7 +235,7 @@ def fetchOrders(request):
 
 @login_required
 @csrf_exempt  
-def updateOrders(request):
+def ordersUpdate(request):
         
     try:
         postData = request.read()
@@ -276,7 +276,7 @@ def updateOrders(request):
 
 @login_required
 @csrf_exempt    
-def createOrder(request):
+def ordersCreate(request):
 	
     if not request.user.is_staff:
         return Http404
@@ -297,7 +297,7 @@ def createOrder(request):
 
 
 @csrf_exempt  
-def deleteOrder(request):
+def ordersDelete(request):
     if not request.user.is_staff:
         return Http404
         
@@ -457,7 +457,7 @@ def _calculateOrderTotal(order):
 
 @login_required
 @csrf_exempt    
-def fetchOrderProducts(request):
+def orderProductsRead(request):
     
     if request.is_ajax():
         get = request.GET
@@ -504,7 +504,7 @@ def fetchOrderProducts(request):
 
 @login_required
 @csrf_exempt 
-def createOrderProduct(request):
+def orderProductsCreate(request):
     if not request.user.is_staff:
         return Http404
 
@@ -573,7 +573,7 @@ def createOrderProduct(request):
 
 @login_required
 @csrf_exempt   
-def updateOrderProducts(request):
+def orderProductsUpdate(request):
     
     if not request.user.is_staff:
         return Http404
@@ -619,7 +619,7 @@ def updateOrderProducts(request):
 
 @login_required
 @csrf_exempt    
-def deleteOrderProduct(request):
+def orderProductsDelete(request):
     
     if not request.user.is_staff:
         return Http404
@@ -711,7 +711,7 @@ def importOrderProductCsv(request):
 
 @login_required
 @csrf_exempt    
-def updateProducts(request):
+def productsUpdate(request):
     
     if not request.user.is_staff:
         return Http404

@@ -7,34 +7,37 @@ import settings
 
 urlpatterns = patterns('',
     
+    (r'^$', index),
     (r"^login/$", userLogin),
     (r"^logout", userLogout),
-    (r'^$', index),
     (r"^import/", importDataBase),
     
     # products
-    (r"^data/products", fetchProducts),
-    (r"^data/updateProducts", updateProducts),
-    (r"^data/productCategories", productCategoryRead),
-    (r"^uploadProductImage", uploadProductImage),
-    (r"^data/aProduct", fetchProducts),
+    (r"^data/productsRead",     productsRead),
+    (r"^data/productsUpdate",   productsUpdate),
+    (r"^data/productRead",      productsRead),
+    (r"^data/productCategoriesRead", productCategoryRead),
+    
     (r"^downloadProductImage", downloadProductImage),
+    (r"^uploadProductImage",   uploadProductImage),
 
     # orders
-    (r"^data/orders", fetchOrders),
-    (r"^data/updateorder", updateOrders),
-    (r"^data/deleteorder", deleteOrder),
-    (r"^data/createorder", createOrder),
-    (r"^printOrder", printOrder),
+    (r"^data/ordersRead",   ordersRead),
+    (r"^data/ordersUpdate", ordersUpdate),
+    (r"^data/ordersDelete", ordersDelete),
+    (r"^data/ordersCreate", ordersCreate),
+    
+    (r"^printOrder",    printOrder),
     (r"^downloadOrder", downloadOrder),
-    (r"^sendMail", sendMail),
+    (r"^sendMail",      sendMail),
     
     # order products 
-    (r"^data/orderProducts", fetchOrderProducts),
-    (r"^data/updateOrderProducts", updateOrderProducts),
-    (r"^data/createOrderProduct", createOrderProduct),
-    (r"^data/deleteOrderProduct", deleteOrderProduct),
-    (r"^downloadCsv", exportOrderProductCsv),
+    (r"^data/orderProductsRead",   orderProductsRead),
+    (r"^data/orderProductsUpdate", orderProductsUpdate),
+    (r"^data/orderProductsCreate", orderProductsCreate),
+    (r"^data/orderProductsDelete", orderProductsDelete),
+    
+    (r"^exportOrderProductCsv", exportOrderProductCsv),
     (r"^importOrderProductCsv", importOrderProductCsv),
     
     # company

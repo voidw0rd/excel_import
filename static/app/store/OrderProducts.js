@@ -7,10 +7,10 @@ Ext.define('AM.store.OrderProducts', {
     autoSync: false,
     proxy: {
         api: {
-            read: "data/orderProducts",
-            update: "data/updateOrderProducts",
-            create: "data/createOrderProduct",
-            destroy: "data/deleteOrderProduct"
+            read: "data/orderProductsRead",
+            update: "data/orderProductsUpdate",
+            create: "data/orderProductsCreate",
+            destroy: "data/orderProductsDelete"
         },
         type: "ajax",
         reader: {

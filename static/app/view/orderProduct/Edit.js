@@ -201,7 +201,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                         text:'CSV',
                         action: "exportCsv",
                         scope: this,
-                        handler: this.downloadCsv
+                        handler: this.exportCsv
                     },{
                         text:'PDF',
                         action: "exportPdf",
@@ -247,7 +247,7 @@ Ext.define("AM.view.orderProduct.Edit", {
         
     },
     
-    downloadCsv: function(e) {
+    exportCsv: function(e) {
         var win    = e.parentMenu.zIndexParent,
             form   = win.down("form"),
             record = form.getRecord(); 
@@ -264,7 +264,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                         tag: "form",
                         cls: "x-hidden",
                         id: "form",
-                        action: "downloadCsv&orderId=" + record.data.id,
+                        action: "exportOrderProductCsv&orderId=" + record.data.id,
                         target:'iframe',
                         standardSubmit: true});
         form.dom.submit();

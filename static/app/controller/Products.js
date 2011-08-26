@@ -153,7 +153,7 @@ Ext.define('AM.controller.Products', {
         
         
         edit.down('form').loadRecord(record);
-        edit.down('form').setImgSrc(record.get('image'));
+        edit.setImgSrc(record.get('image'));
         edit.down('form').down('textfield').focus();
     },
 

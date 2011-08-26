@@ -7,7 +7,7 @@ Ext.define('AM.store.ProductCategories', {
     autoSync: true,
     proxy: {
         api: {
-            read: "data/productCategories"
+            read: "data/productCategoriesRead"
         },
         type: "ajax",
         reader: {

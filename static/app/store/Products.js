@@ -6,8 +6,8 @@ Ext.define('AM.store.Products', {
     proxy: {
         type: 'ajax',
         api: {
-            read: 'data/products',
-            update: 'data/updateProducts'
+            read: 'data/productsRead',
+            update: 'data/productsUpdate'
         },
         reader: {
             type: 'json',
