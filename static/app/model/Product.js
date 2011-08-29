@@ -3,13 +3,13 @@ Ext.define('AM.model.Product', {
     fields: [
         'id', 'cod', 'denumirePlic', 'denumireOferta', 'denumireLatina', 'soi', 'photoCode',
         'namesLanguages', 'roDesc', 'enDesc', 'huDesc', 'sbDesc', 'ruDesc', 'modified',
-        'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'category_id','category', "barCode", "notes","image"
+        'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'category_id','category', "barCode", "notes","image", "log"
     ],
     hasMany: ['OrderProduct'],
     belongsTo: ['ProductCategory'],
     proxy: {
         api: {
-            read: "data/productRead"
+            read: "data/productsRead"
         },
         type: "ajax",
         reader: {

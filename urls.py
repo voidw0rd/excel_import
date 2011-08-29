@@ -15,7 +15,6 @@ urlpatterns = patterns('',
     # products
     (r"^data/productsRead",     productsRead),
     (r"^data/productsUpdate",   productsUpdate),
-    (r"^data/productRead",      productsRead),
     (r"^data/productCategoriesRead", productCategoryRead),
     
     (r"^downloadProductImage", downloadProductImage),

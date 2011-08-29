@@ -18,12 +18,11 @@ Ext.define('AM.controller.Products', {
         
         this.control({
             'tabpanel > productlist dataview': {
-                itemdblclick: this.editProduct,
-                refresh: this.afterListRefresh
+                itemdblclick: this.editProduct
             },
             'productedit button[action=save]': {
-                click: this.updateProduct
-            },
+                click: this.saveEditProduct
+            }
         });
         
     },
@@ -93,7 +92,7 @@ Ext.define('AM.controller.Products', {
                                 
                                 }},{
                                 text: 'Download',
-                                handler: function() {
+                                handler: function() { 
                                     var body  = Ext.getBody(),
                                     frame = body.createChild({
                                                 tag:'iframe',
@@ -157,7 +156,7 @@ Ext.define('AM.controller.Products', {
         edit.down('form').down('textfield').focus();
     },
 
-    updateProduct: function(button) {
+    saveEditProduct: function(button) {
         var win    = button.up('window'),
             form   = win.down('form'),
             record = form.getRecord(),
@@ -167,9 +166,5 @@ Ext.define('AM.controller.Products', {
         win.close();
         this.getProductsStore().sync();
         this.getProductsStore().load();
-    },
-
-    afterListRefresh: function (){
-        //console.log('Products grid just refreshed!!!!')
     }
 });

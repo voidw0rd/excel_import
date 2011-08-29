@@ -54,17 +54,6 @@ Ext.define('AM.view.order.Edit', {
                         fieldLabel: "Company",
                         name: "company",
                         store: Ext.create("AM.store.Company"),
-/*                        listeners: {
-                            'select': function(combo, record){
-                                console.log(record[0]);
-                                var gridRecord = combo.up('form').getRecord();
-                                gridRecord.set('company', record[0].data.id);
-                                // force a reload
-                               *//* gridRecord.dirty = true;
-                                combo.up("form").loadRecord(gridRecord);
-                                *//*
-                            }
-                        },*/
                         width: 370
                     },
                     Ext.create("AM.view.orderProduct.Edit")
