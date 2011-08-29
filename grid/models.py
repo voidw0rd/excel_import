@@ -1,6 +1,5 @@
 from django.db import models
-#from revisions.models import VersionedModel
-#import revisions.shortcuts as shortcuts
+import reversion
 
 
 class ProductCategory(models.Model):
@@ -13,7 +12,6 @@ class ProductImage(models.Model):
     
 
 class Products(models.Model):
-#class Products(VersionedModel, shortcuts.VersionedModel):
     
     cod = models.CharField(max_length = 10)
     denumirePlic = models.CharField(max_length = 50)
@@ -93,3 +91,6 @@ class Admins(models.Model):
 
 
 
+if not reversion.is_registered(Orders):
+    reversion.register(Orders)
+    reversion.register(Products)

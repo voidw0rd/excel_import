@@ -6,7 +6,7 @@ from models import ProductImage
 class Login(forms.Form):
     
     username = forms.CharField(max_length = 20)
-    password = forms.CharField(max_length = 20)
+    password = forms.CharField(max_length = 20, widget=forms.PasswordInput)
 
 
 class upload(ModelForm):

@@ -21,6 +21,7 @@ from forms import Login, upload
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
+from reversion.models import Version
 
 
 
@@ -99,7 +100,7 @@ def userLogout(request):
 
 @login_required
 def index(request):    
-
+            
     #send_mail('sendGrid - email', 'Greetz, this is just a test email ', 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
     
     return render_to_response(
@@ -251,7 +252,7 @@ def ordersUpdate(request):
                 if request.user.is_staff:
                     queryObj.update(**item)
                 else:
-                    queryObj.update(note = item['note'])
+                    queryObj.update(note = item['note'])                    
                 
         elif isinstance(postData, dict) and postData.has_key("id"):
             queryObj = Orders.objects.filter(pk=postData['id'])
@@ -262,8 +263,10 @@ def ordersUpdate(request):
             
             if request.user.is_staff:
                 queryObj.update(**postData)
+                queryObj[0].save()
             else:
                 queryObj.update(note = postData['note'])
+                queryObj[0].save()
         
         jsonObj = simplejson.dumps({"success": True})
         return HttpResponse(jsonObj, mimetype="application/json")
@@ -738,6 +741,7 @@ def productsUpdate(request):
                     for exclude in excludes:
                         item.pop(exclude)
                     queryObj.update(**item)
+                    queryObj[0].save()
                 except Exception, e:
                     print e
                     
@@ -748,6 +752,7 @@ def productsUpdate(request):
                 for exclude in excludes:
                     tmp.pop(exclude)
                 queryObj.update(**tmp)
+                queryObj[0].save()
             except Exception, e:
                 print e
 
