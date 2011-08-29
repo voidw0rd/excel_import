@@ -90,6 +90,11 @@ class Admins(models.Model):
     email = models.EmailField()
 
 
+class passwordRecovery(models.Model):
+    
+    token = models.CharField(max_length = 20)
+    user = models.ForeignKey(Company)
+
 
 if not reversion.is_registered(Orders):
     reversion.register(Orders)

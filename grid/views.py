@@ -12,17 +12,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 from settings import STATIC_FILE_PATH
-import json
-import csv
-import datetime
 from api import makePDF, makeCSV, importCSV, importImg
 import cStringIO as StringIO
-from forms import Login, upload
+from forms import Login, upload, passwordRecoveryForm, tokenRequestForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from reversion.models import Version
-
+import json
+import csv
+import datetime
+import uuid
 
 
 
@@ -76,9 +76,9 @@ def userLogin(request):
                     login(request, user)
                     return HttpResponseRedirect("/")
                 else:
-                    pass
+                    form.non_field_errors = "Your account is suspended."
             else:
-                pass
+                form.non_field_errors = "Username or password invalid."
     else:
         form = Login()
     
@@ -96,6 +96,75 @@ def userLogout(request):
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
     #return HttpResponseRedirect("/login/")
+
+
+def pwdRecovery(request):
+    
+    if request.method == "POST":
+        form = passwordRecoveryForm(request.POST)
+        if form.is_valid():
+            new = form.cleaned_data['new_pwd']
+            conf = form.cleaned_data['conf_pwd']
+            if new == conf:
+                try:
+                    token = passwordRecovery.objects.get(token = form.cleaned_data['token'])
+                    user = Company.objects.get(pk=token.user.id)
+                    if user.email == form.cleaned_data['username']:
+                        user.password = new
+                        user.save()
+                        return HttpResponseRedirect("/")
+                    else:
+                        form.non_field_errors = "Couldn't validate your token"
+                except Exception, err:
+                    print err
+                    form.non_field_errors = "Couldn't validate your token"
+            else:
+                form.non_field_errors = "Passwords dont match."
+                
+        else:
+            form.non_field_errors = "Invalid data submited."
+            
+    else:
+        form = passwordRecoveryForm()
+                
+    return render_to_response(
+                              'passwordRecovery.html', 
+                              {
+                                'form': form
+                              }, 
+                              context_instance=RequestContext(request)
+                             )
+
+
+def resetPasswordToken(request):
+    
+    msg = ""
+    if request.method == "POST":
+        form = tokenRequestForm(request.POST)
+        if form.is_valid():
+            try:
+                user = Company.objects.get(email = form.cleaned_data['username'])
+                tokens = passwordRecovery.objects.filter(user = user)
+                for obj in tokens:
+                    obj.delete()
+                token = passwordRecovery.objects.create(token = uuid.uuid4(), user = user)
+                msg = "Am email has been send to your email address."
+                # send an email with the token
+                print token.token
+                
+            except Exception, err:
+                print err
+                form.non_field_errors = "Invalid username."
+        else:
+            form.non_field_errors = "Invalid data submited."
+    else:
+        form = tokenRequestForm()
+    
+    return render_to_response(  
+                              'tokenRequest.html', 
+                              {'form': form, "msg": msg}, 
+                              context_instance=RequestContext(request)
+                             )
 
 
 @login_required

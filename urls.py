@@ -10,7 +10,9 @@ urlpatterns = patterns('',
     (r'^$', index),
     (r"^login/$", userLogin),
     (r"^logout", userLogout),
+    (r"^pwdRecovery/$", pwdRecovery),
     (r"^import/", importDataBase),
+    (r"^resetPasswordToken/$", resetPasswordToken),
     
     # products
     (r"^data/productsRead",     productsRead),

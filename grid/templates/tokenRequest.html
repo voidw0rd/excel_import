@@ -39,16 +39,14 @@
         #user_field {
             font-size: 20px;
         }
-        
-        #pwd_field {
-            font-size: 20px;
-        }
         #btn {
             position: relative;
             top: 48px;
-            left: -27px;
+            left: -42px;
             height: 35px;
+            width: auto;
             font-size: 18px;
+            text-indent: 0px;
         }
         #pwd_recovery {
             float: right;
@@ -71,17 +69,17 @@
     {% if form %}
     <div id="form_header"></div>
     <div id="form_field">
+        {% if msg %}
+            {{ msg }}
+        {% endif %}
         {% if form.non_field_errors %}
         <div id="errors">
             {{ form.non_field_errors }}
         </div>
         {% endif %}
         <form method="post" action="">{% csrf_token %}
-            
             <div id="user_field"> {{ form.username.label }} </div> {{ form.username }} 
-            <div id="pwd_field"> {{ form.password.label }} </div> {{ form.password }}
-            
-            <input id="btn" type="submit" value="Login" />
+            <input id="btn" type="submit" value="Submit" />
         </form>
     </div><p class="cls"></p>
     <a id="pwd_recovery" href="/pwdRecovery/">Password recovery?</a>
