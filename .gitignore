@@ -3,9 +3,10 @@
 extjs-4.0.2a/
 settings.py
 /static/app.js
-/static/grid/
+/static/images/
 /static/am.db
 /static/DejaVuSansMono.ttf
 .idea
+.gitignore
 grid/templates/index.html
 grid/templates/order_notification_email_template.html
