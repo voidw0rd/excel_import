@@ -259,6 +259,7 @@ def productsRead(request):
             data[key] = prod[key]
         data['category_id'] = data['category']
         data['category'] = {'id': product.category.id, 'name': product.category.name}
+        data['log'] = [{'version': 2, 'date': '22/12/11','user': 'vlad', 'diff': 'ceva nou'},{'version': 1, 'date': '20/12/11','user': 'dan', 'diff': 'altceva nou'}]
         requestList.append(data)
 
     requestDict['data'] = requestList

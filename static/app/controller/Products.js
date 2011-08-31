@@ -1,9 +1,9 @@
 Ext.define('AM.controller.Products', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Products', 'ProductCategories'],
+    stores: ['Products', 'ProductCategories', 'Logs'],
 
-    models: ['Product', 'ProductCategory'],
+    models: ['Product', 'ProductCategory', 'Log'],
 
     views: ['product.Edit', 'product.List'],
 
@@ -24,11 +24,15 @@ Ext.define('AM.controller.Products', {
                 click: this.saveEditProduct
             }
         });
-        
     },
 
     editProduct: function(grid, record) {
-        var edit = Ext.create('AM.view.product.Edit').show();
+        var edit = Ext.create('AM.view.product.Edit');
+        edit.down('gridpanel').store.loadData(record.data.log);
+        edit.show();
+
+
+
         if (record.data.image) {
             edit.down('form').down('image').setSrc(record.data.image);
         }

@@ -136,7 +136,7 @@ Ext.define('AM.view.product.Edit', {
 							title: '<span style="font-size:16px;font-style:bold">Log Modificari<\span>',
 							style: 'border-width: 0px',
 							border:false,
-							defaultType: 'gridpane;',
+							defaultType: 'gridpanel',
 							defaults:{
 										anchor: '100%',
 										grow:true,
@@ -145,11 +145,11 @@ Ext.define('AM.view.product.Edit', {
                                         width: 280
 									},
 							items :[Ext.create('Ext.grid.Panel', {
-                                store: Ext.create("AM.store.Log"),
+                                store: Ext.create('AM.store.Logs'),
                                 columns: [
-                                    {header: 'Ver.',  dataIndex: 'version'},
-                                    {header: 'Date',  dataIndex: 'date'},
-                                    {header: 'User', dataIndex: 'user', flex:1},
+                                    {header: 'Ver',  dataIndex: 'version'},
+                                    {header: 'Data', dataIndex: 'date'},
+                                    {header: 'User', dataIndex: 'user'},
                                     {header: 'Diff', dataIndex: 'diff'}
                                 ],
                                 height: 200,

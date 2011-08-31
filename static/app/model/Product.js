@@ -5,7 +5,7 @@ Ext.define('AM.model.Product', {
         'namesLanguages', 'roDesc', 'enDesc', 'huDesc', 'sbDesc', 'ruDesc', 'modified',
         'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'category_id','category', "barCode", "notes","image", "log"
     ],
-    hasMany: ['OrderProduct'],
+    hasMany: ['OrderProduct', 'Log'],
     belongsTo: ['ProductCategory'],
     proxy: {
         api: {

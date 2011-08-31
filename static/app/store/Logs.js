@@ -1,7 +1,4 @@
-Ext.define('AM.store.Log', {
-    
+Ext.define('AM.store.Logs', {
     extend: 'Ext.data.Store',
-    
-    model: 'AM.model.Log',
-    autoLoad: true
+    model: 'AM.model.Log'
 });
