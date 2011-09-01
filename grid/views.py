@@ -494,9 +494,9 @@ def sendMail(request):
     orderId = request.read().split("=")[-1]
     order = Orders.objects.get(pk=orderId)
     
-    tmpData = {"success": True, "email": order.company.email}
-    jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
-    return HttpResponse(jsonObj, mimetype="application/json")
+    #tmpData = {"success": True, "email": order.company.email}
+    #jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+    #return HttpResponse(jsonObj, mimetype="application/json")
     
     
     if _sendMail(order):
@@ -505,7 +505,7 @@ def sendMail(request):
         return HttpResponse(jsonObj, mimetype="application/json")
         
     else:
-        tmpData = {"success": False, "email": order.company.email}
+        tmpData = {"email": order.company.email}
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
     
@@ -513,22 +513,21 @@ def sendMail(request):
     
 
 def _sendMail(order):
-    #to do w8 for sendGrid to validate my account and integrate it with django
     try:
         t = get_template("order_notification_email_template.txt")
         c = Context({"orderName": order.name,
                      "orderUser": order.company.name})
         body = t.render(c)
-        print body
         send_mail('Print Order notification - %s' % order.name, 
                   body, 
                   'info@sem-luca.ro', 
                   [order.company.email], 
                   fail_silently=False)
-                  
-        print "\n\n" + order.name + "\n\n"
+    
+        #print "\n\n" + order.name + "\n\n"
         return True
     except Exception, err:
+        print "[ xx ]Exception: "
         print err
         return False
 
