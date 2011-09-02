@@ -8,7 +8,7 @@ Ext.define('AM.view.product.Edit', {
     layout: 'fit',
     autoShow: true,
     height: 670,
-    width: 940,
+    width: 680,
 
     setFieldsReadOnly: function(){
       this.items.each( function (field){
@@ -35,7 +35,7 @@ Ext.define('AM.view.product.Edit', {
                 style: 'background-color: #fff;',
 				layout: 'column',
                 items: [{
-							columnWidth:.3,
+							columnWidth:.5,
 							defaults: {anchor: '100%'},
 							 border: false,
 							items :[{
@@ -99,7 +99,7 @@ Ext.define('AM.view.product.Edit', {
 									}]
 						},{
 							xtype: 'fieldset',
-							columnWidth:.3,
+							columnWidth:.5,
 							bodyStyle: 'padding:5px 5px 0',
 							title: '<span style="font-size:16px;font-style:bold">Descriere<\span>',
 							style: 'border-width: 0px',
@@ -111,7 +111,7 @@ Ext.define('AM.view.product.Edit', {
 										grow:true,
 										labelWidth: 25,
                                         height: 90,
-                                        width: 240
+                                        width: 280
 									},
 							items :[{
 										name : 'roDesc',
@@ -130,32 +130,6 @@ Ext.define('AM.view.product.Edit', {
 										fieldLabel: 'RU'
 									}]
 						},{
-							xtype: 'fieldset',
-							columnWidth:.4,
-							bodyStyle: 'padding:5px 5px 0',
-							title: '<span style="font-size:16px;font-style:bold">Log Modificari<\span>',
-							style: 'border-width: 0px',
-							border:false,
-							defaultType: 'gridpanel',
-							defaults:{
-										anchor: '100%',
-										grow:true,
-										labelWidth: 25,
-                                        height: 90,
-                                        width: 280
-									},
-							items :[Ext.create('Ext.grid.Panel', {
-                                store: Ext.create('AM.store.Logs'),
-                                columns: [
-                                    {header: 'Ver',  dataIndex: 'version'},
-                                    {header: 'Data', dataIndex: 'date'},
-                                    {header: 'User', dataIndex: 'user'},
-                                    {header: 'Diff', dataIndex: 'diff'}
-                                ],
-                                height: 200,
-                                width: 280
-                            })]
-                        },{
                             columnWidth: 0.8,
                             border: false,
                             defaults: {width: 450},

@@ -245,11 +245,34 @@ def productsRead(request):
         products = Products.objects.filter(id = productId)
     else:
         products = Products.objects.all()
-    
     requestDict = {}
     requestList = []
 
     for product in products:
+        
+        obj = Version.objects.get_for_object(product)
+        count = obj.count() - 1
+        logList = []
+        #if count > 1:
+        while count > 0:
+            log = {}
+            log['user'] = str(obj[count].revision.user)
+            log['date'] = str(obj[count].revision.date_created).split(".")[0]
+            log['version'] = obj[count].revision_id
+            old = obj[count-1].field_dict
+            new = obj[count].field_dict
+            diff_str = ""
+            for key in old.keys():
+                if old[key] == new[key]:
+                    pass
+                else:
+                    diff_str += key + " - " + new[key] + "; "
+            log['diff'] = diff_str
+            print log
+            logList.append(log)
+            count -= 1
+            
+            
         prod = model_to_dict(product)
         data = {}
         for key in prod.keys():
@@ -259,7 +282,8 @@ def productsRead(request):
             data[key] = prod[key]
         data['category_id'] = data['category']
         data['category'] = {'id': product.category.id, 'name': product.category.name}
-        data['log'] = [{'version': 2, 'date': '22/12/11','user': 'vlad', 'diff': 'ceva nou'},{'version': 1, 'date': '20/12/11','user': 'dan', 'diff': 'altceva nou'}]
+        data['log'] = logList
+        #data['log'] = [{'version': 2, 'date': '22/12/11','user': 'vlad', 'diff': 'ceva nou'},{'version': 1, 'date': '20/12/11','user': 'dan', 'diff': 'altceva nou'}]
         requestList.append(data)
 
     requestDict['data'] = requestList
@@ -470,9 +494,9 @@ def sendMail(request):
     orderId = request.read().split("=")[-1]
     order = Orders.objects.get(pk=orderId)
     
-    tmpData = {"success": True, "email": order.company.email}
-    jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
-    return HttpResponse(jsonObj, mimetype="application/json")
+    #tmpData = {"success": True, "email": order.company.email}
+    #jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
+    #return HttpResponse(jsonObj, mimetype="application/json")
     
     
     if _sendMail(order):
@@ -481,7 +505,7 @@ def sendMail(request):
         return HttpResponse(jsonObj, mimetype="application/json")
         
     else:
-        tmpData = {"success": False, "email": order.company.email}
+        tmpData = {"email": order.company.email}
         jsonObj = simplejson.dumps(tmpData, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")
     
@@ -489,22 +513,21 @@ def sendMail(request):
     
 
 def _sendMail(order):
-    #to do w8 for sendGrid to validate my account and integrate it with django
     try:
         t = get_template("order_notification_email_template.txt")
         c = Context({"orderName": order.name,
                      "orderUser": order.company.name})
         body = t.render(c)
-        print body
         send_mail('Print Order notification - %s' % order.name, 
                   body, 
                   'info@sem-luca.ro', 
                   [order.company.email], 
                   fail_silently=False)
-                  
-        print "\n\n" + order.name + "\n\n"
+    
+        #print "\n\n" + order.name + "\n\n"
         return True
     except Exception, err:
+        print "[ xx ]Exception: "
         print err
         return False
 

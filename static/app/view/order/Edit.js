@@ -68,6 +68,7 @@ Ext.define('AM.view.order.Edit', {
                 handler: function(event, toolEl, panel){
                         var record = panel.up("window").down("form").getRecord()
                         var orderId = record.data.id;
+                        var button = this;
                         Ext.Ajax.request({
                             url: "sendMail",
                             params: {"orderId": orderId},
@@ -75,6 +76,8 @@ Ext.define('AM.view.order.Edit', {
                             success: function(result, req){
                                 var response = Ext.JSON.decode(result.responseText);
                                 Ext.notify.msg("- send email -", Ext.String.format("Email has been send to: {0}", response['email']));
+                                button.disable();
+                                setTimeout(function(){button.enable()}, 40000);
                             }, 
                             failure: function(result, req){
                                 var response = Ext.JSON.decode(result.responseText);

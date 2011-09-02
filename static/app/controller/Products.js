@@ -28,10 +28,8 @@ Ext.define('AM.controller.Products', {
 
     editProduct: function(grid, record) {
         var edit = Ext.create('AM.view.product.Edit');
-        edit.down('gridpanel').store.loadData(record.data.log);
+        //edit.down('gridpanel').store.loadData(record.data.log);
         edit.show();
-
-
 
         if (record.data.image) {
             edit.down('form').down('image').setSrc(record.data.image);
@@ -149,12 +147,7 @@ Ext.define('AM.controller.Products', {
         Ext.get("overlay").on('click', function(){
             upload();
         });
-        
-        
-        
-        
-        
-        
+
         edit.down('form').loadRecord(record);
         edit.setImgSrc(record.get('image'));
         edit.down('form').down('textfield').focus();
