@@ -85,21 +85,23 @@ class importCSV(object):
             destination.write(chunk.replace('\x00', ''))
         destination.close()
 
-        reader = csv.reader(open(STATIC_FILE_PATH + '/' + _file.name), delimiter='|', quotechar='|', dialect=csv.excel)
+        reader = csv.reader(open(STATIC_FILE_PATH + '/' + _file.name), delimiter=';', quotechar=';', dialect=csv.excel)
         data = {}
         for row in reader:
             if len(row) > 0:
                 try:
                     data['order'] = Orders.objects.get(pk = orderId)
-                    data['product'] = Products.objects.get(pk = row[0])
+                    data['product'] = Products.objects.get(cod = row[0])
                     data['quantity'] = row[1]
                     try:
                         data['note'] = row[2]
                     except Exception, err:
+                        print "[ err ]importCSV - handleCSV\t",
                         print err
                     obj = OrderProduct.objects.create(**data)
                     
                 except Exception, err:
+                    print "[ err ] handleCSV\t", 
                     print err
                     return None
         return True

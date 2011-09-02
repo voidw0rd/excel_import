@@ -218,7 +218,7 @@ def importDataBase(request):
         data["stage3"] = row[14]
         data["stage4"] = row[15]
         data["stage5"] = row[16]
-        data["category"] = ProductCategory.objects.get(pk=2)
+        data["category"] = ProductCategory.objects.get(pk=row[17])
         data['notes'] = "Product notes"
         data['barCode'] = "11134ABNCCA"
         data['modified'] = False
@@ -544,9 +544,11 @@ def _calculateOrderTotal(order):
             total += product.quantity
         
         order.total = total
+        print order.total
         order.save()
         return True
     except Exception, err:
+        print "[ err ] _calculateOrderTotal: ",
         print err
         return False
 
@@ -805,9 +807,13 @@ def importOrderProductCsv(request):
         _file = importCSV()
         obj = _file.handleCSV(request.FILES['csvFile'], request.POST['orderId'])
         if obj:
-            jsonObj = simplejson.dumps({"success": True})
-            return HttpResponse(jsonObj)
-    
+            try:
+                _calculateOrderTotal(request.POST['orderId'])
+                jsonObj = simplejson.dumps({"success": True})
+                return HttpResponse(jsonObj)
+            except Exception, err:
+                print "[ err ] importOrderProductCsv\t",
+                print err
     jsonObj = simplejson.dumps({"success": False})
     return HttpResponse(jsonObj)
     

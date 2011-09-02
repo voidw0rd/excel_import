@@ -10,3 +10,4 @@ settings.py
 .gitignore
 grid/templates/index.html
 grid/templates/order_notification_email_template.html
+static/grid/
