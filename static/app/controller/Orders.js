@@ -35,7 +35,6 @@ Ext.define('AM.controller.Orders', {
             'orderedit button[action=cancel]': {
                 click: this.cancelEditOrder
             }
-
         });
     },
 
@@ -92,6 +91,18 @@ Ext.define('AM.controller.Orders', {
     
     cancelEditOrder: function(button) {
         this.getOrdersStore().load();
+        var form = button.up('window').down("form");
+        var record = form.getRecord();
+        var status = parseInt(record.data.status, 10);
+        if(status){
+            console.debug("info", "[ ii ]Record " + record.data.id + " deleted.");
+            this.getOrdersStore().remove(record);
+            this.getOrdersStore().sync();
+            this.getOrdersStore().load();
+        }
+        else{
+            console.debug("info", "[ ii ]Cancel button for " + record.data.id);
+        }
         button.up('window').close()
     },
 
