@@ -89,7 +89,7 @@ Ext.define("AM.view.orderProduct.Edit", {
     requires:['Ext.grid.column.Combo'],
     initComponent: function(){
 
-        this.editing = Ext.create('Ext.grid.plugin.RowEditing',{pluginId: 'myRowEditor'});
+        this.editing = Ext.create('Ext.grid.plugin.RowEditing',{pluginId: 'myRowEditor', autoCancel: false});
         this.summary = Ext.create('Ext.grid.feature.Summary');
 
         Ext.apply(this, {
@@ -240,11 +240,9 @@ Ext.define("AM.view.orderProduct.Edit", {
             name: '',
             quantity: ''
         }), edit = this.editing;
-        
         edit.cancelEdit();
         this.store.insert(0, rec);
         edit.startEdit(0,2);
-        
     },
     
     exportCsv: function(e) {

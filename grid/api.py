@@ -59,8 +59,8 @@ class makeCSV(object):
 			data = []
 			_file = StringIO.StringIO()
 			for product in products.all():
-				writer = csv.writer(_file, delimiter='|', quotechar='|', dialect=csv.excel)
-				writer.writerow(self.encodeRow([product.product.id, product.quantity, product.note or '-', product.product.cod, product.product.denumirePlic, product.order.name, product.order.id]))
+				writer = csv.writer(_file, delimiter=';', quotechar=';', dialect=csv.excel)
+				writer.writerow(self.encodeRow([product.product.cod, product.quantity, product.note or '-']))
 				#writer.writerow(self.encodeRow([product.order.id, product.order.name, product.product.id, product.product.cod, product.product.denumirePlic, product.quantity, product.note or '-', product.modified]))
 			return _file
 			
