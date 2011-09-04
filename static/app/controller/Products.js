@@ -20,8 +20,13 @@ Ext.define('AM.controller.Products', {
             'tabpanel > productlist dataview': {
                 itemdblclick: this.editProduct
             },
+    
             'productedit button[action=save]': {
                 click: this.saveEditProduct
+            },
+            
+            'productlist button[action=new]': {
+                click: this.addNewProduct
             }
         });
     },
@@ -163,5 +168,24 @@ Ext.define('AM.controller.Products', {
         win.close();
         this.getProductsStore().sync();
         this.getProductsStore().load();
+    },
+
+    addNewProduct: function(button) {
+        console.log("dasdasd");
+        var record = new AM.model.Product({
+            notes : Math.floor(Math.random()*200) + ''
+        });
+        console.log(record);
+        this.getProductsStore().add(record);
+        this.getProductsStore().sync();
+        this.getProductsStore().load({callback: function(records, operation, success) {
+            Ext.each(records, function(item) {
+                if (item.data.notes === record.data.notes) {
+                    var edit = Ext.create('AM.view.product.Edit').show();
+                    edit.down("form").loadRecord(item);
+                    edit.down('form').down('textfield').focus();
+                }
+            });
+        }});
     }
 });

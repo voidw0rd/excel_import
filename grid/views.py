@@ -239,59 +239,142 @@ def importDataBase(request):
 @login_required
 @csrf_exempt
 def productsRead(request):
-    excludes = []
-    if request.GET.has_key("id"):
-        productId = request.GET['id']
-        products = Products.objects.filter(id = productId)
-    else:
-        products = Products.objects.all()
-    requestDict = {}
-    requestList = []
+    try:
+        excludes = []
+        if request.GET.has_key("id"):
+            productId = request.GET['id']
+            products = Products.objects.filter(id = productId)
+        else:
+            products = Products.objects.all()
+        requestDict = {}
+        requestList = []
 
-    for product in products:
+        for product in products:
+
+            obj = Version.objects.get_for_object(product)
+            count = obj.count() - 1
+            logList = []
+            #if count > 1:
+            while count > 0:
+                log = {}
+                log['user'] = str(obj[count].revision.user)
+                log['date'] = str(obj[count].revision.date_created).split(".")[0]
+                log['version'] = obj[count].revision_id
+                old = obj[count-1].field_dict
+                new = obj[count].field_dict
+                diff_str = ""
+                for key in old.keys():
+                    if old[key] == new[key]:
+                        pass
+                    else:
+                        diff_str += str(key) + " - " + str(new[key]) + "; "
+                log['diff'] = diff_str
+                print log
+                logList.append(log)
+                count -= 1
+
+
+            prod = model_to_dict(product)
+            data = {}
+            for key in prod.keys():
+                if key == "image":
+                    data[key] = product.image.thumb.url
+                    continue
+                data[key] = prod[key]
+            data['category_id'] = data['category']
+            data['category'] = {'id': product.category.id, 'name': product.category.name}
+            data['log'] = logList
+            #data['log'] = [{'version': 2, 'date': '22/12/11','user': 'vlad', 'diff': 'ceva nou'},{'version': 1, 'date': '20/12/11','user': 'dan', 'diff': 'altceva nou'}]
+            requestList.append(data)
+
+        requestDict['data'] = requestList
+        requestDict['success'] = True
+        #print json.dumps(requestDict['data'], indent = 4)
+        jsonObj = simplejson.dumps(requestDict, encoding="utf-8")
+        return HttpResponse(jsonObj, mimetype="application/json")
+    except Exception, err:
+        print err
+
+
+@login_required
+@csrf_exempt
+def productsCreate(request):
+
+    try:
+        if not request.user.is_staff:
+            return Http404
+
+        postData = json.loads(request.read())
+        if isinstance(postData, dict) and postData.has_key("notes") and len(postData.get("notes")) > 0:
+            postData['category'] = ProductCategory.objects.get(pk=1)
+            postData['image'] = ProductImage.objects.get(pk=1)
+            postData['modified'] = True
+            code = int(Products.objects.all().order_by('cod')[1:][0].cod[2:])
+            if code < 99:
+                postData['cod'] = "PS0" + str(code + 1)
+            elif code < 999:
+                postData['cod'] = "PS" + str(code + 1)
+            else:
+                return Http404
+            for exclude in ['category_id', 'log', 'id']:
+                postData.pop(exclude)
+            Products.objects.create(**postData)
+        else:
+            return Http404
+
+        jsonObj = simplejson.dumps({'success': True})
+        return HttpResponse(jsonObj, mimetype="application/json")
+    except Exception, err:
+        print '[ err ] Exception at productsCreate: \t',
+        print err
+
+
         
-        obj = Version.objects.get_for_object(product)
-        count = obj.count() - 1
-        logList = []
-        #if count > 1:
-        while count > 0:
-            log = {}
-            log['user'] = str(obj[count].revision.user)
-            log['date'] = str(obj[count].revision.date_created).split(".")[0]
-            log['version'] = obj[count].revision_id
-            old = obj[count-1].field_dict
-            new = obj[count].field_dict
-            diff_str = ""
-            for key in old.keys():
-                if old[key] == new[key]:
-                    pass
-                else:
-                    diff_str += key + " - " + new[key] + "; "
-            log['diff'] = diff_str
-            print log
-            logList.append(log)
-            count -= 1
-            
-            
-        prod = model_to_dict(product)
-        data = {}
-        for key in prod.keys():
-            if key == "image":
-                data[key] = product.image.thumb.url
-                continue
-            data[key] = prod[key]
-        data['category_id'] = data['category']
-        data['category'] = {'id': product.category.id, 'name': product.category.name}
-        data['log'] = logList
-        #data['log'] = [{'version': 2, 'date': '22/12/11','user': 'vlad', 'diff': 'ceva nou'},{'version': 1, 'date': '20/12/11','user': 'dan', 'diff': 'altceva nou'}]
-        requestList.append(data)
 
-    requestDict['data'] = requestList
-    requestDict['success'] = True
-    #print json.dumps(requestDict['data'], indent = 4)
-    jsonObj = simplejson.dumps(requestDict, encoding="utf-8")
+@login_required
+@csrf_exempt
+def productsUpdate(request):
+
+    if not request.user.is_staff:
+        return Http404
+
+    if request.method == "POST":
+        excludes = ['id', 'image', 'category_id', 'log', 'cod']
+        tmp = request.read()
+        print tmp
+        tmp = json.loads(tmp)
+        if isinstance(tmp, list):
+            for item in tmp:
+                try:
+                    queryObj = Products.objects.filter(pk=item["id"])
+                    item['category'] = item['category_id']
+                    for exclude in excludes:
+                        item.pop(exclude)
+                    queryObj.update(**item)
+                    queryObj[0].save()
+                except Exception, e:
+                    print e
+
+        elif isinstance(tmp, dict):
+            try:
+                queryObj = Products.objects.filter(pk=tmp["id"])
+                tmp['category'] = tmp['category_id']
+                try:
+                    number = int(tmp['notes'])
+                    tmp['notes'] = "-"
+                except:
+                    pass
+
+                for exclude in excludes:
+                    tmp.pop(exclude)
+                queryObj.update(**tmp)
+                queryObj[0].save()
+            except Exception, e:
+                print e
+
+    jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
-    
+
 
 #-----------------------------------------------------------------------
 #   Orders related view functions 
@@ -817,46 +900,7 @@ def importOrderProductCsv(request):
     jsonObj = simplejson.dumps({"success": False})
     return HttpResponse(jsonObj)
     
-    
 
-
-@login_required
-@csrf_exempt    
-def productsUpdate(request):
-    
-    if not request.user.is_staff:
-        return Http404
-    
-    if request.method == "POST":
-        excludes = ['id', 'image', 'category_id']
-        tmp = request.read()
-        print tmp
-        tmp = json.loads(tmp)
-        if isinstance(tmp, list):
-            for item in tmp:
-                try:
-                    queryObj = Products.objects.filter(pk=item["id"])
-                    item['category'] = item['category_id']
-                    for exclude in excludes:
-                        item.pop(exclude)
-                    queryObj.update(**item)
-                    queryObj[0].save()
-                except Exception, e:
-                    print e
-                    
-        elif isinstance(tmp, dict):
-            try:
-                queryObj = Products.objects.filter(pk=tmp["id"])
-                tmp['category'] = tmp['category_id']
-                for exclude in excludes:
-                    tmp.pop(exclude)
-                queryObj.update(**tmp)
-                queryObj[0].save()
-            except Exception, e:
-                print e
-
-    jsonObj = simplejson.dumps({"success": True})
-    return HttpResponse(jsonObj, mimetype="application/json")
 
 
 @login_required

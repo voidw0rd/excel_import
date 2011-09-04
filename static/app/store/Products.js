@@ -7,7 +7,8 @@ Ext.define('AM.store.Products', {
         type: 'ajax',
         api: {
             read: 'data/productsRead',
-            update: 'data/productsUpdate'
+            update: 'data/productsUpdate',
+            create: "data/productsCreate"
         },
         reader: {
             type: 'json',

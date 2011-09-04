@@ -28,5 +28,18 @@ Ext.define('AM.view.product.List' ,{
         },
         {header: "Bar code", dataIndex: 'barCode', flex: 1},
         {header: "Notes", dataIndex: 'notes', flex: 1}
-    ]
+    ],
+    tbar: [{
+                    text:"Add new product",
+                    action: "new",
+                    scope: this
+            },//{
+             //       text:"Delete product",
+             //       action: "delete",
+             //       scope: this},
+            Ext.create('Ext.Toolbar.Fill'),{
+                    text:"Logout",
+                    action:"logout",
+                    scope: this
+            }]
 });
