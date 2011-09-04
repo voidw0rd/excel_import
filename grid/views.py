@@ -262,12 +262,12 @@ def productsRead(request):
                 log['version'] = obj[count].revision_id
                 old = obj[count-1].field_dict
                 new = obj[count].field_dict
-                diff_str = ""
+                diff_str = unicode()
                 for key in old.keys():
                     if old[key] == new[key]:
                         pass
                     else:
-                        diff_str += str(key) + " - " + str(new[key]) + "; "
+                        diff_str += unicode(key) + " - " + unicode(new[key]) + "; "
                 log['diff'] = diff_str
                 print log
                 logList.append(log)
@@ -284,7 +284,6 @@ def productsRead(request):
             data['category_id'] = data['category']
             data['category'] = {'id': product.category.id, 'name': product.category.name}
             data['log'] = logList
-            #data['log'] = [{'version': 2, 'date': '22/12/11','user': 'vlad', 'diff': 'ceva nou'},{'version': 1, 'date': '20/12/11','user': 'dan', 'diff': 'altceva nou'}]
             requestList.append(data)
 
         requestDict['data'] = requestList
@@ -350,6 +349,7 @@ def productsUpdate(request):
                     item['category'] = item['category_id']
                     for exclude in excludes:
                         item.pop(exclude)
+                    item['modified'] = True
                     queryObj.update(**item)
                     queryObj[0].save()
                 except Exception, e:
@@ -367,6 +367,7 @@ def productsUpdate(request):
 
                 for exclude in excludes:
                     tmp.pop(exclude)
+                tmp['modified'] = True
                 queryObj.update(**tmp)
                 queryObj[0].save()
             except Exception, e:
