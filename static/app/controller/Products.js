@@ -20,11 +20,12 @@ Ext.define('AM.controller.Products', {
             'tabpanel > productlist dataview': {
                 itemdblclick: this.editProduct
             },
-    
             'productedit button[action=save]': {
                 click: this.saveEditProduct
             },
-            
+            'productlist button[action=delete]': {
+                click: this.deleteProduct
+            },
             'productlist button[action=new]': {
                 click: this.addNewProduct
             }
@@ -32,9 +33,7 @@ Ext.define('AM.controller.Products', {
     },
 
     editProduct: function(grid, record) {
-        var edit = Ext.create('AM.view.product.Edit');
-        //edit.down('gridpanel').store.loadData(record.data.log);
-        edit.show();
+        var edit = Ext.create('AM.view.product.Edit').show();
 
         if (record.data.image) {
             edit.down('form').down('image').setSrc(record.data.image);
@@ -114,7 +113,6 @@ Ext.define('AM.controller.Products', {
                                                 target:'iframe',
                                                 standardSubmit: true});
                                     form.dom.submit();
-                                    console.log('xxxxxxxxxxxxxxxxxxxx');
                                 }
                             }]
                         }), 
@@ -171,7 +169,6 @@ Ext.define('AM.controller.Products', {
     },
 
     addNewProduct: function(button) {
-        console.log("dasdasd");
         var record = new AM.model.Product({
             notes : Math.floor(Math.random()*200) + ''
         });
@@ -187,5 +184,13 @@ Ext.define('AM.controller.Products', {
                 }
             });
         }});
+    },
+
+    deleteProduct: function(button) {
+        var grid = Ext.getCmp("productsListId");
+        var record = grid.getView().getSelectionModel().getSelection()[0];
+        this.getProductsStore().remove(record);
+        this.getProductsStore().sync();
+        this.getProductsStore().load();
     }
 });

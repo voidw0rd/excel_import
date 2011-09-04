@@ -4,7 +4,7 @@ Ext.define('AM.view.product.List' ,{
 
     title : 'All Products',
     store: 'Products',
-
+    id: "productsListId",
     columns: [
         {header: 'Code',  dataIndex: 'cod',  flex: 1},
         {header: 'Denumire plic',  dataIndex: 'denumirePlic',  flex: 1},
@@ -33,10 +33,11 @@ Ext.define('AM.view.product.List' ,{
                     text:"Add new product",
                     action: "new",
                     scope: this
-            },//{
-             //       text:"Delete product",
-             //       action: "delete",
-             //       scope: this},
+            },{
+                    text:"Delete product",
+                    action: "delete",
+                    scope: this
+            },
             Ext.create('Ext.Toolbar.Fill'),{
                     text:"Logout",
                     action:"logout",

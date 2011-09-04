@@ -376,6 +376,23 @@ def productsUpdate(request):
     return HttpResponse(jsonObj, mimetype="application/json")
 
 
+@login_required
+@csrf_exempt
+def productsDelete(request):
+
+    if not request.user.is_staff:
+        return HttpResponse(simplejson.dumps({"failure": True}), mimetype="application/json")
+    try:
+        postData = json.loads(request.read())
+        if isinstance(postData, dict) and postData.has_key("id"):
+            Products.objects.get(pk=postData['id']).delete()
+        jsonObj = simplejson.dumps({"success": True})
+        return HttpResponse(jsonObj, mimetype="application/json")
+
+    except Exception, err:
+        print err
+
+
 #-----------------------------------------------------------------------
 #   Orders related view functions 
 
