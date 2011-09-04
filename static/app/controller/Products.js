@@ -28,6 +28,9 @@ Ext.define('AM.controller.Products', {
             },
             'productlist button[action=new]': {
                 click: this.addNewProduct
+            },
+            'productlist button[action=logout]': {
+                click: this.logout
             }
         });
     },
@@ -192,5 +195,19 @@ Ext.define('AM.controller.Products', {
         this.getProductsStore().remove(record);
         this.getProductsStore().sync();
         this.getProductsStore().load();
+    },
+
+    logout: function() {
+        Ext.Ajax.request({
+            url: "logout",
+            method: "GET",
+            success: function(result){
+                console.log('Logout succesful');
+                window.location = "login/"
+            },
+            failure: function(result){
+                console.log('Logout NOT succesful');
+            }
+        });
     }
 });

@@ -304,6 +304,7 @@ def productsCreate(request):
             return Http404
 
         postData = json.loads(request.read())
+        print postData
         if isinstance(postData, dict) and postData.has_key("notes") and len(postData.get("notes")) > 0:
             postData['category'] = ProductCategory.objects.get(pk=1)
             postData['image'] = ProductImage.objects.get(pk=1)
@@ -484,8 +485,8 @@ def ordersCreate(request):
         postData = json.loads(postData)
 		#print postData
         if isinstance(postData, dict) and postData.has_key("status"):
-            orderObj = Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
-		
+            Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
+
         jsonObj = simplejson.dumps({"success": True})
         return HttpResponse(jsonObj, mimetype="application/json")
 
@@ -959,7 +960,7 @@ def companyRead(request):
 			if len(company) == 0:
 				jsonObj = simplejson.dumps({"success": True, "data" : []})
 				return HttpResponse(jsonObj, mimetype="application/json")
-			
+            
 			tmpList = []
 			tmpDict = {}
 			for item in company:
