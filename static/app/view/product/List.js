@@ -5,6 +5,17 @@ Ext.define('AM.view.product.List' ,{
     title : 'All Products',
     store: 'Products',
     id: "productsListId",
+    viewConfig: {
+            stripeRows: false,
+            //autoScroll: true,
+            enableRowBody: true,
+            getRowClass: function(record){
+                if(record.data.modified){
+                    return 'orderProducts_modified';
+                }
+
+            }
+    },
     columns: [
         {header: 'Code',  dataIndex: 'cod',  flex: 1},
         {header: 'Denumire plic',  dataIndex: 'denumirePlic',  flex: 1},
@@ -13,11 +24,11 @@ Ext.define('AM.view.product.List' ,{
         {header: 'Soi', dataIndex: 'soi', flex: 1},
         {header: 'Photo code', dataIndex: 'photoCode', flex: 1},
         {header: 'Names Languages', dataIndex: 'namesLanguages', flex: 1},
-        {header: 'RO Description', dataIndex: 'roDesc', flex: 1},
+/*        {header: 'RO Description', dataIndex: 'roDesc', flex: 1},
         {header: 'EN Description', dataIndex: 'enDesc', flex: 1},
         {header: 'HU Description', dataIndex: 'huDesc', flex: 1},
         {header: 'SB Description', dataIndex: 'sbDesc', flex: 1},
-        {header: 'RU Description', dataIndex: 'ruDesc', flex: 1},
+        {header: 'RU Description', dataIndex: 'ruDesc', flex: 1},*/
         {header: 'Stage1', dataIndex: 'stage1', flex: 1},
         {header: 'Stage2', dataIndex: 'stage2', flex: 1},
         {header: 'Stage3', dataIndex: 'stage3', flex: 1},

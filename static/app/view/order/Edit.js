@@ -6,9 +6,9 @@ Ext.define('AM.view.order.Edit', {
     requires: ['Ext.form.Panel'],
 
     title : 'Edit Orders',
-    //layout: 'fit',
+    layout: 'fit',
     autoShow: true,
-    height: 490,
+    //height: 490,
     width: 700,
     closable: true,
 

@@ -66,7 +66,7 @@ Ext.define("uploadWindow", {
 
     extend: "Ext.window.Window",
     
-    title: 'Upload a Photo',
+    title: 'Upload a CSV file',
     width: 385,
     height: 120,
     
@@ -96,7 +96,7 @@ Ext.define("AM.view.orderProduct.Edit", {
             id:'orderproductsgrid',
             border:true,
             collapsible: false,
-            height: 300,
+            height: 400,
             split: true,
             viewConfig: {
                     stripeRows: false,
