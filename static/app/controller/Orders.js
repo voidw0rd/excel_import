@@ -96,9 +96,13 @@ Ext.define('AM.controller.Orders', {
         var status = parseInt(record.data.status, 10);
         if(status){
             console.debug("info", "[ ii ]Record " + record.data.id + " deleted.");
-            this.getOrdersStore().remove(record);
-            this.getOrdersStore().sync();
-            this.getOrdersStore().load();
+            //this.getOrdersStore().remove(record);
+            //this.getOrdersStore().sync();
+            //this.getOrdersStore().load();
+            var store = this.getOrdersStore();
+            store.remove(record);
+            store.sync();
+            store.load()
         }
         else{
             console.debug("info", "[ ii ]Cancel button for " + record.data.id);

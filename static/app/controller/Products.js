@@ -23,6 +23,9 @@ Ext.define('AM.controller.Products', {
             'productedit button[action=save]': {
                 click: this.saveEditProduct
             },
+            'productedit button[action=cancel]': {
+                click: this.cancelEditProduct
+            },
             'productlist button[action=delete]': {
                 click: this.deleteProduct
             },
@@ -209,5 +212,19 @@ Ext.define('AM.controller.Products', {
                 console.log('Logout NOT succesful');
             }
         });
+    },
+    
+    
+    cancelEditProduct: function(button) {
+        var form = button.up('window').down("form");
+        var record = form.getRecord();
+        var status = parseInt(record.data.notes, 10);
+        if(status){
+            var store = this.getProductsStore();
+            store.remove(record);
+            store.sync();
+            store.load()
+        }
     }
+    
 });
