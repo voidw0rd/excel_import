@@ -539,6 +539,7 @@ def _prepPrint(orderId):
         orderInfo = {}
         orderInfo["name"] = order.name
         orderInfo['timestamp'] = str(order.timestamp).split('.')[0]
+        orderInfo['company'] = order.company.name
         orderInfo['products'] = []
         for product in orderProducts:
             obj = {}

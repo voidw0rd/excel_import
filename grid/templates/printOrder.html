@@ -23,6 +23,7 @@
         
         #name {
             float: left;
+            margin-top: 10px;
         }
         
         #timestamp {
@@ -31,8 +32,7 @@
         }
         
         #total {
-            margin-top: 20px;
-            float: right;
+            margin-top: 10px;
         }
         
         .clr {
@@ -81,6 +81,11 @@
             text-align: center;
         }
         
+        #company {
+            margin-top: 10px;    
+            margin-bottom: 10px;
+        }
+        
     </style>
 </head>
 <body>
@@ -98,7 +103,10 @@
         <p class="clr"></p>
         
     <div id="total">
-        Total summary: {{ order.total }}
+        Total: {{ order.total }}
+    </div>
+    <div id="company">
+        Typography: {{ order.company }}
     </div>
         
         <p class="clr"></p>
