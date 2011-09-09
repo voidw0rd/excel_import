@@ -681,13 +681,16 @@ def orderProductsRead(request):
                     data['note']       = product.note
                     data['modified']   = product.modified
                     data['id']         = product.id
-                    product = model_to_dict(product.product)
-                    product.pop("id")
-                    product.pop("modified")
-                    for key in product.keys():
-                        if key == "denumirePlic": 
-                            data['name'] = product[key]
-                        data[key] = product[key]
+                    data['name']       = product.product.denumirePlic
+                    data['cod']        = product.product.cod
+                    data['soi']        = product.product.soi
+                    #product = model_to_dict(product.product)
+                    #product.pop("id")
+                    #product.pop("modified")
+                    #for key in product.keys():
+                    #    if key == "denumirePlic": 
+                    #        data['name'] = product[key]
+                    #    data[key] = product[key]
                     tmpList.append(data)
                 tmpData["data"] = tmpList
                 tmpData["success"] = True
@@ -709,7 +712,7 @@ def orderProductsCreate(request):
         return Http404
 
     if request.is_ajax():
-        excludes = ['id', 'order_id', 'name', 'product_id', 'cod']
+        excludes = ['id', 'order_id', 'name', 'product_id', 'cod', 'soi']
         try:
             postData = request.read()
             postData = json.loads(postData)

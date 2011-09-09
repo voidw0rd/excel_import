@@ -34,12 +34,12 @@ Ext.define('AM.controller.Orders', {
             },
             'orderedit button[action=cancel]': {
                 click: this.cancelEditOrder
-            }
+            },
         });
     },
 
     newOrder: function (button){
-
+        console.log();
         var record = new AM.model.Order({
             id     : "",
             name   : "",

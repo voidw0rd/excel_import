@@ -113,8 +113,9 @@ Ext.define("AM.view.orderProduct.Edit", {
 
             columns: [
                 Ext.create('Ext.grid.RowNumberer'),
-                {header: "Code", flex: 1, dataIndex: 'cod'},
-                {header: "Name", flex: 1, dataIndex: 'name',
+                {header: "Code", flex: 0.5, dataIndex: 'cod'},
+                {header: "Variety", flex: 0.7, dataIndex: 'soi'},
+                {header: "Name", flex: 1.3, dataIndex: 'name',
                    field: {
                         xtype: 'combobox',
                         //typeAhead: true,
@@ -145,12 +146,12 @@ Ext.define("AM.view.orderProduct.Edit", {
                         }
                    }
                 },
-                {header: "Quantity", flex: 1, dataIndex: 'quantity',
+                {header: "Quantity", flex: 0.8, dataIndex: 'quantity',
                     editor: { xtype:'numberfield', minValue:0, allowBlank:false, hideTrigger: true},
                     summaryType: 'sum'
                 },
                 {header: "Notes", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
-                {header: "Modified",dataIndex: 'modified',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}},
+                {header: "Modified", flex: 0.5, dataIndex: 'modified',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}},
                 {
                     xtype:'actioncolumn',
                     width: 50,
@@ -242,7 +243,7 @@ Ext.define("AM.view.orderProduct.Edit", {
         }), edit = this.editing;
         edit.cancelEdit();
         this.store.insert(0, rec);
-        edit.startEdit(0,2);
+        edit.startEdit(0,3);
     },
     
     exportCsv: function(e) {
