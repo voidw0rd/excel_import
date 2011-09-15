@@ -102,11 +102,11 @@ Ext.define("AM.view.orderProduct.Edit", {
                     stripeRows: false,
                     //autoScroll: true,
                     enableRowBody: true,
-                    getRowClass: function(record){ 
+                    getRowClass: function(record){
                         if(record.data.modified){
                             return 'orderProducts_modified';
                         }
-                        
+
                     }
             },
             store: Ext.create('AM.store.OrderProducts'),
@@ -209,7 +209,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                         scope: this,
                         handler: this.downloadPdf
                     }
-                
+
                 ]
             },"&nbsp;"]
 

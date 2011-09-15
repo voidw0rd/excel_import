@@ -5,6 +5,10 @@ Ext.define('AM.view.product.List' ,{
     title : 'All Products',
     store: 'Products',
     id: "productsListId",
+    verticalScroller: {
+        xtype: 'paginggridscroller',
+        activePrefetch: false
+    },
     viewConfig: {
             stripeRows: false,
             //autoScroll: true,
@@ -26,6 +30,7 @@ Ext.define('AM.view.product.List' ,{
             }
     },
     columns: [
+         Ext.create('Ext.grid.RowNumberer'),
         {header: 'Code',  dataIndex: 'cod',  flex: 1},
         {header: 'Denumire plic',  dataIndex: 'denumirePlic',  flex: 1},
         {header: 'Denumire oferta',  dataIndex: 'denumireOferta',  flex: 1},
