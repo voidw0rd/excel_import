@@ -71,9 +71,14 @@ Ext.define('AM.controller.Orders', {
     deleteOrder: function(button) {
         var win    = button.up('tabpanel'),
             grid   = win.down("gridpanel").next("gridpanel"),
-            record = grid.getView().getSelectionModel().getSelection()[0];
-        this.getOrdersStore().remove(record);
-        this.getOrdersStore().sync();
+            record = grid.getView().getSelectionModel().getSelection()[0],
+            store = this.getOrdersStore();
+        Ext.Msg.confirm('Confirm delete!','You are about to delete the order ' + record.get('name') + '. Are you sure ?', function(btn, text){
+            if (btn == 'yes'){
+                store.remove(record);
+                store.sync();
+            }
+        });
     },
 
     saveEditOrder: function(button) {

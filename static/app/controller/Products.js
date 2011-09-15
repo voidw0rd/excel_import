@@ -195,9 +195,14 @@ Ext.define('AM.controller.Products', {
     deleteProduct: function(button) {
         var grid = Ext.getCmp("productsListId");
         var record = grid.getView().getSelectionModel().getSelection()[0];
-        this.getProductsStore().remove(record);
-        this.getProductsStore().sync();
-        this.getProductsStore().load();
+        var store = this.getProductsStore();
+        Ext.Msg.confirm('Confirm delete!','You are about to delete the product ' + record.get('cod') + record.get('denumirePlic') + '. Are you sure ?', function(btn, text){
+            if (btn == 'yes'){
+                store.remove(record);
+                store.sync();
+                //store.load();
+            }
+        });
     },
 
     logout: function() {

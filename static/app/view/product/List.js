@@ -58,12 +58,12 @@ Ext.define('AM.view.product.List' ,{
                     text:"Add new product",
                     action: "new",
                     scope: this
-            },{
+            },Ext.create('Ext.Toolbar.Fill'),{
                     text:"Delete product",
                     action: "delete",
                     scope: this
             },
-            Ext.create('Ext.Toolbar.Fill'),{
+            {
                     text:"Logout",
                     action:"logout",
                     scope: this
