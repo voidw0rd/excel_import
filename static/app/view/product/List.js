@@ -8,6 +8,7 @@ Ext.define('AM.view.product.List' ,{
     verticalScroller: {
         xtype: 'paginggridscroller',
         activePrefetch: false
+        //activePrefetch: true
     },
     viewConfig: {
             stripeRows: false,

@@ -3,7 +3,7 @@ Ext.define('AM.store.Products', {
     model: 'AM.model.Product',
     autoLoad: true,
 
-    pageSize: 10,
+    pageSize: 35,
     // allow the grid to interact with the paging scroller by buffering
     buffered: true,
     // never purge any data, we prefetch all up front

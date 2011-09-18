@@ -239,40 +239,54 @@ def importDataBase(request):
 @login_required
 @csrf_exempt
 def productsRead(request):
+
+    print request.GET
+
     try:
         excludes = []
         if request.GET.has_key("id"):
             productId = request.GET['id']
             products = Products.objects.filter(id = productId)
         else:
-            products = Products.objects.all()
+            products = Products.objects.all().order_by("pk")
+            required = ['start', 'limit']
+            for item in required:
+                if not request.GET.has_key(item):
+                    return None
+            start = int(request.GET.get("start"))
+            limit = int(request.GET.get("limit"))
+            print products.count()
+            if start > products.count():
+                return None
+            products = products[start:][:limit]
+
         requestDict = {}
         requestList = []
 
         for product in products:
 
             obj = Version.objects.get_for_object(product)
-            count = obj.count() - 1
+#            count = obj.count() - 1
             logList = []
-            #if count > 1:
-            while count > 0:
-                log = {}
-                log['user'] = str(obj[count].revision.user)
-                log['date'] = str(obj[count].revision.date_created).split(".")[0]
-                log['version'] = obj[count].revision_id
-                old = obj[count-1].field_dict
-                new = obj[count].field_dict
-                diff_str = unicode()
-                for key in old.keys():
-                    if old[key] == new[key]:
-                        pass
-                    else:
-                        diff_str += unicode(key) + " - " + unicode(new[key]) + "; "
-                log['diff'] = diff_str
-                print log
-                logList.append(log)
-                count -= 1
 
+#            while count > 0:
+#                log = {}
+#                log['user'] = str(obj[count].revision.user)
+#                log['date'] = str(obj[count].revision.date_created).split(".")[0]
+#                log['version'] = obj[count].revision_id
+#                old = obj[count-1].field_dict
+#                new = obj[count].field_dict
+#                diff_str = unicode()
+#                for key in old.keys():
+#                    if old[key] == new[key]:
+#                        pass
+#                    else:
+#                        diff_str += unicode(key) + " - " + unicode(new[key]) + "; "
+#                log['diff'] = diff_str
+#                print log
+#                logList.append(log)
+#                count -= 1
+#
 
             prod = model_to_dict(product)
             data = {}
