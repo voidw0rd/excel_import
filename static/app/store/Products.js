@@ -1,9 +1,9 @@
 Ext.define('AM.store.Products', {
     extend: 'Ext.data.Store',
     model: 'AM.model.Product',
-    autoLoad: true,
+    autoLoad: {start:0, limit:100},
 
-    pageSize: 35,
+    pageSize: 100,
     // allow the grid to interact with the paging scroller by buffering
     buffered: true,
     // never purge any data, we prefetch all up front
@@ -20,7 +20,8 @@ Ext.define('AM.store.Products', {
         reader: {
             type: 'json',
             root: 'data',
-            successProperty: 'success'
+            successProperty: 'success',
+            totalProperty:  'total'
         }
     }
 });

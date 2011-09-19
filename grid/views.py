@@ -249,6 +249,7 @@ def productsRead(request):
             products = Products.objects.filter(id = productId)
         else:
             products = Products.objects.all().order_by("pk")
+            total = products.count()
             required = ['start', 'limit']
             for item in required:
                 if not request.GET.has_key(item):
@@ -302,6 +303,7 @@ def productsRead(request):
 
         requestDict['data'] = requestList
         requestDict['success'] = True
+        requestDict['total'] = total
         #print json.dumps(requestDict['data'], indent = 4)
         jsonObj = simplejson.dumps(requestDict, encoding="utf-8")
         return HttpResponse(jsonObj, mimetype="application/json")

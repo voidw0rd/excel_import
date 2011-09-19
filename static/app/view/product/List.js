@@ -10,6 +10,7 @@ Ext.define('AM.view.product.List' ,{
         activePrefetch: false
         //activePrefetch: true
     },
+    invalidateScrollerOnRefresh:false,
     viewConfig: {
             stripeRows: false,
             //autoScroll: true,
