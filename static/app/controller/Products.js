@@ -26,6 +26,9 @@ Ext.define('AM.controller.Products', {
             'productedit button[action=cancel]': {
                 click: this.cancelEditProduct
             },
+            'productedit #chkmodified': {
+                change: this.submitCheckbox
+            },
             'productlist button[action=delete]': {
                 click: this.deleteProduct
             },
@@ -209,12 +212,12 @@ Ext.define('AM.controller.Products', {
         Ext.Ajax.request({
             url: "logout",
             method: "GET",
-            success: function(result){
-                console.log('Logout succesful');
+            success: function(response){
+                console.log('Logout succesful' + response.responseText);
                 window.location = "login/"
             },
-            failure: function(result){
-                console.log('Logout NOT succesful');
+            failure: function(response){
+                console.log('Logout NOT succesful' + response.responseText);
             }
         });
     },
@@ -230,6 +233,24 @@ Ext.define('AM.controller.Products', {
             store.sync();
             store.load()
         }
+    },
+
+    submitCheckbox: function(checkbox, newValue) {
+        var grid = Ext.getCmp("productsListId");
+        var record = grid.getView().getSelectionModel().getSelection()[0];
+        Ext.Ajax.request({
+            url: "data/productCheckModified",
+            params: {
+                id: record.get('id'),
+                value: newValue
+            },
+            success: function(response){
+                console.log('productCheckModified succesful:' + response.responseText);
+            },
+            failure: function(response){
+                console.log('productCheckModified FAIL:' + response.responseText);
+            }
+        });
     }
     
 });
