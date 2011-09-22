@@ -1,5 +1,7 @@
 from django.db import models
 import reversion
+from django.db import models
+import reversion
 
 
 class ProductCategory(models.Model):

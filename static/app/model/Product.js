@@ -9,7 +9,7 @@ Ext.define('AM.model.Product', {
     belongsTo: ['ProductCategory'],
     proxy: {
         api: {
-            read: "data/productsRead",
+            read: "data/productsRead"
         },
         type: "ajax",
         reader: {
