@@ -320,12 +320,13 @@ def productsCreate(request):
             return Http404
 
         postData = json.loads(request.read())
-        print postData
+        #print postData
         if isinstance(postData, dict) and postData.has_key("notes") and len(postData.get("notes")) > 0:
             postData['category'] = ProductCategory.objects.get(pk=1)
             postData['image'] = ProductImage.objects.get(pk=1)
             postData['modified'] = True
-            code = int(Products.objects.all().order_by('cod')[1:][0].cod[2:])
+            code = Products.objects.all().order_by('-cod')
+            code = int(code[0].cod.split("PS")[-1:][0])
             if code < 99:
                 postData['cod'] = "PS0" + str(code + 1)
             elif code < 999:
@@ -357,7 +358,6 @@ def productsUpdate(request):
     if request.method == "POST":
         excludes = ['id', 'image', 'category_id', 'log', 'cod']
         tmp = request.read()
-        print tmp
         tmp = json.loads(tmp)
         if isinstance(tmp, list):
             for item in tmp:

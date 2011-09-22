@@ -1,9 +1,9 @@
 Ext.define('AM.store.Products', {
     extend: 'Ext.data.Store',
     model: 'AM.model.Product',
-    autoLoad: {start:0, limit:100},
+    autoLoad: {start:0, limit:2000},
 
-    pageSize: 100,
+    pageSize: 2000,
     // allow the grid to interact with the paging scroller by buffering
     buffered: true,
     // never purge any data, we prefetch all up front
