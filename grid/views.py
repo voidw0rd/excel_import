@@ -955,16 +955,25 @@ def importOrderProductCsv(request):
 @csrf_exempt
 def productCheckModified(request):
 
-    if request.POST.has_key("id"):
-        print request.POST
-        product = Products.objects.get(pk=request.POST.get("id"))
-        product.modified = request.POST.get("value")
-        product.save()
+    try:
+        if request.POST.has_key("id"):
+            print request.POST
+            checkbox = request.POST.get("value")
+            if checkbox == "false":
+                checkbox = False
+            else:
+                checkbox = True
+            product = Products.objects.get(pk=request.POST.get("id"))
+            product.modified = checkbox
+            print product.modified
+            product.save()
 
-    jsonObj = simplejson.dumps({"success": True})
-    return HttpResponse(jsonObj, mimetype="application/json")
+        jsonObj = simplejson.dumps({"success": True})
+        return HttpResponse(jsonObj, mimetype="application/json")
 
-
+    except Exception, err:
+        print err
+        return HttpResponse()
 
 
 
