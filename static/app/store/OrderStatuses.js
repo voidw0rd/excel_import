@@ -3,8 +3,7 @@ Ext.define('AM.store.OrderStatuses', {
     extend: 'Ext.data.Store',
 
     model: 'AM.model.OrderStatus',
-    autoLoad: false,
-    autoSync: false,
+    autoLoad: true,
     proxy: {
         api: {
             read: "data/orderStatusesRead"

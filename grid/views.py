@@ -952,9 +952,12 @@ def productCheckModified(request):
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
 
-
-
-
+@login_required
+@csrf_exempt
+def orderStatusesRead(request):
+        
+    jsonObj = simplejson.dumps({"success": True})
+    return HttpResponse(jsonObj, mimetype="application/json")
 
 @login_required
 @csrf_exempt 

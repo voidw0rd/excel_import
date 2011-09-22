@@ -235,7 +235,7 @@ Ext.define('AM.controller.Products', {
         }
     },
 
-    submitCheckbox: function(checkbox, newValue) {
+    submitCheckbox: function(checkbox, newValue, oldValue) {
         var grid = Ext.getCmp("productsListId");
         var record = grid.getView().getSelectionModel().getSelection()[0];
         Ext.Ajax.request({
@@ -248,6 +248,7 @@ Ext.define('AM.controller.Products', {
                 console.log('productCheckModified succesful:' + response.responseText);
             },
             failure: function(response){
+                checkbox.setRawValue(oldValue);
                 console.log('productCheckModified FAIL:' + response.responseText);
             }
         });
