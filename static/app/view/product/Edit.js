@@ -149,10 +149,12 @@ Ext.define('AM.view.product.Edit', {
                             },{
                                 xtype:'checkbox',
                                 name: 'modified',
+                                id: 'chkmodified',
                                 type: 'boolean', 
                                 trueText: 'Yes', 
                                 falseText: 'No',
-                                fieldLabel: "Modified"
+                                fieldLabel: "Modified",
+                                submitValue: false
                             }]
                         },{
                            columnWidth: 0.2,

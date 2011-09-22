@@ -938,7 +938,21 @@ def importOrderProductCsv(request):
                 print err
     jsonObj = simplejson.dumps({"success": False})
     return HttpResponse(jsonObj)
-    
+
+@login_required
+@csrf_exempt
+def productCheckModified(request):
+
+    if request.POST.has_key("id"):
+        print request.POST
+        product = Products.objects.get(pk=request.POST.get("id"))
+        product.modified = request.POST.get("value")
+        product.save()
+
+    jsonObj = simplejson.dumps({"success": True})
+    return HttpResponse(jsonObj, mimetype="application/json")
+
+
 
 
 
