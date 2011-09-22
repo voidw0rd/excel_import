@@ -5,12 +5,12 @@ Ext.define('AM.view.product.List' ,{
     title : 'All Products',
     store: 'Products',
     id: "productsListId",
-    verticalScroller: {
-        xtype: 'paginggridscroller',
-        activePrefetch: false
+    //verticalScroller: {
+    //   xtype: 'paginggridscroller',
+    //    activePrefetch: false
         //activePrefetch: true
-    },
-    invalidateScrollerOnRefresh:false,
+    //},
+    //invalidateScrollerOnRefresh:false,
     viewConfig: {
             stripeRows: false,
             //autoScroll: true,
