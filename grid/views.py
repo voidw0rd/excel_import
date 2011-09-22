@@ -979,10 +979,19 @@ def productCheckModified(request):
 @login_required
 @csrf_exempt
 def orderStatusesRead(request):
-
-    jsonObj = simplejson.dumps({"success": True})
-    return HttpResponse(jsonObj, mimetype="application/json")
-
+    
+    try:
+        data = []
+        statuses = OrderStatuses.objects.all()
+        for status in statuses:
+            data.append(model_to_dict(status))
+        obj = {"success": True, "data": data}
+        jsonObj = simplejson.dumps(obj)
+        return HttpResponse(jsonObj, mimetype="application/json")
+    
+    except Exception, err:
+        print err
+        return HttpResponse()
 
 @login_required
 @csrf_exempt 
