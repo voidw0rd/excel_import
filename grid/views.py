@@ -534,12 +534,13 @@ def printOrder(request):
         orderId = request.GET['orderId']
     else:
         return Http404
-    orderInfo = _prepPrint(orderId)
-    
+    orderInfo, data = _prepPrint(orderId)
+    print data
     return render_to_response(
                               'printOrder.html', 
                               {
-                                "order": orderInfo
+                                "order": orderInfo,
+                                "data": data
                               }, 
                               context_instance=RequestContext(request)
                              )
@@ -550,27 +551,38 @@ def _prepPrint(orderId):
     try:
         order = Orders.objects.get(pk=orderId)
         orderProducts = OrderProduct.objects.filter(order=order)
-        printFileds = ['cod', 'quantity', 'denumirePlic', 'soi']
+        printFileds = ['cod', 'quantity', 'denumirePlic', 'soi', 'notes', 'modified']
         total = 0
         orderInfo = {}
+        data = []
+        tmp = []
+        x = 42
         orderInfo["name"] = order.name
         orderInfo['timestamp'] = str(order.timestamp).split('.')[0]
         orderInfo['company'] = order.company.name
-        orderInfo['products'] = []
         for product in orderProducts:
             obj = {}
             obj['quantity'] = product.quantity
             total += product.quantity
             prod = model_to_dict(product.product)
-            print prod
             for key in prod.keys():
                 if key in printFileds:
                     obj[key] = prod[key]
-            orderInfo['products'].append(obj)
+            
+            if len(tmp) < x:
+                tmp.append(obj)
+            elif len(tmp) == x:
+                tmp.append(obj)
+                data.append(tmp)
+                tmp = []
+            
+                if x < 51: x = 51
         
+        if len(tmp) > 0: data.append(tmp)
+                
         orderInfo['total'] = total
         print json.dumps(orderInfo, indent = 4)
-        return orderInfo
+        return orderInfo, data
     except Exception, err:
         print err
         return None

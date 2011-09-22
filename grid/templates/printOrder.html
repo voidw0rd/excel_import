@@ -5,147 +5,121 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 
-    <title>Print Order - SLR4print - Order Management System</title>
-    <style>
+    <title>Print Order - SLR4print - Order Management System</title>    
+    
+    
+    
+        <style>
+        @media print {
         
-        @font-face {
-            font-family: DejaMono; 
-            src: url("static/DejaVuSansMono.ttf");
+        .break {
+            page-break-before: always;
+            page-break-after: always;
+            page-break-inside: always;
+        }
+        
+        body {
+            font-size: 8pt;
+            font-style: bold;
+        }
+    
+        hr {
+            border: 1pt solid #aaa;
+        }
+        #content table td {
+            width: 100pt;
+        }
+        
+        #content table {
+            border-color: #666;
+            width: 100%;
+            page-break-inside: avoid;
+            page-break-after: avoid;
         }
         
         #wrapper {
-            margin-left: 10px;
-            margin-right: 10px;
-            margin-top: 20px;
-            font-size: 17px;
-            font-family: DejaMono;
+            margin-left: 10pt;
+            margin-right: 10pt;
+            margin-top: 50pt;
         }
-        
-        #name {
-            float: left;
-            margin-top: 10px;
+        #header table {
+            font-size: 8pt;
+            font-style: bold;
+            page-break-inside: avoid;
+            page-break-after: avoid;
         }
-        
-        #timestamp {
-            font-size: 13px;
-            float: right;
+        #header table td {
+            width: 260pt;
         }
+    }
         
-        #total {
-            margin-top: 10px;
+        @media screen {
+            body { 
+                font-size: 20px;
+                font-style: normal !important;
+            }
         }
-        
-        .clr {
-            clear: both;
-        }
-        
-        #download {
-            margin-bottom: 5px;
-            float: right;
-            border: none;
-        }
-        
-        #prodTable {
-            text-align: left;
-            margin-top: 30px;
-            margin-left: 10px;
-        }
-        
-        #prodTable td {
-            border: 1px solid #000;
-            height: 30px;
-            text-indent: 10px;
-        }
-        
-        .cod {
-            width: 80px !important;
-            font-size: 15px;    
-        }
-        
-        .quantity {
-            width: 100px !important;
-            font-size: 15ox;
-            font-align: left !important;
-        }
-        
-        .soi {
-            width: 250px;
-        }
-        
-        .denumire {
-            width: 220px;
-        }
-        
-        .header {
-            font-weight:bold;
-            text-align: center;
-        }
-        
-        #company {
-            margin-top: 10px;    
-            margin-bottom: 10px;
-        }
-        
     </style>
+    
+    
+    
+    
 </head>
 <body>
-<div id="wrapper">
 
-    <p class="clr"></p>
-    <div id='name'>
-        <p>Order name: {{ order.name }}</p>
+    <div id="wrapper">
+
+    <div id="header">
+        <table>
+            <tr>
+                <th width="30%"></th> <th width="70%"></th>
+            </tr>
+            <tr>
+                <td id="order_name">Order name: </td><td> {{ order.name }}</td>
+            </tr>
+            <tr>
+                <td id="company">Company: </td><td> {{ order.company }}</td>
+            </tr>
+            <tr>
+                <td id="notes">Notes: </td><td> null </td>
+            </tr>
+            <tr>
+                <td id="created">Created: </td><td> {{ order.timestamp }}</td>
+            </tr>
+            <tr>
+                <td id="items">Items: </td><td> null </td>
+            </tr>
+            <tr>
+                <td id="total">Total quantity: </td><td> {{ order.total }}</td>
+            </tr>
+        </table>
     </div>
+    <hr /><br /> 
     
-    <div id='timestamp'>
-        <p>Created on: {{ order.timestamp }}</p>
-    </div>
+    <p>Order listing: </p>
+
     
-        <p class="clr"></p>
-        
-    <div id="total">
-        Total: {{ order.total }}
-    </div>
-    <div id="company">
-        Typography: {{ order.company }}
-    </div>
-        
-        <p class="clr"></p>
-        
-    <div id="products">
-        <p>Products in this order: </p>
-        <div id="innerProducts">
-        {% if order %}
-            <table cellspacing="2" id="prodTable">
-                <tr class="header">
-                    <td class="cod">Code</td>
-                    <td class="soi">Soi</td>
-                    <td class="quantity">Quantity</td>
-                    <td class="denumire">Name</td>
-                </tr>
-            
-            {% for item in order.products %}
-                <tr>
-                    <td class="cod">{{ item.cod }}</td>
-                    <td class="soi">{{ item.soi }}</td>
-                    <td class="quantity">{{ item.quantity }}</td>
-                    <td class="denumire">{{ item.denumirePlic }}</td>
-                </tr>
+        <div id="content">
+        {% for entry in data %}
+                <table cellspacing="0px" border="1">
+                    <tr>
+                        <th width="7%">Code</th><th width="13%">Quantity</th><th width="23%">Soi</th><th width="23%">Name</th><th>Notes</th><th width="5%">Modified</th>
+                    </tr>
+            {% for product in entry %}
+                    <tr>
+                        <td widtd="7%">{{ product.cod | truncatechars:2}}</td><td widtd="13%">{{ product.quantity }}</td><td widtd="23%"> {{ product.soi }}</td><td widtd="23%"> {{ product.denumirePlic }}</td><td> {{ product.notes }}</td><td widtd="5%"> {{ product.modified }}</td>
+                    </tr>
             {% endfor %}
-            
-            
-            </table>
-        {% endif %}
-        </div>
-    </div>
-    
-    
-    
+                </table>
+                <br /><br />
+        {% endfor %}
+        
+ 
 
-    
-    
-    
-
-</div>
+ 
+ 
+ 
+ 
  
 </body>
 </html>
