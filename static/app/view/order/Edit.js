@@ -55,6 +55,21 @@ Ext.define('AM.view.order.Edit', {
                         name: "company",
                         store: Ext.create("AM.store.Company"),
                         width: 370
+                    },{
+                        xtype: "combobox",
+                        //typeAhead: true,
+                        triggerAction: 'all',
+                        selectOnTab: true,
+                        multiSelect: false,
+                        forceSelection : true,
+                        emptyText: 'Select status',
+                        displayField: 'status',
+                        valueField:'id',
+                        lazyRender: true,
+                        fieldLabel: "Status",
+                        name: "status",
+                        store: Ext.create("AM.store.OrderStatuses"),
+                        width: 370
                     },
                     Ext.create("AM.view.orderProduct.Edit")
                 ]
