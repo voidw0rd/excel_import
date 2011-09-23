@@ -14,6 +14,7 @@ Ext.define('AM.store.Company', {
         },
         type: "ajax",
         reader: {
+            type: 'json',
             root: "data",
             successProperty: "success"
         }

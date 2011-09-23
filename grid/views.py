@@ -432,7 +432,7 @@ def ordersRead(request):
             return Http404
     
     excludes = []
-    
+
     if request.is_ajax():
         try:
             response = getJsonFromModel(orders, excludes)
@@ -988,7 +988,7 @@ def orderStatusesRead(request):
         obj = {"success": True, "data": data}
         jsonObj = simplejson.dumps(obj)
         return HttpResponse(jsonObj, mimetype="application/json")
-    
+
     except Exception, err:
         print err
         return HttpResponse()
