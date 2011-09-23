@@ -224,12 +224,14 @@ Ext.define("AM.view.orderProduct.Edit", {
 
 
     onDeleteClick: function(){
-        var selection = this.getView().getSelectionModel().getSelection()[0];
-        if (selection) {
-            console.log("formular record delete");
-            this.store.remove(selection);
-            this.store.sync();
-        }
+        var record = this.getView().getSelectionModel().getSelection()[0];
+        Ext.Msg.confirm('Confirm delete!','You are about to delete the product ' + record.get('cod') + ' - ' + record.get('name') + '. Are you sure ?',
+            function(btn, text){
+                if (btn == 'yes'){
+                    this.store.remove(record);
+                    this.store.sync();
+            }
+        });
     },
 
     onAddClick: function(){

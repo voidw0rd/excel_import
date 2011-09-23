@@ -324,7 +324,7 @@ def productsCreate(request):
         if isinstance(postData, dict) and postData.has_key("notes") and len(postData.get("notes")) > 0:
             postData['category'] = ProductCategory.objects.get(pk=1)
             postData['image'] = ProductImage.objects.get(pk=1)
-            postData['modified'] = True
+            #postData['modified'] = True
             code = Products.objects.all().order_by('-cod')
             code = int(code[0].cod.split("PS")[-1:][0])
             if code < 99:

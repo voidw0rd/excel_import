@@ -237,6 +237,7 @@ Ext.define('AM.controller.Products', {
 
     submitCheckbox: function(checkbox, newValue, oldValue) {
         var grid = Ext.getCmp("productsListId");
+        console.log(newValue, oldValue);
         var record = grid.getView().getSelectionModel().getSelection()[0];
         Ext.Ajax.request({
             url: "data/productCheckModified",
