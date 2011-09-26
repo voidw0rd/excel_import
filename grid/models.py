@@ -46,12 +46,13 @@ class OrderProduct(models.Model):
     order = models.ForeignKey("Orders", related_name = "order_products")
     note = models.TextField()
     modified = models.BooleanField()
+    printstatus = models.BooleanField()
 
 
 
 class OrderStatuses(models.Model):
     
-    status = models.CharField(max_length = 10)
+    name = models.CharField(max_length = 10)
 
 
 

@@ -41,7 +41,7 @@ Ext.define('AM.view.product.Edit', {
 							items :[{
 										xtype: 'fieldset',
 										bodyStyle: 'padding:5px 5px 0',
-										title: '<span style="font-size:16px;font-style:bold">Denumire<\span>',
+										title: '<span style="font-size:16px;font-style:bold">Names<\span>',
 										style: 'border-width: 0px',
 										defaults:{ xtype:'textfield'},
 										items:[{
@@ -49,13 +49,13 @@ Ext.define('AM.view.product.Edit', {
 											fieldLabel: 'Code'
 										},{
 											name : 'denumirePlic',
-											fieldLabel: 'Denumire plic'
+											fieldLabel: 'Print name'
 										},{
 											name : 'denumireOferta',
-											fieldLabel: 'Denumire oferta'
+											fieldLabel: 'Offer name'
 										},{
 											name : 'denumireLatina',
-											fieldLabel: 'Denumire latina'
+											fieldLabel: 'Latin name'
 										},{
 											name : 'soi',
 											fieldLabel: 'Soi'
@@ -73,7 +73,7 @@ Ext.define('AM.view.product.Edit', {
 									},{
 										xtype: 'fieldset',
 										bodyStyle: 'padding:5px 5px 0',
-										title: '<span style="font-size:16px;font-style:bold">Perioade<\span>',
+										title: '<span style="font-size:16px;font-style:bold">Periods<\span>',
 										style: 'border-width: 0px',
 										defaults:{ xtype:'textfield'},
 										items:[{
@@ -101,7 +101,7 @@ Ext.define('AM.view.product.Edit', {
 							xtype: 'fieldset',
 							columnWidth:.5,
 							bodyStyle: 'padding:5px 5px 0',
-							title: '<span style="font-size:16px;font-style:bold">Descriere<\span>',
+							title: '<span style="font-size:16px;font-style:bold">Description<\span>',
 							style: 'border-width: 0px',
 							border:false,
 							defaultType: 'textareafield',
@@ -144,7 +144,6 @@ Ext.define('AM.view.product.Edit', {
                                 displayField: 'name',
                                 valueField:'id',
                                 name: 'category_id',
-                                id: 'category_id',
                                 store: Ext.create("AM.store.ProductCategories")
                             },{
                                 xtype:'checkbox',

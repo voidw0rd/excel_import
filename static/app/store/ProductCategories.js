@@ -4,7 +4,7 @@ Ext.define('AM.store.ProductCategories', {
     
     model: 'AM.model.ProductCategory',
     autoLoad: true,
-    autoSync: true,
+    //autoSync: true,
     proxy: {
         api: {
             read: "data/productCategoriesRead"

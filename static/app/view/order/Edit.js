@@ -57,17 +57,13 @@ Ext.define('AM.view.order.Edit', {
                         width: 370
                     },{
                         xtype: "combobox",
-                        //typeAhead: true,
-                        triggerAction: 'all',
-                        selectOnTab: true,
-                        multiSelect: false,
-                        forceSelection : true,
-                        emptyText: 'Select status',
-                        displayField: 'status',
-                        valueField:'id',
-                        lazyRender: true,
                         fieldLabel: "Status",
-                        name: "status",
+                        //typeAhead: true,
+                        //forceSelection : true,
+                        //emptyText: 'Select status',
+                        displayField: 'name',
+                        valueField:'id',
+                        name: "status_id",
                         store: Ext.create("AM.store.OrderStatuses"),
                         width: 370
                     },

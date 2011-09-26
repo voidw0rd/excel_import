@@ -14,6 +14,8 @@ Ext.define('AM.controller.Orders', {
         }
     ],
 
+    activeOrderId: 0,
+
     init: function() {
         
         this.control({
@@ -34,30 +36,37 @@ Ext.define('AM.controller.Orders', {
             },
             'orderedit button[action=cancel]': {
                 click: this.cancelEditOrder
-            },
+            }
         });
+
+        this.getStore('Orders').on('write', this.OrdersWrite, this)
+    },
+
+    OrdersWrite: function(proxy, operation){
+        this.activeOrderId = Ext.JSON.decode(operation.response.responseText).data[0].id
     },
 
     newOrder: function (button){
-        console.log();
+
         var record = new AM.model.Order({
             id     : "",
             name   : "",
             note   : "",
-            status : Math.floor(Math.random()*200) + '',
+            status : 1,
             timestamp : ""
         });
 
-        this.getOrdersStore().add(record);
+        this.getOrdersStore().insert(0, record);
         this.getOrdersStore().sync();
-        this.getOrdersStore().load({callback: function(records, operation, success) {
+
+        this.getOrdersStore().load({scope:this, callback: function(records, operation, success) {
             Ext.each(records, function(item){
-                if(item.data.status === record.data.status) {
+                if(item.data.id === this.activeOrderId) {
                     var edit = Ext.create('AM.view.order.Edit').show();
                     edit.down("form").loadRecord(item);
                     edit.down('form').down('textfield').focus();
                 }
-            });
+            }, this);
         }});
     },
 

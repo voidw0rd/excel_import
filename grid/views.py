@@ -30,11 +30,11 @@ import uuid
 def getJsonFromModel(querySet, excludes):
     if not isinstance(querySet, QuerySet) and not isinstance(excludes, list):
         return Http404
-    
+
     try:
         requestList = []
         requestDict = {}
-        
+
         for obj in querySet:
             tmp = obj
             obj = model_to_dict(obj)
@@ -44,17 +44,18 @@ def getJsonFromModel(querySet, excludes):
                 if hasattr(tmp, 'timestamp'): #this is for orders timestamp
                     data['timestamp'] = (str(tmp.timestamp)).split(".")[0]
                 if hasattr(tmp, 'status'): # solve the status foreignKey
-                    data['status'] = tmp.status.status
+                    data['status_id'] = tmp.status.id
+                    data['status'] = {'id': tmp.status.id, 'name': tmp.status.name}
             requestList.append(data)
-        
+
         requestDict['data'] = requestList
         requestDict['success'] = True
         #print json.dumps(requestDict, indent = 3)
-        
+
         if len(excludes) > 0:
             for exclude in excludes:
                 requestDict.pop(exclude)
-        
+
         return requestDict
     except Exception, err:
         print err
@@ -62,14 +63,14 @@ def getJsonFromModel(querySet, excludes):
 
 
 def userLogin(request):
-    
-    
+
+
     if request.method == "POST":
         form = Login(request.POST)
         if form.is_valid():
             user = form.cleaned_data['username']
             pwd = form.cleaned_data['password']
-            
+
             user = authenticate(username = user, password = pwd)
             if user is not None:
                 if user.is_active:
@@ -81,7 +82,7 @@ def userLogin(request):
                 form.non_field_errors = "Username or password invalid."
     else:
         form = Login()
-    
+
     return render_to_response(  
                               'login.html', 
                               { "form": form }, 
@@ -92,14 +93,14 @@ def userLogin(request):
 @login_required(login_url=None, redirect_field_name=None)
 def userLogout(request):
     logout(request)
-    
+
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
     #return HttpResponseRedirect("/login/")
 
 
 def pwdRecovery(request):
-    
+
     if request.method == "POST":
         form = passwordRecoveryForm(request.POST)
         if form.is_valid():
@@ -120,13 +121,13 @@ def pwdRecovery(request):
                     form.non_field_errors = "Couldn't validate your token"
             else:
                 form.non_field_errors = "Passwords dont match."
-                
+
         else:
             form.non_field_errors = "Invalid data submited."
-            
+
     else:
         form = passwordRecoveryForm()
-                
+
     return render_to_response(
                               'passwordRecovery.html', 
                               {
@@ -137,7 +138,7 @@ def pwdRecovery(request):
 
 
 def resetPasswordToken(request):
-    
+
     msg = ""
     if request.method == "POST":
         form = tokenRequestForm(request.POST)
@@ -151,7 +152,7 @@ def resetPasswordToken(request):
                 msg = "Am email has been send to your email address."
                 # send an email with the token
                 print token.token
-                
+
             except Exception, err:
                 print err
                 form.non_field_errors = "Invalid username."
@@ -159,7 +160,7 @@ def resetPasswordToken(request):
             form.non_field_errors = "Invalid data submited."
     else:
         form = tokenRequestForm()
-    
+
     return render_to_response(  
                               'tokenRequest.html', 
                               {'form': form, "msg": msg}, 
@@ -169,9 +170,9 @@ def resetPasswordToken(request):
 
 @login_required
 def index(request):    
-            
+
     #send_mail('sendGrid - email', 'Greetz, this is just a test email ', 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
-    
+
     return render_to_response(
                               'index.html', 
                               { 
@@ -180,7 +181,7 @@ def index(request):
                              )
 
 def importDataBase(request):
-    
+
     import api
     api.generateCompany()
     api.generateOrders()
@@ -188,19 +189,19 @@ def importDataBase(request):
     api.genCategory()
     api.genProductImage()
 
-    
+
     fileName = "excel_example.csv"
     filePath = STATIC_FILE_PATH + '/' + fileName
     try:
         _file = open(filePath, "rb")
     except Exception, err:
         print err
-    
+
     reader = csv.reader(_file, delimiter='|', quotechar='|',dialect=csv.excel)
-    
+
     for row in reader:
         data = {}
-        
+
         data["cod"] = row[0]
         data['denumirePlic'] = row[1]
         data['denumireOferta'] = row[2]
@@ -223,30 +224,31 @@ def importDataBase(request):
         data['barCode'] = "11134ABNCCA"
         data['modified'] = False
         data['image'] = ProductImage.objects.get(pk=1)
-        
+
         x = Products.objects.create(**data)
-        
-    
+
+
     _file.close()
-    
+
     return render_to_response(
                               'index3.html', 
                               { 
                               }, 
                               context_instance=RequestContext(request)
                              )
-    
+
 @login_required
 @csrf_exempt
 def productsRead(request):
 
-    print request.GET
+    #print request.GET
 
     try:
         excludes = []
         if request.GET.has_key("id"):
             productId = request.GET['id']
             products = Products.objects.filter(id = productId)
+            total = products.count()
         else:
             products = Products.objects.all().order_by("pk")
             total = products.count()
@@ -256,7 +258,7 @@ def productsRead(request):
                     return None
             start = int(request.GET.get("start"))
             limit = int(request.GET.get("limit"))
-            print products.count()
+            #print products.count()
             if start > products.count():
                 return None
             products = products[start:][:limit]
@@ -418,11 +420,11 @@ def productsDelete(request):
 @login_required
 @csrf_exempt
 def ordersRead(request):
-    
+
     user = request.user
     if user.is_staff:
         orders = Orders.objects.all()
-    
+
     else:
         try:
             company = Company.objects.get(email = request.user)
@@ -430,7 +432,7 @@ def ordersRead(request):
         except Exception, err:
             print err
             return Http404
-    
+
     excludes = []
 
     if request.is_ajax():
@@ -438,7 +440,7 @@ def ordersRead(request):
             response = getJsonFromModel(orders, excludes)
             jsonObj = simplejson.dumps(response, encoding="utf-8")
             return HttpResponse(jsonObj, mimetype="application/json")
-            
+
         except Exception, err:
             jsonObj = simplejson.dumps({"success": False, "reason": err})
             return HttpResponse(jsonObj, mimetype="application/json")
@@ -449,7 +451,7 @@ def ordersRead(request):
 @login_required
 @csrf_exempt  
 def ordersUpdate(request):
-        
+
     try:
         postData = request.read()
         postData = json.loads(postData)
@@ -459,30 +461,31 @@ def ordersUpdate(request):
                 queryObj = Orders.objects.filter(pk=item["id"])
                 item.pop("id")
                 item.pop("timestamp")
-                item['status'] = OrderStatuses.objects.create(status = "pending")
-                
+                #item['status'] = OrderStatuses.objects.create(status = "pending")
+
                 if request.user.is_staff:
                     queryObj.update(**item)
                 else:
                     queryObj.update(note = item['note'])                    
-                
+
         elif isinstance(postData, dict) and postData.has_key("id"):
             queryObj = Orders.objects.filter(pk=postData['id'])
+            postData['status'] = postData['status_id']
             postData.pop("id")
             postData.pop("timestamp")
-            #postData.pop("status")
-            postData['status'] = OrderStatuses.objects.create(status = "pending")
-            
+            postData.pop("status_id")
+            #postData['status'] = OrderStatuses.objects.create(status = "pending")
+            print postData
             if request.user.is_staff:
                 queryObj.update(**postData)
                 queryObj[0].save()
             else:
                 queryObj.update(note = postData['note'])
                 queryObj[0].save()
-        
+
         jsonObj = simplejson.dumps({"success": True})
         return HttpResponse(jsonObj, mimetype="application/json")
-    
+
     except Exception, e:
         print e
         jsonObj = simplejson.dumps({"success": False})
@@ -492,18 +495,20 @@ def ordersUpdate(request):
 @login_required
 @csrf_exempt    
 def ordersCreate(request):
-	
+
     if not request.user.is_staff:
         return Http404
-    
+
     try: 
         postData = request.read()
         postData = json.loads(postData)
-		#print postData
         if isinstance(postData, dict) and postData.has_key("status"):
-            Orders.objects.create(name="", note="", status=OrderStatuses.objects.create(status=postData['status']))
+            neworder = Orders.objects.create(name="", note="", status=OrderStatuses.objects.get(id=postData["status"]))
 
-        jsonObj = simplejson.dumps({"success": True})
+        data = []
+        data.append(model_to_dict(neworder))
+
+        jsonObj = simplejson.dumps({"success": True, "data":data})
         return HttpResponse(jsonObj, mimetype="application/json")
 
     except Exception, err:
@@ -515,21 +520,21 @@ def ordersCreate(request):
 def ordersDelete(request):
     if not request.user.is_staff:
         return Http404
-        
+
     postData = request.read()
     postData = json.loads(postData)
-    
+
     if isinstance(postData, dict) and postData.has_key("id"):
         order = Orders.objects.filter(pk=postData['id'])
         order.delete()
-    
+
     jsonObj = simplejson.dumps({"success": True})
     return HttpResponse(jsonObj, mimetype="application/json")
 
 
 @csrf_exempt 
 def printOrder(request):
-    
+
     if isinstance(request.GET, dict) and request.GET.has_key("orderId"):
         orderId = request.GET['orderId']
     else:
@@ -713,6 +718,7 @@ def orderProductsRead(request):
                     data['name']       = product.product.denumirePlic
                     data['cod']        = product.product.cod
                     data['soi']        = product.product.soi
+                    data['printstatus']        = product.printstatus
                     #product = model_to_dict(product.product)
                     #product.pop("id")
                     #product.pop("modified")
@@ -826,6 +832,7 @@ def orderProductsUpdate(request):
             product.quantity = postData['quantity']
             product.note     = postData['note']
             product.modified = postData['modified']
+            product.printstatus = postData['printstatus']
             product.save()
 
             _calculateOrderTotal(postData['order_id'])
@@ -957,7 +964,6 @@ def productCheckModified(request):
 
     try:
         if request.POST.has_key("id"):
-            print request.POST
             checkbox = request.POST.get("value")
             if checkbox == "false":
                 checkbox = False
@@ -965,7 +971,6 @@ def productCheckModified(request):
                 checkbox = True
             product = Products.objects.get(pk=request.POST.get("id"))
             product.modified = checkbox
-            print product.modified
             product.save()
 
         jsonObj = simplejson.dumps({"success": True})
@@ -979,7 +984,7 @@ def productCheckModified(request):
 @login_required
 @csrf_exempt
 def orderStatusesRead(request):
-    
+
     try:
         data = []
         statuses = OrderStatuses.objects.all()
@@ -1008,10 +1013,10 @@ def productCategoryRead(request):
                 for key in x.keys():
                     obj[key] = x[key]
                 tmpList.append(obj)
-            
+
             data['success'] = True
             data['data'] = tmpList
-            
+
             return HttpResponse(simplejson.dumps(data), mimetype="application/json")
     except Exception, err:
         print err
@@ -1022,58 +1027,58 @@ def productCategoryRead(request):
 @login_required
 @csrf_exempt   
 def companyRead(request):
-	
-	if request.is_ajax():
-		try:
-			#x = Company.objects.create(name = "SRL MintRubbing", address = Address.objects.create())
-			company = Company.objects.all()
-			
-			if len(company) == 0:
-				jsonObj = simplejson.dumps({"success": True, "data" : []})
-				return HttpResponse(jsonObj, mimetype="application/json")
-            
-			tmpList = []
-			tmpDict = {}
-			for item in company:
-				response = model_to_dict(item)
-				#print "--" * 10
-				obj = {}
-				for key in response.keys():
-					obj[key] = response[key]
-					
-				obj.pop('address')
-				response = model_to_dict(item.address)
-				for key in response.keys():
-					obj[key] = response[key]
-				
-				tmpList.append(obj)
-			
-			tmpDict['data'] = tmpList
-			tmpDict['success'] = True
-			#print json.dumps(tmpDict, indent = 4)
-			
-			jsonObj = simplejson.dumps(tmpDict)
-			return HttpResponse(jsonObj, mimetype = "application/json")
-		
-		except Exception, err:
-			print err
-			return Http404
-		
-	else:
-		pass
+
+    if request.is_ajax():
+        try:
+            #x = Company.objects.create(name = "SRL MintRubbing", address = Address.objects.create())
+            company = Company.objects.all()
+
+            if len(company) == 0:
+                jsonObj = simplejson.dumps({"success": True, "data" : []})
+                return HttpResponse(jsonObj, mimetype="application/json")
+
+            tmpList = []
+            tmpDict = {}
+            for item in company:
+                response = model_to_dict(item)
+                #print "--" * 10
+                obj = {}
+                for key in response.keys():
+                    obj[key] = response[key]
+
+                obj.pop('address')
+                response = model_to_dict(item.address)
+                for key in response.keys():
+                    obj[key] = response[key]
+
+                tmpList.append(obj)
+
+            tmpDict['data'] = tmpList
+            tmpDict['success'] = True
+            #print json.dumps(tmpDict, indent = 4)
+
+            jsonObj = simplejson.dumps(tmpDict)
+            return HttpResponse(jsonObj, mimetype = "application/json")
+
+        except Exception, err:
+            print err
+            return Http404
+
+    else:
+        pass
 
 
 
 @login_required
 @csrf_exempt
 def uploadProductImage(request):
-    
-    
+
+
     try:
         if request.FILES.has_key("photo") and request.POST.has_key("productId"):
             product = Products.objects.get(pk=request.POST.get("productId"))
             print product.id
-            
+
             _file = ContentFile(request.FILES['photo'].read())
             image = ProductImage()
             image.image.save(request.FILES['photo'].name, _file)
@@ -1082,7 +1087,7 @@ def uploadProductImage(request):
             x = ContentFile(x.read())
             image.thumb.save(request.FILES['photo'].name, x)
 
-            
+
             product.image = image
             product.save()
         jsonObj = simplejson.dumps({'success': True, 'image': product.image.thumb.url})
@@ -1091,8 +1096,8 @@ def uploadProductImage(request):
     except Exception, err:
         print err
         return HttpResponse(simplejson.dumps({'success': False}))
-   
-   
+
+
 
 @login_required
 @csrf_exempt
@@ -1104,12 +1109,12 @@ def downloadProductImage(request):
         image = open(product.image.image.path).read()
         response = HttpResponse(image)
         response['Content-Disposition'] = 'attachment; filename=%s' % product.image.image.name
-            
+
         return response
-        
+
         jsonObj = simplejson.dumps({"success": True, "data": []})
         return HttpResponse(jsonObj)
-            
+
     except Exception, err:
         print err
         return Http404

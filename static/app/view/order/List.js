@@ -1,6 +1,7 @@
 Ext.define('AM.view.order.List' ,{
     extend: 'Ext.grid.Panel',
     alias : 'widget.orderlist',
+    id: 'orderList',
 
     title : 'All Orders',
     store: 'Orders',
@@ -10,7 +11,7 @@ Ext.define('AM.view.order.List' ,{
         {header: 'Note',  dataIndex: 'note',  flex: 1},
         {header: 'Created on',  dataIndex: 'timestamp',  flex: 1},
         {header: "Status", dataIndex: "status", flex: 1,
-            renderer: function(value,meta,record) {return value.status}},
+            renderer: function(value,meta,record) {return value.name}},
         {header: "Total", dataIndex: "total", flex: 1}
     ],
     tbar: [{

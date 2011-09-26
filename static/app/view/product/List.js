@@ -34,9 +34,9 @@ Ext.define('AM.view.product.List' ,{
     columns: [
          Ext.create('Ext.grid.RowNumberer'),
         {header: 'Code',  dataIndex: 'cod',  flex: 1},
-        {header: 'Denumire plic',  dataIndex: 'denumirePlic',  flex: 1},
-        {header: 'Denumire oferta',  dataIndex: 'denumireOferta',  flex: 1},
-        {header: 'Denumire latina',  dataIndex: 'denumireLatina',  flex: 1},
+        {header: 'Print name',  dataIndex: 'denumirePlic',  flex: 1},
+        {header: 'Offer name',  dataIndex: 'denumireOferta',  flex: 1},
+        {header: 'Latin name',  dataIndex: 'denumireLatina',  flex: 1},
         {header: 'Soi', dataIndex: 'soi', flex: 1},
         {header: 'Photo code', dataIndex: 'photoCode', flex: 1},
         {header: 'Names Languages', dataIndex: 'namesLanguages', flex: 1},
