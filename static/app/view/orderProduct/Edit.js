@@ -226,11 +226,12 @@ Ext.define("AM.view.orderProduct.Edit", {
 
     onDeleteClick: function(){
         var record = this.getView().getSelectionModel().getSelection()[0];
+        var store = this.store;
         Ext.Msg.confirm('Confirm delete!','You are about to delete the product ' + record.get('cod') + ' - ' + record.get('name') + '. Are you sure ?',
             function(btn, text){
                 if (btn == 'yes'){
-                    this.store.remove(record);
-                    this.store.sync();
+                    store.remove(record);
+                    store.sync();
             }
         });
     },
