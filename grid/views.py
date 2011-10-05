@@ -541,6 +541,7 @@ def printOrder(request):
         return Http404
     orderInfo, data = _prepPrint(orderId)
     print data
+    print orderInfo
     return render_to_response(
                               'printOrder.html',
                               {
@@ -586,7 +587,7 @@ def _prepPrint(orderId):
         if len(tmp) > 0: data.append(tmp)
 
         orderInfo['total'] = total
-        print json.dumps(orderInfo, indent = 4)
+        #print json.dumps(orderInfo, indent = 4)
         return orderInfo, data
     except Exception, err:
         print err
