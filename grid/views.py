@@ -484,7 +484,7 @@ def ordersUpdate(request):
                 queryObj.update(note = postData['note'])
                 queryObj[0].save()
 
-        jsonObj = simplejson.dumps({"success": True})
+        jsonObj = simplejson.dumps({"success": True, 'data': queryObj})
         return HttpResponse(jsonObj, mimetype="application/json")
 
     except Exception, e:
