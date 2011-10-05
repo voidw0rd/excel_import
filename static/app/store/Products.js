@@ -8,7 +8,12 @@ Ext.define('AM.store.Products', {
     buffered: true,
     // never purge any data, we prefetch all up front
     purgePageCount: 0,
-
+    sorters: [
+        {
+            property : 'cod',
+            direction: 'ASC'
+        }
+    ],
     proxy: {
         type: 'ajax',
         api: {

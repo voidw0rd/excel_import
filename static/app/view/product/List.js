@@ -16,21 +16,19 @@ Ext.define('AM.view.product.List' ,{
             //autoScroll: true,
             enableRowBody: true,
             getRowClass: function(record){
-                if(record.data.modified)
-                    return 'orderProducts_modified';
-                else 
-                {
-                    var empty = 0;
-                    record.fields.each( function(field) {
-                        if (record.get(field.name) == '-')
-                         empty++;
-                    });
-                    if (empty > 0)
-                        return 'productsField_empty';
-                }
 
+                var empty = 0;
+                record.fields.each( function(field) {
+                    if (record.get(field.name) == '-')
+                     empty++;
+                });
+                if (empty > 0)
+                    return 'productsField_empty';
+                else if(record.data.modified)
+                    return 'orderProducts_modified';
             }
     },
+    sortableColumns: false,
     columns: [
          Ext.create('Ext.grid.RowNumberer'),
         {header: 'Code',  dataIndex: 'cod',  flex: 1},
