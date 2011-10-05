@@ -455,7 +455,7 @@ def ordersUpdate(request):
     try:
         postData = request.read()
         postData = json.loads(postData)
-        #print postData
+        print postData
         if isinstance(postData, list):
             for item in postData:
                 queryObj = Orders.objects.filter(pk=item["id"])
@@ -474,6 +474,7 @@ def ordersUpdate(request):
             postData.pop("id")
             postData.pop("timestamp")
             postData.pop("status_id")
+            postData.pop("total")
             #postData['status'] = OrderStatuses.objects.create(status = "pending")
             print postData
             if request.user.is_staff:
@@ -752,7 +753,7 @@ def orderProductsCreate(request):
         try:
             postData = request.read()
             postData = json.loads(postData)
-            print postData
+            #print postData
 
             if isinstance(postData, dict) and postData.has_key("order_id") and postData.has_key("product_id"):
                 product = Products.objects.get(pk=postData['product_id'])
