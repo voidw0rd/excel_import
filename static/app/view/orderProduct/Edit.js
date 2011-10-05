@@ -151,8 +151,8 @@ Ext.define("AM.view.orderProduct.Edit", {
                     summaryType: 'sum'
                 },
                 {header: "Notes", flex: 1, dataIndex: 'note', editor: {xtype:'textfield'}},
-                {header: "Modified", flex: 0.5, dataIndex: 'modified',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}},
-                {header: "PrintOK", flex: 0.5, dataIndex: 'printstatus',type: 'boolean', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}},
+                {header: "Modified", flex: 0.5, dataIndex: 'modified', xtype: 'booleancolumn', trueText: 'Yes', falseText: 'No', editor: {xtype:'checkbox'}},
+                {header: "PrintOK", flex: 1, dataIndex: 'printstatus', xtype: 'booleancolumn', trueText: 'OK 4 print', falseText: 'check in progress', editor: {xtype:'checkbox'}},
                 {
                     xtype:'actioncolumn',
                     width: 50,
