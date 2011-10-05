@@ -58,7 +58,7 @@ Ext.define('AM.view.product.Edit', {
 											fieldLabel: 'Latin name'
 										},{
 											name : 'soi',
-											fieldLabel: 'Soi'
+											fieldLabel: 'Variety'
 										},{
 											name : 'photoCode',
 											fieldLabel: 'Photo Code'
@@ -78,23 +78,23 @@ Ext.define('AM.view.product.Edit', {
 										defaults:{ xtype:'textfield'},
 										items:[{
 													name : 'stage1',
-													fieldLabel: 'Stage 1'
+													fieldLabel: 'Greenhouse'
 												},
 												{
 													name : 'stage2',
-													fieldLabel: 'Stage 2'
+													fieldLabel: 'Sawing'
 												},
 												{
 													name : 'stage3',
-													fieldLabel: 'Stage 3'
+													fieldLabel: 'Planting'
 												},
 												{
 													name : 'stage4',
-													fieldLabel: 'Stage 4'
+													fieldLabel: 'Distance'
 												},
 												{
 													name : 'stage5',
-													fieldLabel: 'Stage 5'
+													fieldLabel: 'Crop'
 												}]
 									}]
 						},{
