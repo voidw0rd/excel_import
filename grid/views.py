@@ -466,7 +466,7 @@ def ordersUpdate(request):
                 if request.user.is_staff:
                     queryObj.update(**item)
                 else:
-                    queryObj.update(note = item['note'])                    
+                    queryObj.update(note = item['note'])
 
         elif isinstance(postData, dict) and postData.has_key("id"):
             queryObj = Orders.objects.filter(pk=postData['id'])
@@ -494,13 +494,13 @@ def ordersUpdate(request):
 
 
 @login_required
-@csrf_exempt    
+@csrf_exempt
 def ordersCreate(request):
 
     if not request.user.is_staff:
         return Http404
 
-    try: 
+    try:
         postData = request.read()
         postData = json.loads(postData)
         if isinstance(postData, dict) and postData.has_key("status"):
@@ -517,7 +517,7 @@ def ordersCreate(request):
         return Http404
 
 
-@csrf_exempt  
+@csrf_exempt
 def ordersDelete(request):
     if not request.user.is_staff:
         return Http404
@@ -533,7 +533,7 @@ def ordersDelete(request):
     return HttpResponse(jsonObj, mimetype="application/json")
 
 
-@csrf_exempt 
+@csrf_exempt
 def printOrder(request):
 
     if isinstance(request.GET, dict) and request.GET.has_key("orderId"):
@@ -567,6 +567,7 @@ def _prepPrint(orderId):
         orderInfo["name"] = order.name
         orderInfo['timestamp'] = str(order.timestamp).split('.')[0]
         orderInfo['company'] = order.company.name
+        orderInfo['items'] = len(orderProducts)
         for product in orderProducts:
             obj = {}
             obj['quantity'] = product.quantity

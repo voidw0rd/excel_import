@@ -60,7 +60,7 @@ Ext.define('AM.view.order.Edit', {
                         fieldLabel: "Status",
                         //typeAhead: true,
                         //forceSelection : true,
-                        //emptyText: 'Select status',
+                        emptyText: 'Select status',
                         displayField: 'name',
                         valueField:'id',
                         name: "status_id",
