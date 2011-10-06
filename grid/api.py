@@ -191,7 +191,7 @@ def generateOrders():
     orderDict['note'] = "note for an order ... x"
     orderDict['name'] = "Comanda X"
     orderDict['company'] = Company.objects.get(pk = 1)
-    orderDict['status'] = OrderStatuses.objects.create(status = "new") 
+    orderDict['status'] = OrderStatuses.objects.create(name = "new") 
      
     obj = Orders.objects.create(**orderDict)
     

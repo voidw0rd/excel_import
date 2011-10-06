@@ -107,7 +107,7 @@
                     </tr>
             {% for product in entry %}
                     <tr>
-                        <td widtd="7%">{{ product.cod | truncatechars:2}}</td><td widtd="13%">{{ product.quantity }}</td><td widtd="23%"> {{ product.soi }}</td><td widtd="23%"> {{ product.denumirePlic }}</td><td> {{ product.notes }}</td><td widtd="5%"> {{ product.modified }}</td>
+                        <td widtd="7%">{{ product.cod }}</td><td widtd="13%">{{ product.quantity }}</td><td widtd="23%"> {{ product.soi }}</td><td widtd="23%"> {{ product.denumirePlic }}</td><td> {{ product.notes }}</td><td widtd="5%"> {{ product.modified }}</td>
                     </tr>
             {% endfor %}
                 </table>
