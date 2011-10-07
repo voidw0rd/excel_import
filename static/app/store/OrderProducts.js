@@ -5,6 +5,12 @@ Ext.define('AM.store.OrderProducts', {
     model: 'AM.model.OrderProduct',
     autoLoad: false,
     autoSync: false,
+    sorters: [
+        {
+            property : 'cod',
+            direction: 'ASC'
+        }
+    ],
     proxy: {
         api: {
             read: "data/orderProductsRead",

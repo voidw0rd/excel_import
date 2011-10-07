@@ -28,10 +28,10 @@ Ext.define('AM.view.product.List' ,{
                     return 'orderProducts_modified';
             }
     },
-    sortableColumns: false,
+    sortableColumns: true,
     columns: [
          Ext.create('Ext.grid.RowNumberer'),
-        {header: 'Code',  dataIndex: 'cod',  flex: 1},
+        {header: 'Code',  dataIndex: 'cod',  flex: 0.5},
         {header: 'Print name',  dataIndex: 'denumirePlic',  flex: 1},
         {header: 'Offer name',  dataIndex: 'denumireOferta',  flex: 1},
         {header: 'Latin name',  dataIndex: 'denumireLatina',  flex: 1},
@@ -43,11 +43,11 @@ Ext.define('AM.view.product.List' ,{
         {header: 'HU Description', dataIndex: 'huDesc', flex: 1},
         {header: 'SB Description', dataIndex: 'sbDesc', flex: 1},
         {header: 'RU Description', dataIndex: 'ruDesc', flex: 1},*/
-        {header: 'Greenhouse', dataIndex: 'stage1', flex: 1},
-        {header: 'Sawing', dataIndex: 'stage2', flex: 1},
-        {header: 'Planting', dataIndex: 'stage3', flex: 1},
-        {header: 'Distance', dataIndex: 'stage4', flex: 1},
-        {header: 'Crop', dataIndex: 'stage5', flex: 1},
+        {header: 'Greenhouse', dataIndex: 'stage1', flex: 0.6},
+        {header: 'Sawing', dataIndex: 'stage2', flex: 0.6},
+        {header: 'Planting', dataIndex: 'stage3', flex: 0.6},
+        {header: 'Distance', dataIndex: 'stage4', flex: 0.8},
+        {header: 'Crop', dataIndex: 'stage5', flex: 0.6},
         {header: 'Category', dataIndex: 'category', flex: 1,
             renderer: function(value,meta,record) {return value.name}
         },

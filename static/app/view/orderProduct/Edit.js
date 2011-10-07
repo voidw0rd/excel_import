@@ -114,7 +114,7 @@ Ext.define("AM.view.orderProduct.Edit", {
             columns: [
                 Ext.create('Ext.grid.RowNumberer'),
                 {header: "Code", flex: 0.5, dataIndex: 'cod'},
-                {header: "Variety", flex: 0.7, dataIndex: 'soi'},
+                {header: "Variety", flex: 1, dataIndex: 'soi'},
                 {header: "Name", flex: 1.3, dataIndex: 'name',
                    field: {
                         xtype: 'combobox',
@@ -146,7 +146,7 @@ Ext.define("AM.view.orderProduct.Edit", {
                         }
                    }
                 },
-                {header: "Quantity", flex: 0.8, dataIndex: 'quantity',
+                {header: "Quantity", flex: 0.6, dataIndex: 'quantity',
                     editor: { xtype:'numberfield', minValue:0, allowBlank:false, hideTrigger: true},
                     summaryType: 'sum'
                 },
