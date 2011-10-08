@@ -1,7 +1,7 @@
 Ext.define('AM.model.Product', {
     extend: 'Ext.data.Model',
     fields: [
-        'id', {name:'cod', type: 'string'},
+        'id', {name:'cod', type: 'string', filter: {type: 'string'}},
         {name:'denumirePlic', type: 'string'}, {name:'denumireOferta', type: 'string'}, {name:'denumireLatina', type: 'string'},
         {name:'soi', type: 'string'}, {name:'photoCode', type: 'string'},
         {name:'namesLanguages', type: 'string'},
