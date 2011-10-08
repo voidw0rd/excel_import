@@ -245,21 +245,27 @@ def productsRead(request):
 
     try:
         excludes = []
+        sort = []
         if request.GET.has_key("id"):
             productId = request.GET['id']
             products = Products.objects.filter(id = productId)
             total = products.count()
         else:
-            products = Products.objects.all().order_by("pk")
-            total = products.count()
-            required = ['start', 'limit']
+            required = ['start', 'limit', 'sort']
             for item in required:
                 if not request.GET.has_key(item):
                     return None
             start = int(request.GET.get("start"))
             limit = int(request.GET.get("limit"))
-            #print products.count()
-            if start > products.count():
+            sort = json.loads(request.GET.get("sort"))
+            sortstr = ''
+            for s in sort:
+                if s['direction'] == 'DESC': sortstr +='-'
+                sortstr += s['property']
+                break
+            products = Products.objects.all().order_by(sortstr)
+            total = products.count()
+            if start > total:
                 return None
             products = products[start:][:limit]
 

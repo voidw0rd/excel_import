@@ -38,11 +38,11 @@ Ext.define('AM.view.product.List' ,{
         {header: 'Variety', dataIndex: 'soi', flex: 1},
         {header: 'Photo code', dataIndex: 'photoCode', flex: 1},
         {header: 'Names Languages', dataIndex: 'namesLanguages', flex: 1},
-/*        {header: 'RO Description', dataIndex: 'roDesc', flex: 1},
-        {header: 'EN Description', dataIndex: 'enDesc', flex: 1},
-        {header: 'HU Description', dataIndex: 'huDesc', flex: 1},
-        {header: 'SB Description', dataIndex: 'sbDesc', flex: 1},
-        {header: 'RU Description', dataIndex: 'ruDesc', flex: 1},*/
+        {header: 'RO Description', dataIndex: 'roDesc', flex: 1, hidden: true},
+        {header: 'EN Description', dataIndex: 'enDesc', flex: 1, hidden: true},
+        {header: 'HU Description', dataIndex: 'huDesc', flex: 1, hidden: true},
+        {header: 'SB Description', dataIndex: 'sbDesc', flex: 1, hidden: true},
+        {header: 'RU Description', dataIndex: 'ruDesc', flex: 1, hidden: true},
         {header: 'Greenhouse', dataIndex: 'stage1', flex: 0.6},
         {header: 'Sawing', dataIndex: 'stage2', flex: 0.6},
         {header: 'Planting', dataIndex: 'stage3', flex: 0.6},
@@ -67,5 +67,11 @@ Ext.define('AM.view.product.List' ,{
                     text:"Logout",
                     action:"logout",
                     scope: this
-            }]
+            }],
+    dockedItems: [{
+        xtype: 'pagingtoolbar',
+        store: 'Products',   // same store GridPanel is using
+        dock: 'bottom',
+        displayInfo: true
+    }],
 });

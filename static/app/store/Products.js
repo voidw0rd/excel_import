@@ -1,8 +1,9 @@
 Ext.define('AM.store.Products', {
     extend: 'Ext.data.Store',
     model: 'AM.model.Product',
-    autoLoad: {start:0, limit:2000},
+    autoLoad: true,
 
+    remoteSort: true,
     sorters: [
         {
             property : 'cod',
