@@ -179,7 +179,8 @@ Ext.define('AM.controller.Products', {
 
     addNewProduct: function(button) {
         var record = new AM.model.Product({
-            notes : Math.floor(Math.random()*200) + ''
+            notes : Math.floor(Math.random()*200) + '',
+            modified: 1
         });
         console.log(record);
         this.getProductsStore().add(record);
