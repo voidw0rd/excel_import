@@ -246,7 +246,7 @@ def productsRead(request):
     try:
         excludes = []
         sort = []
-        if request.GET.has_key("id"):
+        if request.GET.has_key("id") :
             productId = request.GET['id']
             products = Products.objects.filter(id = productId)
             total = products.count()
@@ -265,6 +265,12 @@ def productsRead(request):
                 break
             products = Products.objects.all().order_by(sortstr)
             total = products.count()
+
+            if  request.GET.has_key("search"):
+                search = request.GET["search"]
+                products = Products.objects.filter(denumirePlic__icontains = search)
+                total = products.count()
+
             if start > total:
                 return None
             products = products[start:][:limit]
