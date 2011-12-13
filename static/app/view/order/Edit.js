@@ -46,7 +46,7 @@ Ext.define('AM.view.order.Edit', {
                         triggerAction: 'all',
                         selectOnTab: true,
                         multiSelect: false,
-                        forceSelection : true,
+                        //forceSelection : true,
                         emptyText: 'Select company',
                         displayField: 'name',
                         valueField:'id',

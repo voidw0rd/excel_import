@@ -349,11 +349,16 @@ def productsCreate(request):
                 return Http404
             for exclude in ['category_id', 'log', 'id']:
                 postData.pop(exclude)
-            Products.objects.create(**postData)
+
+            newproduct = Products.objects.create(**postData)
+            data = []
+            data.append(model_to_dict(newproduct))
+
+
         else:
             return Http404
 
-        jsonObj = simplejson.dumps({'success': True})
+        jsonObj = simplejson.dumps({"success": True, "data":data})
         return HttpResponse(jsonObj, mimetype="application/json")
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',

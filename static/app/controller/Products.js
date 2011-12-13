@@ -14,6 +14,8 @@ Ext.define('AM.controller.Products', {
         }
     ],
 
+    activeProductId: 0,
+
     init: function() {
         
         this.control({
@@ -39,6 +41,14 @@ Ext.define('AM.controller.Products', {
                 click: this.logout
             }
         });
+
+        this.getStore('Products').on('write', this.ProductsWrite, this)
+    },
+
+    ProductsWrite: function(proxy, operation){
+        this.activeProductId = Ext.JSON.decode(operation.response.responseText).data[0].id;
+        console.log(this.activeProductId);
+
     },
 
     editProduct: function(grid, record) {
@@ -185,7 +195,22 @@ Ext.define('AM.controller.Products', {
         console.log(record);
         this.getProductsStore().add(record);
         this.getProductsStore().sync();
-        this.getProductsStore().load({callback: function(records, operation, success) {
+
+        var product = Ext.ModelManager.getModel('AM.model.Product');
+        console.log(this.activeProductsId);
+        product.load(this.activeProductsId, {
+                            scope: this,
+                            success: function(record, operation) {
+                                console.log(operation);
+                                var edit = Ext.create('AM.view.product.Edit').show();
+                                edit.down('form').loadRecord(record);
+                                edit.down('form').down('textfield').focus();
+                            },
+                            failure: function(record, operation){console.log('failed to load a newly create product:controller:productjs:209')}
+                        });
+
+/*        this.getProductsStore().load({callback: function(records, operation, success) {
+            console.log('3');
             Ext.each(records, function(item) {
                 if (item.data.notes === record.data.notes) {
                     var edit = Ext.create('AM.view.product.Edit').show();
@@ -193,7 +218,7 @@ Ext.define('AM.controller.Products', {
                     edit.down('form').down('textfield').focus();
                 }
             });
-        }});
+        }});*/
     },
 
     deleteProduct: function(button) {
@@ -240,19 +265,20 @@ Ext.define('AM.controller.Products', {
         var grid = Ext.getCmp("productsListId");
         console.log(newValue, oldValue);
         var record = grid.getView().getSelectionModel().getSelection()[0];
-        Ext.Ajax.request({
-            url: "data/productCheckModified",
-            params: {
-                id: record.get('id'),
-                value: newValue
-            },
-            success: function(response){
-                console.log('productCheckModified succesful:' + response.responseText);
-            },
-            failure: function(response){
-                checkbox.setRawValue(oldValue);
-                console.log('productCheckModified FAIL:' + response.responseText);
-            }
+        if (record)
+            Ext.Ajax.request({
+                url: "data/productCheckModified",
+                params: {
+                    id: record.get('id'),
+                    value: newValue
+                },
+                success: function(response){
+                    console.log('productCheckModified succesful:' + response.responseText);
+                },
+                failure: function(response){
+                    checkbox.setRawValue(oldValue);
+                    console.log('productCheckModified FAIL:' + response.responseText);
+                }
         });
     }
     

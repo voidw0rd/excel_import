@@ -6,7 +6,8 @@ Ext.define('AM.model.Order', {
         'timestamp',
         'status',
         'status_id',
-        {name:'company', type: 'string'},
+        {name:'company', type: 'int'},
         {name:'total', type: 'int'}],
-    belongsTo: ['OrderStatus']
+    belongsTo: ['OrderStatus'],
+    belongsTo: ['Company']
 });
