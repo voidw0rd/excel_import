@@ -24,7 +24,11 @@ import csv
 import datetime
 import uuid
 
-
+import logging
+class PisaNullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+logging.getLogger("ho.pisa").addHandler(PisaNullHandler())
 
 
 def getJsonFromModel(querySet, excludes):
@@ -626,18 +630,19 @@ def downloadOrder(request):
         return Http404
 
     try:
+        #orderId = request.GET['orderId']
         orderId = request.path.split("=")[-1]
-        order = _prepPrint(orderId)
+        order, data = _prepPrint(orderId)
         pdf = makePDF()
-        resp = pdf.generatePDF(order)
+        resp = pdf.generatePDF(order, data)
+
         response = HttpResponse(resp.getvalue(), mimetype='application/pdf')
-        name = order['name'].encode('ascii', 'ignore')
 
         response['Content-Disposition'] = 'attachment; filename=order-%s' % str(datetime.datetime.now()).split('.')[0]
 
         return response
     except Exception, err:
-        print err
+        print 'ERR:download Order :: %s' % err
         return Http404
 
 

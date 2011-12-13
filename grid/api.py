@@ -18,11 +18,11 @@ class makePDF(object):
         pass
         
     
-    def generatePDF(self, order):
+    def generatePDF(self, order, data):
 
         try:
             t = get_template("printOrder.html")
-            c = Context({"order": order})
+            c = Context({"order": order, "data":data})
             html = t.render(c)
             res = StringIO.StringIO()
             pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), res, encoding='UTF-8')
@@ -31,7 +31,7 @@ class makePDF(object):
                 return None
             return res
         except Exception, err:
-            print err
+            print 'API Error: generate PDF %s' % err
             return None
 
 

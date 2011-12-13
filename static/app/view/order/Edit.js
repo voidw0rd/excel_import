@@ -97,27 +97,11 @@ Ext.define('AM.view.order.Edit', {
                         });
                     }
                 },{
-                    type:'print',
-                    qtip: 'Print form Data',
+                    type:'pdf',
+                    qtip: 'Download PDF file',
                     // hidden:true,
-                    handler: function(event, toolEl, panel){
-                        var orderId = panel.up("window").down("form").getRecord().data.id;
-                        var request = Ext.Ajax.request({
-                            url: "printOrder",
-                            params: {"orderId": orderId},
-                            method: "GET",
-                            success: function(result, req){
-                                Ext.create("Ext.window.Window", {
-                                    title: "Print Order",
-                                    height: 600,
-                                    width: 700,
-                                    autoScroll: true,
-                                    html: result.responseText,
-                                    items: {
-                                        xtype: "button",
-                                        text: "Download as PDF",
-                                        id: "download",
-                                        handler: function() {
+                    
+                    handler: function(event, toolEl, panel) {var orderId = panel.up("window").down("form").getRecord().data.id;
                                             var body = Ext.getBody(),
                                                 frame = body.createChild({
                                                     tag:'iframe',
@@ -134,14 +118,6 @@ Ext.define('AM.view.order.Edit', {
                                                     standardSubmit: true
                                             });
                                             form.dom.submit();
-                                        }
-                                    }
-                                }).show();
-                            },
-                            failure: function(result, req){
-                                console.log(result);
-                            }
-                        });                    
                     }
                 },{
                     type:'printpreview',
