@@ -131,12 +131,12 @@ Ext.define("AM.view.orderProduct.Edit", {
                         listeners: {
                             'select': function(combo, record){
                                 var gridRecord = combo.up('form').getRecord();
-                                var idExisting = gridRecord.store.findExact('product_id', record[0].data.id);
+                                var idExisting = gridRecord.stores[0].findExact('product_id', record[0].data.id);
                                 if (idExisting != -1){
                                     Ext.MessageBox.alert('Produs duplicat', 'Produsul selectat exista deja in comanda!');
-                                    gridRecord.set('quantity', gridRecord.store.getAt(idExisting).data.quantity);
-                                    gridRecord.set('note', gridRecord.store.getAt(idExisting).data.note);
-                                    gridRecord.store.removeAt(idExisting);
+                                    gridRecord.set('quantity', gridRecord.stores[0].getAt(idExisting).data.quantity);
+                                    gridRecord.set('note', gridRecord.stores[0].getAt(idExisting).data.note);
+                                    gridRecord.stores[0].removeAt(idExisting);
                                 }
                                 gridRecord.set('product_id', record[0].data.id);
                                 gridRecord.set('cod', record[0].data.cod);
@@ -218,7 +218,7 @@ Ext.define("AM.view.orderProduct.Edit", {
         this.callParent();
 
         this.editing.on('edit', function(editor, e) {
-            editor.store.sync();
+            editor.grid.store.sync();
         });
     },
 

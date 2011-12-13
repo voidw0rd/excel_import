@@ -842,6 +842,7 @@ def orderProductsUpdate(request):
 
     if isinstance(postData, dict) and postData.has_key("id"):
         try:
+            data = []
             product = OrderProduct.objects.get(pk=postData['id'])
 
             if not request.user.is_staff:
@@ -855,14 +856,16 @@ def orderProductsUpdate(request):
             product.printstatus = postData['printstatus']
             product.save()
 
+            data.append(model_to_dict(product))
             _calculateOrderTotal(postData['order_id'])
-            return HttpResponse(simplejson.dumps({"success": True}))
+            return HttpResponse(simplejson.dumps({"success": True, "data": data}))
 
         except Exception, err:
             print err
             return Http404
 
     elif isinstance(postData, list):
+        data = []
         for obj in postData:
             if isinstance(obj, dict) and obj.has_key("id"):
                 product = OrderProduct.objects.get(pk=obj['id'])
@@ -877,9 +880,10 @@ def orderProductsUpdate(request):
                 product.modified = obj['modified']
                 product.save()
 
+                data.append(model_to_dict(product))
                 _calculateOrderTotal(obj['order_id'])
 
-        return HttpResponse(simplejson.dumps({"success": True}))
+        return HttpResponse(simplejson.dumps({"success": True, "data": data}))
     else:
         return Http404
 
