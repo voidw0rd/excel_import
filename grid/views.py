@@ -584,6 +584,7 @@ def _prepPrint(orderId):
         orderInfo["name"] = order.name
         orderInfo['timestamp'] = str(order.timestamp).split('.')[0]
         orderInfo['company'] = order.company.name
+        orderInfo['notes'] = order.note
         orderInfo['items'] = len(orderProducts)
         for product in orderProducts:
             obj = {}
@@ -838,7 +839,7 @@ def orderProductsUpdate(request):
 
     postData = request.read()
     postData = json.loads(postData)
-    print postData
+    #print postData
 
     if isinstance(postData, dict) and postData.has_key("id"):
         try:
