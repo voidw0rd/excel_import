@@ -16,7 +16,7 @@
         .x-tool-printpreview {background-image: url("images/tool-printpreview.gif") !important;}
         .x-tool-over .x-tool-printpreview {background-position:-15px 0;}
 
-        .x-tool-pdf {background-image: url("images/tool-pdf.png") !important;}
+        .x-tool-pdf {background-image: url("images/tool-pdf.gif") !important;}
         .x-tool-over .x-tool-pdf {background-position:-15px 0;}
         
         #msg-div {
@@ -50,12 +50,14 @@
         }
     </style>
 
-    
-
     <script type="text/javascript" src="ext-4.1/ext-all-dev.js"></script>
 
-    
-    <script type="text/javascript" src="app.js"></script>
+    {% if data.user.is_staff %}
+
+        <script type="text/javascript" src="appAdm.js"></script>
+    {% else %}
+        <script type="text/javascript" src="app.js"></script>
+    {% endif %}
 
 </head>
 <body>

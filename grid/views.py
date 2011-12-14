@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.db.models.query import QuerySet
 from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext, Template, Context
 from django.template.loader import get_template
 from django.core.mail import send_mail
@@ -72,14 +72,15 @@ def userLogin(request):
     if request.method == "POST":
         form = Login(request.POST)
         if form.is_valid():
-            user = form.cleaned_data['username']
+            username = form.cleaned_data['username']
             pwd = form.cleaned_data['password']
 
-            user = authenticate(username = user, password = pwd)
+            user = authenticate(username = username, password = pwd)
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect("/")
+
+                    return redirect(index)
                 else:
                     form.non_field_errors = "Your account is suspended."
             else:
@@ -176,11 +177,9 @@ def resetPasswordToken(request):
 def index(request):    
 
     #send_mail('sendGrid - email', 'Greetz, this is just a test email ', 'admin@semluca.net', ['palin@info.uvt.ro', 'vladisac@gmail.com'], fail_silently=False)
-
     return render_to_response(
-                              'index.html', 
-                              { 
-                              }, 
+                              'index.html',
+                              {"data":RequestContext(request).dicts[2]},
                               context_instance=RequestContext(request)
                              )
 
@@ -1148,3 +1147,28 @@ def downloadProductImage(request):
     except Exception, err:
         print err
         return Http404
+
+
+@login_required
+def usersCreate(request):
+    pass
+
+@login_required
+def usersRead(request):
+    print request.session.__dict__
+    print request.user
+    try:
+        if not request.user.is_staff:
+            return Http404
+        users = User.objects.all()
+    except Exception, err:
+        print err.message
+
+@login_required
+def usersUpdate(request):
+    pass
+
+@login_required
+def usersDelete(request):
+    pass
+

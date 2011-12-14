@@ -49,6 +49,11 @@ urlpatterns = patterns('',
     # company
     (r"^data/CompanyRead", companyRead),
 
+    # users
+    (r"^data/usersRead",     usersRead),
+    (r"^data/usersUpdate",   usersUpdate),
+    (r"^data/usersCreate",   usersCreate),
+    (r"^data/usersDelete",   usersDelete),
     
 )
 

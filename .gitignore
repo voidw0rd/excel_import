@@ -3,7 +3,8 @@
 extjs-4.0.2a/
 settings.py
 /static/app.js
-
+/static/images/
+/static/ext-4.1/
 /static/am.db
 /static/DejaVuSansMono.ttf
 .idea
