@@ -23,8 +23,10 @@ import json
 import csv
 import datetime
 import uuid
+from django.core import serializers
 
 import logging
+
 class PisaNullHandler(logging.Handler):
     def emit(self, record):
         pass
@@ -1091,7 +1093,7 @@ def companyRead(request):
 
         except Exception, err:
             print err
-            return Http404
+            raise Http404
 
     else:
         pass
@@ -1155,20 +1157,54 @@ def usersCreate(request):
 
 @login_required
 def usersRead(request):
-    print request.session.__dict__
-    print request.user
+
+    if not request.user.is_staff:
+        raise Http404('Not authorized')
+
+    companies = Company.objects.all()
+    return HttpResponse(serializers.serialize('json4ext', companies), mimetype='application/json')
+
+
+
+@login_required
+@csrf_exempt
+def usersUpdate(request):
+
+    if not request.user.is_staff:
+        raise Http404('Not authorized')
+
+    print request.POST
     try:
-        if not request.user.is_staff:
-            return Http404
-        users = User.objects.all()
+        userJson = json.loads(request.read())
+        user = Company.objects.get(pk = userJson['id'])
+        user.saveFromJson(userJson)
+    except Exception, err:
+        print err
+
+    user = Company.objects.filter(pk = user.pk)
+
+    return HttpResponse(serializers.serialize('json4ext', user), mimetype="application/json")
+
+
+
+@login_required
+@csrf_exempt
+def usersDelete(request):
+
+    if not request.user.is_staff:
+        raise Http404('Not authorized')
+
+    response = {}
+    response['data'] = []
+    try:
+        user = json.loads(request.read())
+        user = Company.objects.get(pk = user['id'])
+        user.delete()
+        response['success'] = True
     except Exception, err:
         print err.message
+        response['msg'] =  'Error @ user deletion'
+        response['success'] = False
 
-@login_required
-def usersUpdate(request):
-    pass
-
-@login_required
-def usersDelete(request):
-    pass
+    return HttpResponse(simplejson.dumps(response), mimetype='application/json')
 

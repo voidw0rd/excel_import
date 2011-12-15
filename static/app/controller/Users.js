@@ -10,19 +10,51 @@ Ext.define('AM.controller.Users', {
     init: function() {
         
         this.control({
+            'userlist button[action=add]': {
+                click: this.addUser
+            },
+            'userlist button[action=delete]':{
+                click: this.deleteUser
+            },
+
+            'userlist button[action=logot]':{
+                click: this.logout
+            }
 
         });
 
 
     },
 
-    addNewProduct: function(button) {
-
-
+    addUser: function(button) {
     },
 
-    deleteProduct: function(button) {
+    deleteUser: function(button) {
+        var grid = button.up('grid'),
+            store = this.getUsersStore(),
+            record = grid.getSelectionModel().getSelection()[0];
 
+        Ext.MessageBox.show({
+            title:'Are you sure???',
+            msg: 'You are about to delete a user/company <br />Are you sure you want to delete this user?',
+            buttons: Ext.MessageBox.YESNO,
+            icon: Ext.MessageBox.QUESTION,
+            fn: function(btn){
+                switch (btn){
+                    case 'yes':
+                        store.remove(record);
+                        store.sync({
+                            success: function(){
+                                Ext.MessageBox.alert('User deleted!', 'The user was deleted.');
+                            }
+                        });
+                        break;
+                    case 'no':
+
+                        break;
+                }
+            }
+        });
     },
 
     logout: function() {

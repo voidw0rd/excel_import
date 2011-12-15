@@ -7,6 +7,7 @@ Ext.define('AM.view.order.List' ,{
     store: 'Orders',
 
     columns: [
+        {header: 'Company',  dataIndex: 'company',  flex: 1},
         {header: 'Name',  dataIndex: 'name',  flex: 1},
         {header: 'Note',  dataIndex: 'note',  flex: 1},
         {header: 'Created on',  dataIndex: 'timestamp',  flex: 1},

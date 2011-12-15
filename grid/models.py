@@ -74,6 +74,31 @@ class Company(models.Model):
     password = models.CharField(max_length = 20)
     note = models.TextField()
     type = models.CharField(max_length = 1)
+
+    def saveFromJson(self, dict):
+        fields = self._meta._fields()
+        dict.pop('id')
+
+        try:
+            for field in fields:
+                if field.name in dict:
+                    if isinstance(field, models.ForeignKey):
+                        #print 'FK: %s '% field.related.parent_model.__name__
+                        model = field.related.parent_model
+                        try:
+                            modelInstance = model.objects.get(pk = dict[field.name])
+                            setattr(self, field.name, modelInstance)
+                        except Exception: #ObjectDoesNotExist:
+                            setattr(self, field.name, None )
+
+                    else:
+                        setattr(self, field.name, dict[field.name])
+        except Exception, err:
+            print '[ err ] Exception Ingredient-saveFromJson @ rest of keys: \t',
+            print err
+            raise
+
+        super(Company, self).save()
     
     
 

@@ -1,8 +1,11 @@
 Ext.define('AM.model.User', {
     extend: 'Ext.data.Model',
     fields: [
-        'id',
-        {name:'name', type: 'string', mapping:'name'}
+        {name:'id', type:'int'},
+        {name:'name', type: 'string'},
+        {name:'email'},
+        {name:'password'},
+        {name:'phone'}
     ],
     proxy: {
         api: {

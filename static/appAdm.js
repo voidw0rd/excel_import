@@ -1,11 +1,5 @@
 Ext.Loader.setConfig({enabled:true});
 
-Ext.override(Ext.form.field.ComboBox, {
-    onLoad: function() {
-        this.callOverridden();
-        this.setValue(this.value);
-    }
-});
 
 Ext.application({
     name: 'AM',
