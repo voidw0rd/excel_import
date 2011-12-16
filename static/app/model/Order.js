@@ -6,7 +6,7 @@ Ext.define('AM.model.Order', {
         'timestamp',
         'status',
         'status_id',
-        {name:'company', type: 'int'},
+        {name:'company', mapping:function(obj){ return Ext.isObject(obj.company) ? obj.company.name : ''}},
         {name:'total', type: 'int'}],
     belongsTo: ['OrderStatus'],
     belongsTo: ['Company']

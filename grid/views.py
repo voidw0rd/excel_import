@@ -455,19 +455,10 @@ def ordersRead(request):
             print err
             return Http404
 
-    excludes = []
 
-    if request.is_ajax():
-        try:
-            response = getJsonFromModel(orders, excludes)
-            jsonObj = simplejson.dumps(response, encoding="utf-8")
-            return HttpResponse(jsonObj, mimetype="application/json")
 
-        except Exception, err:
-            jsonObj = simplejson.dumps({"success": False, "reason": err})
-            return HttpResponse(jsonObj, mimetype="application/json")
-    else:
-        return Http404
+    return HttpResponse(serializers.serialize('json4ext', orders, relations={'status','company'}), mimetype="application/json")
+
 
 
 @login_required
