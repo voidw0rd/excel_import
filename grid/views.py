@@ -1062,37 +1062,12 @@ def companyRead(request):
     if request.is_ajax():
         try:
             #x = Company.objects.create(name = "SRL MintRubbing", address = Address.objects.create())
-            company = Company.objects.all()
+            companies = Company.objects.all()
 
-            if len(company) == 0:
-                jsonObj = simplejson.dumps({"success": True, "data" : []})
-                return HttpResponse(jsonObj, mimetype="application/json")
-
-            tmpList = []
-            tmpDict = {}
-            for item in company:
-                response = model_to_dict(item)
-                #print "--" * 10
-                obj = {}
-                for key in response.keys():
-                    obj[key] = response[key]
-
-                obj.pop('address')
-                response = model_to_dict(item.address)
-                for key in response.keys():
-                    obj[key] = response[key]
-
-                tmpList.append(obj)
-
-            tmpDict['data'] = tmpList
-            tmpDict['success'] = True
-            #print json.dumps(tmpDict, indent = 4)
-
-            jsonObj = simplejson.dumps(tmpDict)
-            return HttpResponse(jsonObj, mimetype = "application/json")
+            return HttpResponse(serializers.serialize('json4ext',companies), mimetype = "application/json")
 
         except Exception, err:
-            print err
+            print 'Error:: CompanyRead::%s'%err
             raise Http404
 
     else:
@@ -1152,8 +1127,30 @@ def downloadProductImage(request):
 
 
 @login_required
+@csrf_exempt
 def usersCreate(request):
-    pass
+
+    if not request.user.is_staff:
+        raise Http404('Not authorized')
+
+    response = {}
+    try:
+        userJson = json.loads(request.read())
+        user = Company()
+        user.saveFromJson(userJson)
+
+        user = Company.objects.filter(pk = user.pk)
+        response = serializers.serialize('json4ext', user)
+    except Exception, err:
+        print '[ err ] Exception at usersCreate: \t',
+        print err.message
+
+        response['data'] = []
+        response['msg'] =  '%s ' % err
+        response['success'] = False
+        response = simplejson.dumps(response, use_decimal=True)
+
+    return HttpResponse(response, mimetype='application/json')
 
 @login_required
 def usersRead(request):

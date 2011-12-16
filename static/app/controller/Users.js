@@ -17,7 +17,7 @@ Ext.define('AM.controller.Users', {
                 click: this.deleteUser
             },
 
-            'userlist button[action=logot]':{
+            'userlist button[action=logout]':{
                 click: this.logout
             }
 
@@ -27,6 +27,14 @@ Ext.define('AM.controller.Users', {
     },
 
     addUser: function(button) {
+        var grid = button.up('grid'),
+            store = this.getUsersStore(),
+            record = new AM.model.User({}),
+            edit = grid.editingPlugin;
+
+        edit.cancelEdit();
+        store.insert(0,record);
+        edit.startEditByPosition({row:0, column:0})
     },
 
     deleteUser: function(button) {

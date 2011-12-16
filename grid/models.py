@@ -68,7 +68,7 @@ class Address(models.Model):
 class Company(models.Model):
     
     name = models.CharField(max_length = 20)
-    address = models.ForeignKey(Address, related_name = "CompanyAddress")
+    address = models.ForeignKey(Address, null=True, related_name = "CompanyAddress")
     phone = models.CharField(max_length = 20)
     email = models.EmailField(max_length=75, unique = True)
     password = models.CharField(max_length = 20)
@@ -93,6 +93,10 @@ class Company(models.Model):
 
                     else:
                         setattr(self, field.name, dict[field.name])
+                else:
+                    if isinstance(field, models.ForeignKey):
+                        setattr(self, field.name, None )
+
         except Exception, err:
             print '[ err ] Exception Ingredient-saveFromJson @ rest of keys: \t',
             print err

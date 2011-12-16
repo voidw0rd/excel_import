@@ -3,18 +3,9 @@ Ext.define('AM.model.User', {
     fields: [
         {name:'id', type:'int'},
         {name:'name', type: 'string'},
-        {name:'email'},
-        {name:'password'},
-        {name:'phone'}
-    ],
-    proxy: {
-        api: {
-            read: "data/usersRead"
-        },
-        type: "ajax",
-        reader: {
-            root: "data",
-            successProperty: "success"
-        }
-    }
+        {name:'email', type: 'string'},
+        {name:'password', type: 'string'},
+        {name:'phone', type: 'string'},
+        {name:'address_id', mapping:function(obj){ return Ext.isObject(obj.address) ? obj.address : ''}}
+    ]
 });

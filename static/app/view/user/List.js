@@ -18,7 +18,7 @@ Ext.define('AM.view.user.List' ,{
     ],
     tbar: [{
                     text:"Add user",
-                    action: "new",
+                    action: "add",
                     scope: this
             },Ext.create('Ext.Toolbar.Fill'),{
                     text:"Delete user",
