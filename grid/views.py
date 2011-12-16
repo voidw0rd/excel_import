@@ -457,7 +457,7 @@ def ordersRead(request):
 
 
 
-    return HttpResponse(serializers.serialize('json4ext', orders, relations={'status','company'}), mimetype="application/json")
+    return HttpResponse(serializers.serialize('json4ext', orders, relations=('status','company')), mimetype="application/json")
 
 
 
